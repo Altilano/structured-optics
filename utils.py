@@ -227,3 +227,10 @@ def elliptic_to_cartesian(xi, eta, q, w0, z, lamb):
 
 #utils for Beam class parameters calculation
 
+def overlap(first_beam, second_beam): # calculate overlap between two beams, only properly works if ni and D of beams are equal.
+    return np.sum(first_beam.field*np.conjugate(second_beam.field))*4*(first_beam.nix/first_beam.Dx) \
+        *(first_beam.niy/first_beam.Dy)/np.sqrt(first_beam.get_Power()*second_beam.get_Power())
+
+def int_overlap(first_beam, second_beam):
+    return np.sum(first_beam.int_profile()*second_beam.int_profile())*4*(first_beam.nix/first_beam.Dx) \
+        *(first_beam.niy/first_beam.Dy)/(first_beam.get_Power()*second_beam.get_Power())

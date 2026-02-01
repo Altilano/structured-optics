@@ -202,7 +202,7 @@ def IG_odd_mode(Beam, p, m, q, z, pol_index):
     Beam.norm_beam()
     return Beam
 
-def HInceG(Beam, p, m, q, z, helicity, pol_index):
+def HInceG_mode(Beam, p, m, q, z, helicity, pol_index):
     """
     Hermite-Ince-Gaussian mode HIG_p,m^e(x,y), combining even and odd Ince-Gaussian modes with given helicity.
     For some reason IG_odd has a 3*pi/2 phase shift wrt IG_even, so the helicity sign is inverted here.
