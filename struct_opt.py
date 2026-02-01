@@ -20,8 +20,8 @@ class Beam():
                  lamb:float = 1064e-9,    #Wavelength. Standard value 1064nm
                  x0:float = 0,            #Beam center x position
                  y0:float = 0) -> object: #Beam center y position
-        """ Initiate an object with the necessary parameters for calculating transverse fields
-        """
+        # Initiate an object with the necessary parameters for calculating transverse fields
+
         self.sparse = sparse
         self.nix = nix
         if niy == None:
@@ -43,22 +43,27 @@ class Beam():
         self.y0 = y0
 
 
+
+
     #Auxialiary 
 
-    def copy(self):                 #Perform a deep copy of the Beam object
+    def copy(self):                 
+        #Perform a deep copy of the Beam object
         return copy.deepcopy(self)
     
-    def copy_clean(self):           #Perform a deep copy of the Beam object, but with field initialized to zero
+    def copy_clean(self):           
+        #Perform a deep copy of the Beam object, but with field initialized to zero
         new = self.copy()
         new.field = np.zeros((self.pol_dim, self.Dy, self.Dx), dtype='complex128')
         return new
 
 
+
+
     #Operator overloading
 
     def __mul__(self, other):
-        """Multiply the transverse fields point by point if multiplied by another field, or globally if multiplied by number.
-        """
+        #Multiply the transverse fields point by point if multiplied by another field, or globally if multiplied by number.
         if isinstance(other, (type(self))):
             new = self.copy()
             new.field = self.field*other.field
@@ -73,7 +78,8 @@ class Beam():
         
     __rmul__ = __mul__
     
-    def __add__(self, other):       #Add the transverse fields point by point
+    def __add__(self, other:object):       
+        #Add the transverse fields point by point
         if isinstance(other, (Beam, type(self))):
             new = self.copy()
             new.field = other.field + self.field
@@ -83,7 +89,8 @@ class Beam():
         
     __radd__ = __add__
         
-    def __sub__(self, other):       #Subtract the transverse fields point by point
+    def __sub__(self, other:object):       
+        #Subtract the transverse fields point by point
         if isinstance(other, Beam):
             new = self.copy()
             new.field = self.field - other.field
@@ -94,92 +101,101 @@ class Beam():
     __rsub__ = __sub__
     
 
+
+
     #modes
-        
-    def hg(self, n:int, m:int, z:float=0, pol_index:int=None):      
+    #pol_index: polarization index to store the mode, if None uses all polarizations
+    #returns the Beam object with the mode stored in field
+    def hg(self, n:int, m:int, z:float=0, pol_index:int=None) -> object:      
         #get a HG mode at distance z of order n+m
-        #pol_index: polarization index to store the mode, if None uses all polarizations
         return hg_mode(self, n, m, z, pol_index)                    
     
-    def lg(self,l:int,p:int, z:float=0, pol_index:int=None):        
+    def lg(self,l:int,p:int, z:float=0, pol_index:int=None) -> object:        
         #get a LG mode at distance z of order abs(N) + 2M
         return lg_mode(self, l, p, z, pol_index)
     
-    def bessel(self, N:int, z:float=0, pol_index:int=None):         
+    def bessel(self, N:int, z:float=0, pol_index:int=None) -> object:         
         #get a Bessel mode of order N at distance z
         return bessel_mode(self, N, z, pol_index)
     
-    def gbessel(self, N:int, r0:int, pol_index:int=None):           
+    def gbessel(self, N:int, r0:int, pol_index:int=None) -> object:           
         #get a gaussian bessel beam of order N at z=0, r0 is the radius of the first intensity null
         return gbessel_mode(self, N, r0, pol_index)
     
-    def lg_prod(self, N:int, ls:tuple=None, centers:tuple=None, pol_index:int=None):     
+    def lg_prod(self, N:int, ls:tuple=None, centers:tuple=None, pol_index:int=None) -> object:     
         #get a superposition of N LG modes, with list of OAMs ls and list of centers
         return lg_prod_mode(self, N, ls, centers, pol_index)
     
-    def frac_oam(self, Ma:float, n_modes:int, beta:float = 0, theta_0:float=0, z:float = 0, pol_index=None):        
+    def frac_oam(self, Ma:float, n_modes:int, beta:float = 0, theta_0:float=0, z:float = 0, pol_index=None) -> object:        
         #get a fractional OAM beam, with OAM Ma (!= integer), by the method of LG supperpositions.
         return frac_oam_mode(self, Ma, n_modes, beta, theta_0, z, pol_index)
     
-    def IG_even(self, p:int, m:int, q:float, z:float=0, pol_index:int=None):    
-        #get an even Ince-Gaussian beam IG_p,m^e at distance z
+    def IG_even(self, p:int, m:int, q:float, z:float=0, pol_index:int=None) -> object:    
+        #get an even Ince-Gaussian beam IG_p,m^e at distance z with ellipticity q
         return IG_even_mode(self, p, m, q, z, pol_index)
     
-    def IG_odd(self, p:int, m:int, q:float, z:float=0, pol_index:int=None):     
-        #get an odd Ince-Gaussian beam IG_p,m^o at distance z
+    def IG_odd(self, p:int, m:int, q:float, z:float=0, pol_index:int=None) -> object:     
+        #get an odd Ince-Gaussian beam IG_p,m^o at distance z with ellipticity q
         return IG_odd_mode(self, p, m, q, z, pol_index)
                         
-    def HelIG(self, p:int, m:int, q:float, z:float=0, helicity:int=1, pol_index:int=None):     
-        #get a Hermite-Ince-Gaussian beam HIG_p,m^e at distance z
+    def HelIG(self, p:int, m:int, q:float, z:float=0, helicity:int=1, pol_index:int=None) -> object:     
+        #get a Hermite-Ince-Gaussian beam HIG_p,m at distance z with ellipticity q and given helicity (+1 or -1)
         return HInceG_mode(self, p, m, q, z, helicity, pol_index)
     
 
+
+
     #Algebra utils
 
-    def hg_projector(self,N, completeness = False):
+    def hg_projector(self,N:int, completeness:bool = False) -> tuple:
         #Project the beam into HG basis up to order N
+        #returns tuple with n, m index and overlaps array, if completeness=True also returns completeness value
         return hg_proj(self, N, completeness)
 
-    def lg_projector(self, N, completeness = False):
+    def lg_projector(self, N:int, completeness:bool = False) -> tuple:
         #Project the beam into LG basis up to order N
+        #returns tuple with l, p index and overlaps array, if completeness=True also returns completeness value
         return lg_proj(self, N, completeness)
         
-    def hg_basis(self, N, waist = None, norm1 = False):
+    def hg_basis(self, N:int, waist:float=None, norm1:bool = False) -> np.ndarray:
         #Create a HG basis up to order N
         return hg_basis(self, N, waist, norm1)
     
-    def lg_basis(self, N, waist=None, norm1=False):
+    def lg_basis(self, N:int, waist:float=None, norm1:bool=False) -> np.ndarray:
         #Create a LG basis up to order N
         return lg_basis(self, N, waist, norm1)
     
-    def bessel_basis(self, Nmax, waist=None, norm1=False):
+    def bessel_basis(self, Nmax:int, waist:float=None, norm1:bool=False) -> np.ndarray:
         #Create a Bessel basis up to Nmax
         return bessel_basis(self, Nmax, waist, norm1)
 
-    def build_from_coefs_and_basis(self, coefs, basis):
+    def build_from_coefs_and_basis(self, coefs:np.ndarray, basis:np.ndarray) -> object:
         #Build beam from given coefficients and basis
         return build_from_coefs_and_basis(self, coefs, basis)
     
-    def mode_converter(self, N, theta=np.pi/4): 
+    def mode_converter(self, N:int, theta:float=np.pi/4) -> object: 
         #Astigmatic mode converter that converts HG to LG modes and viceversa
         return astigmatic_mode_converter(self, N, theta)
     
 
+
+
     #Beam physical atributes and its utilities
 
-    def get_Power(self):
+    def Power(self) -> float:
         #Get the total Power of a field within the region of interest
         return np.sum(np.abs(self.field)**2*(4*self.nix/self.Dx)*(self.niy/self.Dy))
     
-    def zr(self):
+    def zr(self) -> float:
+        #Get the Rayleigh range of the beam
         return np.pi*self.waist**2/self.lamb
     
-    def int_profile(self):
-        """ Get intensity profile of the field within Beam"""
+    def int_profile(self) -> np.ndarray:
+        #Get intensity profile of the field within Beam
         return np.abs(self.field)**2
     
-    def phase(self, twopi=False):
-        """Get phase profile of the field."""
+    def phase(self, twopi:bool=False) -> np.ndarray:
+        #Get phase profile of the field. If twopi=True, phase is given in [0, 2pi], else in [-pi, pi]
         if twopi == False:
             return np.angle(self.field)
         if twopi == True:
@@ -188,15 +204,16 @@ class Beam():
             p = p + neg*2*np.pi
             return p
     
-    def center_mass(self, pol_index:int=0):
-        #Calculates the center of mass of intensities of a given field
+    def center_mass(self, pol_index:int=0) -> tuple:
+        #Calculates the center of mass of intensities of a given field in given polarization
+        #pol_index: polarization index to use for the calculation, default 0
         if self.pol_dim >1:
             c = ndimage.center_of_mass(self.int_profile()[pol_index])
         else:
             c = ndimage.center_of_mass(self.int_profile())
         return c
   
-    def std(self, pol_index:int=0):
+    def std(self, pol_index:int=0) -> float:
         #Calculate the standard deviation of intensities
         #pol_index: polarization index to use for the calculation, default 0
         if self.pol_dim >1:
@@ -206,61 +223,31 @@ class Beam():
             c = self.center_mass()
             return np.sqrt(np.average((self.x-self.x[0,int(c[1])])**2+(self.y-self.y[int(c[0]),0])**2, weights=self.int_profile()))
     
-    def section(self, ang_min, ang_max):
+    def section(self, ang_min:float, ang_max:float) -> np.ndarray:
         #Return field distribution of given section, defined by minimum angle and maximum angle
-        if ang_min > ang_max:
-            ang_min, ang_max = ang_max, ang_min
-        if ang_max <= np.pi and ang_min <= np.pi:
-            sec = (np.arctan2(self.y,self.x)>=ang_min)*(np.arctan2(self.y,self.x)<ang_max)
-        if ang_max> np.pi and ang_min <= np.pi:
-            sec1 = (np.arctan2(self.y,self.x)>=ang_min)
-            ang_max = ang_max-2*np.pi
-            sec2 = (np.arctan2(self.y,self.x)<ang_max)
-            sec = sec1 + sec2
-        if ang_max>np.pi and ang_min > np.pi:
-            ang_max = ang_max - 2*np.pi
-            ang_min = ang_min - 2*np.pi
-            sec = (np.arctan2(self.y,self.x)>=ang_min)*(np.arctan2(self.y,self.x)<ang_max)
-
-        return self.field*sec
+        return get_section(self, ang_min, ang_max)
     
-    def get_Power_section(self, ang_min, ang_max):
+    def int_section(self, ang_min:float, ang_max:float)-> np.ndarray:
+        #Get intensity profile of given section, defined by minimum angle and maximum angle
+        return np.abs(self.section(ang_min, ang_max))**2
+    
+    def Power_section(self, ang_min:float, ang_max:float)-> float:
         #Get power of given section
         return np.sum(np.abs(self.section(ang_min, ang_max))**2*(4*self.nix/self.Dx)*(self.niy/self.Dy))
     
-    def norm_beam(self):                                       
+    def norm_beam(self)-> object:                                       
         #normalize beam so that Total Power = 1 in region of interest
-        self.field = self.field/np.sqrt(self.get_Power())
+        self.field = self.field/np.sqrt(self.Power())
         return self
     
-    def Max_int1(self):                                         
+    def Max_int1(self)-> object:                                         
         #rescale the field such that the maximum Intensity point is equal to one.
         self.field = self.field/np.sqrt(np.amax(self.int_profile()))
         return self
     
-    def crop(self, center=None, std=None, window=2, pol_index:int=0):
+    def crop(self, center:tuple=None, std:float=None, window:float=2, pol_index:int=0)-> object:
         #Crops a field by its std*window arround the center of mass
-        if center == None:
-            center = self.center_mass(pol_index)
-        if std == None:
-            std = self.std(pol_index)
-        xmin = int(center[1] - window*std*self.Dx/self.nix/2)
-        xmax = int(center[1] + window*std*self.Dx/self.nix/2)
-        ymin = int(center[0] - window*std*self.Dy/self.niy/2)
-        ymax = int(center[0] + window*std*self.Dy/self.niy/2)
-        self.x = self.x[:,xmin:xmax]
-        self.y = self.y[ymin:ymax, :]
-        if self.pol_dim >1:
-            self.field = self.field[:,ymin:ymax, xmin:xmax]
-        else:
-            self.field = self.field[ymin:ymax, xmin:xmax]
-        self.Dx = len(self.x[0,:])
-        self.Dy = len(self.y[:,0])
-        self.nix = (self.x[0,-1] - self.x[0,0])/2
-        self.niy = (self.y[-1,0] - self.y[0,0])/2
-        self.x0 = center[1]
-        self.y0 = center[0]
-        return self
+        return get_crop(self, center, std, window, pol_index)
     
 
 

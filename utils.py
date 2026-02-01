@@ -229,8 +229,51 @@ def elliptic_to_cartesian(xi, eta, q, w0, z, lamb):
 
 def overlap(first_beam, second_beam): # calculate overlap between two beams, only properly works if ni and D of beams are equal.
     return np.sum(first_beam.field*np.conjugate(second_beam.field))*4*(first_beam.nix/first_beam.Dx) \
-        *(first_beam.niy/first_beam.Dy)/np.sqrt(first_beam.get_Power()*second_beam.get_Power())
+        *(first_beam.niy/first_beam.Dy)/np.sqrt(first_beam.Power()*second_beam.Power())
 
 def int_overlap(first_beam, second_beam):
     return np.sum(first_beam.int_profile()*second_beam.int_profile())*4*(first_beam.nix/first_beam.Dx) \
-        *(first_beam.niy/first_beam.Dy)/(first_beam.get_Power()*second_beam.get_Power())
+        *(first_beam.niy/first_beam.Dy)/(first_beam.Power()*second_beam.Power())
+
+
+def get_section(Beam, ang_min, ang_max) -> np.ndarray:
+    #Return field distribution of given section, defined by minimum angle and maximum angle
+    if ang_min > ang_max:
+        ang_min, ang_max = ang_max, ang_min
+    if ang_max <= np.pi and ang_min <= np.pi:
+        sec = (np.arctan2(Beam.y,Beam.x)>=ang_min)*(np.arctan2(Beam.y,Beam.x)<ang_max)
+    if ang_max> np.pi and ang_min <= np.pi:
+        sec1 = (np.arctan2(Beam.y,Beam.x)>=ang_min)
+        ang_max = ang_max-2*np.pi
+        sec2 = (np.arctan2(Beam.y,Beam.x)<ang_max)
+        sec = sec1 + sec2
+    if ang_max>np.pi and ang_min > np.pi:
+        ang_max = ang_max - 2*np.pi
+        ang_min = ang_min - 2*np.pi
+        sec = (np.arctan2(Beam.y,Beam.x)>=ang_min)*(np.arctan2(Beam.y,Beam.x)<ang_max)
+    return Beam.field*sec
+
+
+def get_crop(Beam, center=None, std=None, window=2, pol_index:int=0):
+    #Crops a field by its std*window arround the center of mass
+    if center == None:
+        center = Beam.center_mass(pol_index)
+    if std == None:
+        std = Beam.std(pol_index)
+    xmin = int(center[1] - window*std*Beam.Dx/Beam.nix/2)
+    xmax = int(center[1] + window*std*Beam.Dx/Beam.nix/2)
+    ymin = int(center[0] - window*std*Beam.Dy/Beam.niy/2)
+    ymax = int(center[0] + window*std*Beam.Dy/Beam.niy/2)
+    Beam.x = Beam.x[:,xmin:xmax]
+    Beam.y = Beam.y[ymin:ymax, :]
+    if Beam.pol_dim >1:
+        Beam.field = Beam.field[:,ymin:ymax, xmin:xmax]
+    else:
+        Beam.field = Beam.field[ymin:ymax, xmin:xmax]
+    Beam.Dx = len(Beam.x[0,:])
+    Beam.Dy = len(Beam.y[:,0])
+    Beam.nix = (Beam.x[0,-1] - Beam.x[0,0])/2
+    Beam.niy = (Beam.y[-1,0] - Beam.y[0,0])/2
+    Beam.x0 = center[1]
+    Beam.y0 = center[0]
+    return Beam
