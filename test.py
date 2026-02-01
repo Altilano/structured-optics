@@ -4,9 +4,9 @@ import numpy as np
 
 b1 = Beam(5e-3, 256)
 
-b1.frac_oam(Ma=2.5, n_modes=21, beta=0, theta_0=0, z=0, pol_index=None)
+b1.HelIG(p=10, m=6, q=1)
 
 
-plt.imshow(b1.int_profile(), cmap='jet')
+plt.imshow(b1.phase(), cmap='gray')
 plt.colorbar()
 plt.show()

@@ -108,8 +108,17 @@ class Beam():
     
     def frac_oam(self, Ma:float, n_modes:int, beta:float = 0, theta_0:float=0, z:float = 0, pol_index=None):        #get a fractional OAM beam, with OAM Ma (!= integer), by the method of LG supperpositions.
         return frac_oam_mode(self, Ma, n_modes, beta, theta_0, z, pol_index)
-                        
     
+    def IG_even(self, p:int, m:int, q:float, z:float=0, pol_index:int=None):    #get an even Ince-Gaussian beam IG_p,m^e at distance z
+        return IG_even_mode(self, p, m, q, z, pol_index)
+    
+    def IG_odd(self, p:int, m:int, q:float, z:float=0, pol_index:int=None):     #get an odd Ince-Gaussian beam IG_p,m^o at distance z
+        return IG_odd_mode(self, p, m, q, z, pol_index)
+                        
+    def HelIG(self, p:int, m:int, q:float, z:float=0, helicity:int=1, pol_index:int=None):     #get a Hermite-Ince-Gaussian beam HIG_p,m^e at distance z
+        return HInceG(self, p, m, q, z, helicity, pol_index)
+    
+
     def hg_projector(self,N, completeness = False):
         overlaps = np.zeros((N+1, N+1), dtype='complex')
         auxiliary_beam  = self.copy_clean()
