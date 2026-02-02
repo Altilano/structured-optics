@@ -5,7 +5,8 @@ from scipy import special
 
 #modes implementations
 
-def hg_mode(Beam, N, M, z, pol_index=None):                                                        #get a HG mode at distance z of order N+M
+def hg_mode(Beam, N, M, z, pol_index=None):                                                        
+    #get a HG mode at distance z of order N+M
     zr = Beam.zr()
     q0 = 1j*zr
     q = -z + 1j*zr
@@ -20,15 +21,16 @@ def hg_mode(Beam, N, M, z, pol_index=None):                                     
         if Beam.pol_dim == 1:
             Beam.field = F
         elif Beam.pol_dim == 2:
-            Beam.field = np.array([F, F])
+            Beam.field = np.array([F, F])/np.sqrt(2)
         elif Beam.pol_dim == 3:
-            Beam.field = np.array([F, F, F])
+            Beam.field = np.array([F, F, F])/np.sqrt(3)
     else:
         Beam.field[pol_index] = F
     return Beam
 
 
-def lg_mode(Beam,l,p, z, pol_index=None):                                    #get a LG mode at distance z of order abs(N) + 2M
+def lg_mode(Beam,l,p, z, pol_index=None):                                    
+    #get a LG mode at distance z of order abs(N) + 2M
     zr = Beam.zr()
     k = 2*np.pi/Beam.lamb
     w = Beam.waist*np.sqrt(1 + (z/zr)**2)
@@ -42,19 +44,20 @@ def lg_mode(Beam,l,p, z, pol_index=None):                                    #ge
         if Beam.pol_dim == 1:
             Beam.field = F
         elif Beam.pol_dim == 2:
-            Beam.field = np.array([F, F])
+            Beam.field = np.array([F, F])/np.sqrt(2)
         elif Beam.pol_dim == 3:
-            Beam.field = np.array([F, F, F])
+            Beam.field = np.array([F, F, F])/np.sqrt(3)
     else:
         Beam.field[pol_index] = F
     return Beam
 
-def bessel_mode(Beam, N, z, pol_index=None):                       #get a Bessel mode of order N at distance z
+def bessel_mode(Beam, N, z, pol_index=None):                       
+    #get a Bessel mode of order N at distance z
     k = 2*np.pi / Beam.lamb        # wavenumber
     j01 = special.jn_zeros(abs(N), 1)[0]  # first zero of J_N
     # enforce the first zero at r = self.waist
     kr = j01 / Beam.waist
-    kz = np.sqrt(k**2 - kr**2)     # ensures propagation
+    kz = np.sqrt(k**2 - kr**2)    
     r = np.sqrt((Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2)
     phi = np.arctan2(Beam.y-Beam.y0, Beam.x-Beam.x0)
     F = (np.exp(1j*kz*z) * special.jv(abs(N), kr*r) * np.exp(-1j*N*phi))
@@ -70,7 +73,8 @@ def bessel_mode(Beam, N, z, pol_index=None):                       #get a Bessel
     Beam.norm_beam()
     return Beam
 
-def gbessel_mode(Beam, N, r0, pol_index):                                    #get a gaussian bessel beam of order N at z=0, M is the asymptotic radial period
+def gbessel_mode(Beam, N, r0, pol_index):                                    
+    #get a gaussian bessel beam of order N at z=0
     rad = 2*np.pi*Beam.waist**2/r0
     r = np.sqrt((Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2)
     F = special.jv(np.abs(N),rad*r/Beam.waist**2)*\
@@ -88,7 +92,6 @@ def gbessel_mode(Beam, N, r0, pol_index):                                    #ge
     return Beam
 
 def lg_prod_mode(Beam, N, ls, centers, pol_index):
-    # ensure centers is (N,2)
     if centers is None:
         centers = np.zeros((N, 2))
     centers = np.asarray(centers)
@@ -96,7 +99,6 @@ def lg_prod_mode(Beam, N, ls, centers, pol_index):
         ls = np.ones(N, dtype=int)
     ls = np.asarray(ls)
 
-    # field arrays in this class use shape (Dy, Dx)
     F = np.ones((Beam.Dy, Beam.Dx), dtype='complex128')
     for i in range(N):
         x0 = centers[i, 0]
@@ -120,7 +122,8 @@ def lg_prod_mode(Beam, N, ls, centers, pol_index):
     Beam.norm_beam()
     return Beam
 
-def frac_oam_mode(Beam, Ma, n_modes, beta, theta_0, z, pol_index):        #get a fractional OAM beam, with OAM Ma (!= integer), by the method of LG supperpositions.
+def frac_oam_mode(Beam, Ma, n_modes, beta, theta_0, z, pol_index):        
+    #get a fractional OAM beam, with OAM Ma (!= integer), by the method of LG supperpositions.
     mu = Ma%1
     m = Ma-mu
     if mu >=0.5:
@@ -148,9 +151,8 @@ def frac_oam_mode(Beam, Ma, n_modes, beta, theta_0, z, pol_index):        #get a
     return Beam
 
 def IG_even_mode(Beam, p, m, q, z, pol_index):
-    """
-    Even Ince-Gaussian mode IG_p,m^e(x,y)
-    """
+    #Even Ince-Gaussian mode IG_p,m^e(x,y)
+    
     xi, eta = cartesian_to_elliptic(Beam.x, Beam.y, q, Beam.waist, z, Beam.lamb)
 
     Ce_xi  = C_ince(1j*xi,  p, m, q)
@@ -176,9 +178,8 @@ def IG_even_mode(Beam, p, m, q, z, pol_index):
     return Beam
 
 def IG_odd_mode(Beam, p, m, q, z, pol_index):
-    """
-    Odd Ince-Gaussian mode IG_p,m^o(x,y)
-    """
+    #Odd Ince-Gaussian mode IG_p,m^o(x,y)
+    
     xi, eta = cartesian_to_elliptic(Beam.x, Beam.y, q, Beam.waist, z, Beam.lamb)
     So_xi  = S_ince(1j*xi,  p, m, q)
     So_eta = S_ince(eta, p, m, q)
@@ -203,10 +204,8 @@ def IG_odd_mode(Beam, p, m, q, z, pol_index):
     return Beam
 
 def HInceG_mode(Beam, p, m, q, z, helicity, pol_index):
-    """
-    Hermite-Ince-Gaussian mode HIG_p,m^e(x,y), combining even and odd Ince-Gaussian modes with given helicity.
-    For some reason IG_odd has a 3*pi/2 phase shift wrt IG_even, so the helicity sign is inverted here.
-    """
+    #Hermite-Ince-Gaussian mode HIG_p,m^e(x,y), combining even and odd Ince-Gaussian modes with given helicity.
+    #For some reason IG_odd has a 3*pi/2 phase shift wrt IG_even, so the helicity sign is inverted here.
     xi, eta = cartesian_to_elliptic(Beam.x, Beam.y, q, Beam.waist, z, Beam.lamb)
 
     Ce_xi  = C_ince(1j*xi,  p, m, q)

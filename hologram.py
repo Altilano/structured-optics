@@ -1,14 +1,11 @@
-from beam import *
+from struct_opt import *
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-"""b1 = Space(4e-3, 512)
-b1.waist = 1e-3
-b1.hg(0,0)"""
 
-b2 = Space(5e-3, 512)
-b2.waist = 1e-3
+
+b2 = Beam(5e-3, 512)
 b2.lg(3,6)
 
 

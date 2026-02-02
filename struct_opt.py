@@ -123,11 +123,11 @@ class Beam():
         return gbessel_mode(self, N, r0, pol_index)
     
     def lg_prod(self, N:int, ls:tuple=None, centers:tuple=None, pol_index:int=None) -> object:     
-        #get a superposition of N LG modes, with list of OAMs ls and list of centers
+        #get a product superposition of N LG modes, with list of OAMs ls and list of centers
         return lg_prod_mode(self, N, ls, centers, pol_index)
     
     def frac_oam(self, Ma:float, n_modes:int, beta:float = 0, theta_0:float=0, z:float = 0, pol_index=None) -> object:        
-        #get a fractional OAM beam, with OAM Ma (!= integer), by the method of LG supperpositions.
+        #get a fractional OAM beam, with OAM Ma (!= integer).
         return frac_oam_mode(self, Ma, n_modes, beta, theta_0, z, pol_index)
     
     def IG_even(self, p:int, m:int, q:float, z:float=0, pol_index:int=None) -> object:    
@@ -142,6 +142,7 @@ class Beam():
         #get a Hermite-Ince-Gaussian beam HIG_p,m at distance z with ellipticity q and given helicity (+1 or -1)
         return HInceG_mode(self, p, m, q, z, helicity, pol_index)
     
+    #Holograms put dmd and slm hologram here
 
 
 
@@ -182,17 +183,24 @@ class Beam():
 
     #Beam physical atributes and its utilities
 
-    def Power(self) -> float:
+    def Power(self, pol_index:int=None) -> float:
         #Get the total Power of a field within the region of interest
-        return np.sum(np.abs(self.field)**2*(4*self.nix/self.Dx)*(self.niy/self.Dy))
+        if pol_index == None:
+            return np.sum(self.int_profile())*(4*self.nix/self.Dx)*(self.niy/self.Dy)
+        else:
+            return np.sum(self.int_profile(pol_index))*(4*self.nix/self.Dx)*(self.niy/self.Dy)
     
     def zr(self) -> float:
         #Get the Rayleigh range of the beam
         return np.pi*self.waist**2/self.lamb
     
-    def int_profile(self) -> np.ndarray:
+    def int_profile(self, pol_index:int=None) -> np.ndarray:
         #Get intensity profile of the field within Beam
-        return np.abs(self.field)**2
+        I = np.abs(self.field)**2
+        if pol_index == None:
+            return I
+        else:
+            return I[pol_index]
     
     def phase(self, twopi:bool=False) -> np.ndarray:
         #Get phase profile of the field. If twopi=True, phase is given in [0, 2pi], else in [-pi, pi]
@@ -208,7 +216,7 @@ class Beam():
         #Calculates the center of mass of intensities of a given field in given polarization
         #pol_index: polarization index to use for the calculation, default 0
         if self.pol_dim >1:
-            c = ndimage.center_of_mass(self.int_profile()[pol_index])
+            c = ndimage.center_of_mass(self.int_profile(pol_index))
         else:
             c = ndimage.center_of_mass(self.int_profile())
         return c
@@ -218,7 +226,7 @@ class Beam():
         #pol_index: polarization index to use for the calculation, default 0
         if self.pol_dim >1:
             c = self.center_mass(pol_index)
-            return np.sqrt(np.average((self.x-self.x[0,int(c[1])])**2+(self.y-self.y[int(c[0]),0])**2, weights=self.int_profile()[pol_index]))
+            return np.sqrt(np.average((self.x-self.x[0,int(c[1])])**2+(self.y-self.y[int(c[0]),0])**2, weights=self.int_profile(pol_index)))
         else:
             c = self.center_mass()
             return np.sqrt(np.average((self.x-self.x[0,int(c[1])])**2+(self.y-self.y[int(c[0]),0])**2, weights=self.int_profile()))
@@ -247,6 +255,7 @@ class Beam():
     
     def crop(self, center:tuple=None, std:float=None, window:float=2, pol_index:int=0)-> object:
         #Crops a field by its std*window arround the center of mass
+        #Here pol_index is the field taken as reference for calcutale std and center
         return get_crop(self, center, std, window, pol_index)
     
 
@@ -257,35 +266,36 @@ class Beam():
 
 
     #masks
-    def lens(self, f, f0=(0,0)):                                #apply a lens operator to the field, with lens center at f0 and focus lenght equal to f
+    def lens(self, f:float, f0:tuple=(0,0))-> object:                                
+        #apply a lens operator to the field, with lens center at f0 and focus lenght equal to f
         k = 2*np.pi/self.lamb
-        self.field = self.field*np.exp(1j*k*(((self.x-f0[0])**2 + (self.y-f0[1])**2)/(2*f)))
+        self.field = self.field*np.exp(-1j*k*(((self.x-f0[0])**2 + (self.y-f0[1])**2)/(2*f)))
         return self
 
-    def astigmatic_lens(self, fx, fy, f0=(0,0)):                      #apply a astigmatic lens with two focal axis, with focus fx and fy.
+    def astigmatic_lens(self, fx:float, fy:float, f0:tuple=(0,0))-> object:                      
+        #apply a astigmatic lens with two focal axis, with focus fx and fy.
         k = 2*np.pi/self.lamb
         self.field = self.field*np.exp(-1j*k*(((self.x-f0[0])**2)/fx + ((self.y-f0[1])**2)/fy)/2)
         return self
     
-    def tilted_lens(self, f, phi, f0=(0,0)):                      #apply a astigmatic lens with two focal axis, with each focus given by a tilt phi.
-        k = 2*np.pi/self.lamb
-        self.field = self.field*np.exp(-1j*k*(((self.x-f0[0])**2)/np.cos(phi)**2 + ((self.y-f0[1])**2))/(2*f*np.cos(phi)))
-        return self
+    def tilted_lens(self, f:float, phi:float, f0:tuple=(0,0))-> object:                      
+        #apply a astigmatic lens with two focal axis, with each focus given by a tilt phi.
+        fx = f*np.cos(phi)**3
+        fy = f*np.cos(phi)
+        return self.astigmatic_lens(fx,fy, f0)
     
-    def tilted_lens_y(self, f, phi, f0=(0,0)):                      #apply a astigmatic lens with two focal axis, with each focus given by a tilt phi.
-        k = 2*np.pi/self.lamb
-        self.field = self.field*np.exp(-1j*k*(((self.x-f0[0])**2) + ((self.y-f0[1])**2)/np.cos(phi)**2)/(2*f*np.cos(phi)))
-        return self
+    def tilted_lens_y(self, f:float, phi:float, f0:tuple=(0,0))-> object:                      
+        #apply a astigmatic lens with two focal axis, with each focus given by a tilt phi.
+        fx = f*np.cos(phi)
+        fy = f*np.cos(phi)**3
+        return self.astigmatic_lens(fx,fy, f0)
+
     
-    def tilted_lens_wag(self, f, phi, f0=(0,0)):                      #apply a astigmatic lens with two focal axis, with each focus given by a tilt phi.
-        k = 2*np.pi/self.lamb
-        self.field = self.field*np.exp(-1j*k*(((self.x-f0[0])**2)/np.cos(phi)**2 + ((self.y-f0[1])**2))/(2*f))
-        return self
-    
-    def stripe_v(self, size):
+    def stripe_v(self, size, move=0):
         """Def vertical stripe"""
+        d = move*self.Dx/(2*self.nix)
         s = size*self.Dx/(2*self.nix)
-        self.field[:,int(self.Dx/2 - s):int(self.Dx/2+s)] = 0
+        self.field[:,int(self.Dx/2 - s + d):int(self.Dx/2+s+d)] = 0
         return self
     
     def stripe_h(self, size):

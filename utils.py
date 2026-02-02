@@ -15,9 +15,7 @@ def laguerre(X, L, P):          #laguerre polynomial
     return sn
 
 def even_coeffs(p, q, kind):
-    """
-    Compute coefficients A_r of even Ince polynomials C_p^m.
-    """
+    #Compute coefficients A_r of even Ince polynomials C_p^m.
     if p % 2 != 0:
         raise ValueError("p must be even for even coefs")
 
@@ -198,9 +196,8 @@ def S_ince(xi, p, m, q):
     
 
 def cartesian_to_elliptic(x, y, q, w0, z, lamb):
-    """
-    Convert Cartesian (x,y) to elliptic coordinates (xi, eta) with elipticity q.
-    """
+    #Convert Cartesian (x,y) to elliptic coordinates (xi, eta) with elipticity q.
+
     f0 = w0*np.sqrt(q/2)
     w = w0 * np.sqrt(1 + (z * lamb / (np.pi * w0**2))**2)
     f = f0*w/w0
@@ -213,9 +210,7 @@ def cartesian_to_elliptic(x, y, q, w0, z, lamb):
     return xi, eta
 
 def elliptic_to_cartesian(xi, eta, q, w0, z, lamb):
-    """
-    Convert elliptic coordinates (xi, eta) to Cartesian (x,y) with elipticity q.
-    """
+    #Convert elliptic coordinates (xi, eta) to Cartesian (x,y) with elipticity q.
     f0 = w0*np.sqrt(q/2)
     w = w0 * np.sqrt(1 + (z * lamb / (np.pi * w0**2))**2)
     f = f0*w/w0
@@ -227,16 +222,17 @@ def elliptic_to_cartesian(xi, eta, q, w0, z, lamb):
 
 #utils for Beam class parameters calculation
 
-def overlap(first_beam, second_beam): # calculate overlap between two beams, only properly works if ni and D of beams are equal.
+def overlap(first_beam:object, second_beam:object)->complex: 
+    # calculate overlap between two beams, only properly works if ni and D of beams are equal.
     return np.sum(first_beam.field*np.conjugate(second_beam.field))*4*(first_beam.nix/first_beam.Dx) \
         *(first_beam.niy/first_beam.Dy)/np.sqrt(first_beam.Power()*second_beam.Power())
 
-def int_overlap(first_beam, second_beam):
+def int_overlap(first_beam:object, second_beam:object)->float:
     return np.sum(first_beam.int_profile()*second_beam.int_profile())*4*(first_beam.nix/first_beam.Dx) \
         *(first_beam.niy/first_beam.Dy)/(first_beam.Power()*second_beam.Power())
 
 
-def get_section(Beam, ang_min, ang_max) -> np.ndarray:
+def get_section(Beam, ang_min, ang_max):
     #Return field distribution of given section, defined by minimum angle and maximum angle
     if ang_min > ang_max:
         ang_min, ang_max = ang_max, ang_min
