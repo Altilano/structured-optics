@@ -338,19 +338,17 @@ class Beam():
     def propagate(self, z, method='conv', renorm=False):           #propagate the field by a distance z using fresnel integral with exp(-ikz)
         if method == 'conv':
             self = propagate_conv(self, z)
-        if method == 'dsum':
-            self = propagate_dsum(self, z)
         if renorm == True:
             self.norm_beam()
         return self
     
 
-    #Holography
+    #Holograms
 
     def slm_holo(self, x_grating:int, y_grating:int, method:str = 'bessel1', input_beam:object= None, 
                  eps:float = 1e-12, max_range:int = 255)-> np.ndarray:
         #generates hologram for slm
-        return slm_hologram(self, x_grating, y_grating, method = method, input_beam= input_beam, eps = eps, max_range = max_range)
+        return slm_hologram(self, x_grating, y_grating, method = method, input_beam = input_beam, eps = eps, max_range = max_range)
     
     def dmd_holo(self, cx:float, cy:float, sign:int=1)-> np.ndarray:
         #generates hologram for dmd

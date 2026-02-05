@@ -153,7 +153,7 @@ def frac_oam_mode(Beam, Ma, n_modes, beta, theta_0, z, pol_index):
 def IG_even_mode(Beam, p, m, q, z, pol_index):
     #Even Ince-Gaussian mode IG_p,m^e(x,y)
     
-    xi, eta = cartesian_to_elliptic(Beam.x, Beam.y, q, Beam.waist, z, Beam.lamb)
+    xi, eta = cartesian_to_elliptic(Beam.x-Beam.x0, Beam.y-Beam.y0, q, Beam.waist, z, Beam.lamb)
 
     Ce_xi  = C_ince(1j*xi,  p, m, q)
     Ce_eta = C_ince(eta, p, m, q)
@@ -162,7 +162,7 @@ def IG_even_mode(Beam, p, m, q, z, pol_index):
     k = 2*np.pi/Beam.lamb
     wz = Beam.waist * np.sqrt(1 + (z * Beam.lamb / (np.pi * Beam.waist**2))**2)
     Rz = (z**2 + zr**2)
-    r2 = Beam.x**2 + Beam.y**2
+    r2 = (Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2
     gouy = (p+1)*np.arctan(z / zr)
     F = Ce_xi * Ce_eta * np.exp(-r2 / (wz**2))*np.exp(1j*(k*z + k*z*(r2)/(2*Rz) - gouy))
     if pol_index == None:
@@ -180,7 +180,7 @@ def IG_even_mode(Beam, p, m, q, z, pol_index):
 def IG_odd_mode(Beam, p, m, q, z, pol_index):
     #Odd Ince-Gaussian mode IG_p,m^o(x,y)
     
-    xi, eta = cartesian_to_elliptic(Beam.x, Beam.y, q, Beam.waist, z, Beam.lamb)
+    xi, eta = cartesian_to_elliptic(Beam.x-Beam.x0, Beam.y-Beam.y0, q, Beam.waist, z, Beam.lamb)
     So_xi  = S_ince(1j*xi,  p, m, q)
     So_eta = S_ince(eta, p, m, q)
 
@@ -188,7 +188,7 @@ def IG_odd_mode(Beam, p, m, q, z, pol_index):
     k = 2*np.pi/Beam.lamb
     wz = Beam.waist * np.sqrt(1 + (z * Beam.lamb / (np.pi * Beam.waist**2))**2)
     Rz = (z**2 + zr**2)
-    r2 = Beam.x**2 + Beam.y**2
+    r2 = (Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2
     gouy = (p+1)*np.arctan(z / zr)
     F = So_xi * So_eta * np.exp(-r2 / (wz**2))*np.exp(1j*(k*z + k*z*(r2)/(2*Rz) - gouy))
     if pol_index == None:
@@ -206,7 +206,7 @@ def IG_odd_mode(Beam, p, m, q, z, pol_index):
 def HInceG_mode(Beam, p, m, q, z, helicity, pol_index):
     #Hermite-Ince-Gaussian mode HIG_p,m^e(x,y), combining even and odd Ince-Gaussian modes with given helicity.
     #For some reason IG_odd has a 3*pi/2 phase shift wrt IG_even, so the helicity sign is inverted here.
-    xi, eta = cartesian_to_elliptic(Beam.x, Beam.y, q, Beam.waist, z, Beam.lamb)
+    xi, eta = cartesian_to_elliptic(Beam.x-Beam.x0, Beam.y-Beam.y0, q, Beam.waist, z, Beam.lamb)
 
     Ce_xi  = C_ince(1j*xi,  p, m, q)
     Ce_eta = C_ince(eta, p, m, q)
@@ -218,7 +218,7 @@ def HInceG_mode(Beam, p, m, q, z, helicity, pol_index):
     k = 2*np.pi/Beam.lamb
     wz = Beam.waist * np.sqrt(1 + (z * Beam.lamb / (np.pi * Beam.waist**2))**2)
     Rz = (z**2 + zr**2)
-    r2 = Beam.x**2 + Beam.y**2
+    r2 = (Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2
     gouy = (p+1)*np.arctan(z / zr)
     F = (Ce_xi * Ce_eta - helicity*So_xi * So_eta) * np.exp(-r2 / (wz**2))*np.exp(1j*(k*z + k*z*(r2)/(2*Rz) - gouy))
     if pol_index == None:
