@@ -2,6 +2,7 @@ import numpy as np
 from scipy import special
 
 
+
 #utils for modes
 
 def hermite(X, N):              #hermite polynomial
@@ -273,3 +274,33 @@ def get_crop(Beam, center=None, std=None, window=2, pol_index:int=0):
     Beam.x0 = center[1]
     Beam.y0 = center[0]
     return Beam
+
+
+#utils for holograms
+
+def inv_sinc(A, n=10000):
+    #invert function sinc
+    x = np.linspace(0, np.pi, n)
+    y = np.sinc(x/np.pi)
+
+    return np.interp(A, y[::-1], x[::-1])
+
+def inv_J0(A, n=10000):
+    #invert bessel function J0
+    j01 = 2.404825557695773
+    x = np.linspace(0.0, j01, n)
+    y = special.j0(x)  
+
+    return np.interp(A, y[::-1], x[::-1])
+
+
+def inv_J1(A, a=None, n=10000):
+    #invert bessel function J1
+    x1_max = 1.8411837813406593
+    if a == None:
+        a = special.j1(x1_max)  
+    A = np.clip(A, 0.0, 1.0)
+    x = np.linspace(0.0, x1_max, n)
+    y = special.j1(x) 
+
+    return np.interp(a * A, y, x)

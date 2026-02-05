@@ -1,11 +1,11 @@
 import numpy as np
-from scipy import fft, special, ndimage
-from scipy.special import eval_hermite, factorial
+from scipy import fft, ndimage
 from prop_methods import *
 import copy
 from utils import *
 from modes import *
 from algebra_utils import *
+from hologram import *
 
 
 
@@ -146,7 +146,7 @@ class Beam():
 
 
 
-    #Algebra utils
+    #Linear Algebra with modes utils
 
     def hg_projector(self,N:int, completeness:bool = False) -> tuple:
         #Project the beam into HG basis up to order N
@@ -285,7 +285,7 @@ class Beam():
         return self.astigmatic_lens(fx,fy, f0)
     
     def tilted_lens_y(self, f:float, phi:float, f0:tuple=(0,0))-> object:                      
-        #apply a astigmatic lens with two focal axis, with each focus given by a tilt phi.
+        #apply a astigmatic lens with two focal axis, with each focus given by a tilt phi, this time the tilt is in y direction.
         fx = f*np.cos(phi)
         fy = f*np.cos(phi)**3
         return self.astigmatic_lens(fx,fy, f0)
@@ -343,3 +343,15 @@ class Beam():
         if renorm == True:
             self.norm_beam()
         return self
+    
+
+    #Holography
+
+    def slm_holo(self, x_grating:int, y_grating:int, method:str = 'bessel1', input_beam:object= None, 
+                 eps:float = 1e-12, max_range:int = 255)-> np.ndarray:
+        #generates hologram for slm
+        return slm_hologram(self, x_grating, y_grating, method = method, input_beam= input_beam, eps = eps, max_range = max_range)
+    
+    def dmd_holo(self, cx:float, cy:float, sign:int=1)-> np.ndarray:
+        #generates hologram for dmd
+        return dmd_hologram(self, cx, cy, sign)
