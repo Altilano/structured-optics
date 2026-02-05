@@ -1,4 +1,4 @@
-from utils import *
+from structured_optics.utils import *
 import numpy as np
 from scipy import special
 

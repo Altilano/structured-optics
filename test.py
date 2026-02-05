@@ -1,8 +1,8 @@
-from struct_opt import *
+import structured_optics as so
 import matplotlib.pyplot as plt
 import numpy as np
 
-b1 = Beam(nix=5e-3, 
+b1 = so.Beam(nix=5e-3, 
           Dx=256,
           pol_dim=1)
 

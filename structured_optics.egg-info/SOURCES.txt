@@ -1,0 +1,15 @@
+pyproject.toml
+setup.py
+structured_optics/__init__.py
+structured_optics/algebra_utils.py
+structured_optics/hologram.py
+structured_optics/modes.py
+structured_optics/prop_methods.py
+structured_optics/slmdisplay.py
+structured_optics/struct_opt.py
+structured_optics/utils.py
+structured_optics.egg-info/PKG-INFO
+structured_optics.egg-info/SOURCES.txt
+structured_optics.egg-info/dependency_links.txt
+structured_optics.egg-info/requires.txt
+structured_optics.egg-info/top_level.txt

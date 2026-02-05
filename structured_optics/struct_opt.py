@@ -1,11 +1,13 @@
+
+
 import numpy as np
 from scipy import fft, ndimage
-from prop_methods import *
+from structured_optics.prop_methods import *
 import copy
-from utils import *
-from modes import *
-from algebra_utils import *
-from hologram import *
+from structured_optics.utils import *
+from structured_optics.modes import *
+from structured_optics.algebra_utils import *
+from structured_optics.hologram import *
 
 
 

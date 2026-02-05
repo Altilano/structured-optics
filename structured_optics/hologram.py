@@ -1,7 +1,6 @@
-from struct_opt import *
+from structured_optics.struct_opt import *
 import numpy as np
-import matplotlib.pyplot as plt
-from utils import *
+from structured_optics.utils import *
 import time
 
 

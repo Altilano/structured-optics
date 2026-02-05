@@ -1,4 +1,4 @@
-from utils import overlap
+from structured_optics.utils import overlap
 import numpy as np
 
 
