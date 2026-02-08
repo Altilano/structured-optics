@@ -342,9 +342,14 @@ class Beam():
     
 
     #Propagation 
-    def propagate(self, z, method='conv', renorm=False):           #propagate the field by a distance z using fresnel integral with exp(-ikz)
-        if method == 'conv':
-            self = propagate_conv(self, z)
+    def propagate(self, z, method='fresnel', renorm=False):           
+        #propagate the field by a distance z
+        if method == 'fresnel':
+            self = propagate_fresnel(self, z)
+        elif method == 'fraunhofer':
+            self = propagate_fraunhofer(self, z)
+        elif method == 'incoherent':
+            self = propagate_incoherent(self, z)
         if renorm == True:
             self.norm_beam()
         return self
