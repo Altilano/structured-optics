@@ -150,6 +150,34 @@ def frac_oam_mode(Beam, Ma, n_modes, beta, theta_0, z, pol_index):
     Beam.norm_beam()
     return Beam
 
+def frac_oam_qs_mode(Beam, Ma, n_modes, beta, theta_0, z, pol_index):
+    #get a quasi-stable fractional oam mode.
+    n_min = np.round(Ma-n_modes/2) 
+    n_max = n_min + n_modes - 1
+    mu = Ma%1
+    m = Ma-mu
+    F = np.zeros((Beam.Dy, Beam.Dx), dtype='complex128')
+    for l in np.arange(int(n_min), int(n_max)+1):
+        coef = np.exp(-1j*mu*beta)*1j*np.exp(1j*(Ma-l)*theta_0)/(2*np.pi*(Ma-l))*np.exp(1j*(m-l)*beta)*(1-np.exp(1j*mu*2*np.pi))
+        p = np.floor((np.abs(Ma) + n_modes/2 -np.abs(l))/2)
+        if Beam.pol_dim == 1:
+            F += coef*(Beam.lg(l, p, z = z).field) 
+        else:
+            F += coef*(Beam.lg(l, p, z = z, pol_index=0).field[0])
+    if pol_index == None:
+        if Beam.pol_dim == 1:
+            Beam.field = F
+        elif Beam.pol_dim == 2:
+            Beam.field = np.array([F, F])
+        elif Beam.pol_dim == 3:
+            Beam.field = np.array([F, F, F])
+    else:
+        Beam.field[pol_index] = F
+    Beam.norm_beam()
+    return Beam
+
+
+
 def IG_even_mode(Beam, p, m, q, z, pol_index):
     #Even Ince-Gaussian mode IG_p,m^e(x,y)
     
