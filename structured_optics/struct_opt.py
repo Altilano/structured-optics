@@ -110,7 +110,11 @@ class Beam():
     #returns the Beam object with the mode stored in field
     def hg(self, n:int, m:int, z:float=0, pol_index:int=None) -> object:      
         #get a HG mode at distance z of order n+m
-        return hg_mode(self, n, m, z, pol_index)                    
+        return hg_mode(self, n, m, z, pol_index)    
+
+    def hg_astigmatic(self, n:int, m:int, wx:float, wy:float, z:float=0, pol_index:int=None) -> object:
+        #get a astigmatic HG mode at distance z of order n+m
+        return hg_astigmatic_mode(self, n, m, wx, wy, z, pol_index)                
     
     def lg(self,l:int,p:int, z:float=0, pol_index:int=None) -> object:        
         #get a LG mode at distance z of order abs(N) + 2M
@@ -149,7 +153,22 @@ class Beam():
         #get a Hermite-Ince-Gaussian beam HIG_p,m at distance z with ellipticity q and given helicity (+1 or -1)
         return HInceG_mode(self, p, m, q, z, helicity, pol_index)
     
-    #Holograms put dmd and slm hologram here
+    def circle(self, center:tuple = (0,0), radius:float=None, pol_index:int=None) -> object:
+        #get a circle mode.
+        return circle_mode(self, center, radius, pol_index)
+
+    def square(self, center:tuple = (0,0), side_length:float=None, pol_index:int=None) -> object:
+        #get a square mode
+        return square_mode(self, center, side_length, pol_index)
+    
+    def triangle(self, center:tuple = (0,0), side_length:float=None, pol_index:int=None) -> object:
+        #get a triangle mode
+        return triangle_mode(self, center, side_length, pol_index)
+    
+
+
+
+
 
 
 
@@ -265,7 +284,11 @@ class Beam():
         #Here pol_index is the field taken as reference for calcutale std and center
         return get_crop(self, center, std, window, pol_index)
     
-
+    def rotate(self, angle, order = 1):
+        #Rotate the field matrix by a given angle while maintaining dimensions.
+        #Interpolation order (0=nearest, 1=bilinear, 3=cubic). Default is 1.
+        self.field = rotate(self.field, angle, order)
+        return self  
 
 
 
