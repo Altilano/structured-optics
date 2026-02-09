@@ -373,6 +373,8 @@ class Beam():
             self = propagate_fraunhofer(self, z)
         elif method == 'incoherent':
             self = propagate_incoherent(self, z)
+        else:
+            print('Unable to propagate, insert valid method.')
         if renorm == True:
             self.norm_beam()
         return self
