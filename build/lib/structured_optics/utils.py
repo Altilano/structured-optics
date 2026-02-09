@@ -1,5 +1,5 @@
 import numpy as np
-from scipy import special
+from scipy import special, ndimage
 
 
 
@@ -275,6 +275,30 @@ def get_crop(Beam, center=None, std=None, window=2, pol_index:int=0):
     Beam.y0 = center[0]
     return Beam
 
+def rotate(matrix, angle, order=1):
+
+    angle_degrees = angle*180/np.pi
+
+    # Separate real and imaginary parts
+    real_part = np.real(matrix)
+    imag_part = np.imag(matrix)
+    
+    # Rotate both parts separately
+    # cval=0 sets out-of-bounds values to zero
+    real_rotated = ndimage.rotate(real_part, angle_degrees, 
+                                   reshape=False, order=order, 
+                                   cval=0.0, prefilter=True)
+    
+    imag_rotated = ndimage.rotate(imag_part, angle_degrees, 
+                                   reshape=False, order=order, 
+                                   cval=0.0, prefilter=True)
+    
+    # Recombine into complex matrix
+    rotated_matrix = real_rotated + 1j * imag_rotated
+    
+    return rotated_matrix
+
+
 
 #utils for holograms
 
@@ -304,3 +328,4 @@ def inv_J1(A, a=None, n=10000):
     y = special.j1(x) 
 
     return np.interp(a * A, y, x)
+

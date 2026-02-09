@@ -110,7 +110,11 @@ class Beam():
     #returns the Beam object with the mode stored in field
     def hg(self, n:int, m:int, z:float=0, pol_index:int=None) -> object:      
         #get a HG mode at distance z of order n+m
-        return hg_mode(self, n, m, z, pol_index)                    
+        return hg_mode(self, n, m, z, pol_index)    
+
+    def hg_astigmatic(self, n:int, m:int, wx:float, wy:float, z:float=0, pol_index:int=None) -> object:
+        #get a astigmatic HG mode at distance z of order n+m
+        return hg_astigmatic_mode(self, n, m, wx, wy, z, pol_index)                
     
     def lg(self,l:int,p:int, z:float=0, pol_index:int=None) -> object:        
         #get a LG mode at distance z of order abs(N) + 2M
@@ -132,6 +136,11 @@ class Beam():
         #get a fractional OAM beam, with OAM Ma (!= integer).
         return frac_oam_mode(self, Ma, n_modes, beta, theta_0, z, pol_index)
     
+    def frac_oam_qs(self, Ma:float, n_modes:int, beta:float = 0, theta_0:float=0, z:float = 0, pol_index=None) -> object:        
+        #get a fractional OAM quasi_stable beam, with OAM Ma (!= integer).
+        #Quasi-stability is achieved by engeniring p to set the order to one of only 2 values.
+        return frac_oam_qs_mode(self, Ma, n_modes, beta, theta_0, z, pol_index)
+    
     def IG_even(self, p:int, m:int, q:float, z:float=0, pol_index:int=None) -> object:    
         #get an even Ince-Gaussian beam IG_p,m^e at distance z with ellipticity q
         return IG_even_mode(self, p, m, q, z, pol_index)
@@ -144,7 +153,22 @@ class Beam():
         #get a Hermite-Ince-Gaussian beam HIG_p,m at distance z with ellipticity q and given helicity (+1 or -1)
         return HInceG_mode(self, p, m, q, z, helicity, pol_index)
     
-    #Holograms put dmd and slm hologram here
+    def circle(self, center:tuple = (0,0), radius:float=None, pol_index:int=None) -> object:
+        #get a circle mode.
+        return circle_mode(self, center, radius, pol_index)
+
+    def square(self, center:tuple = (0,0), side_length:float=None, pol_index:int=None) -> object:
+        #get a square mode
+        return square_mode(self, center, side_length, pol_index)
+    
+    def triangle(self, center:tuple = (0,0), side_length:float=None, pol_index:int=None) -> object:
+        #get a triangle mode
+        return triangle_mode(self, center, side_length, pol_index)
+    
+
+
+
+
 
 
 
@@ -260,7 +284,11 @@ class Beam():
         #Here pol_index is the field taken as reference for calcutale std and center
         return get_crop(self, center, std, window, pol_index)
     
-
+    def rotate(self, angle, order = 1):
+        #Rotate the field matrix by a given angle while maintaining dimensions.
+        #Interpolation order (0=nearest, 1=bilinear, 3=cubic). Default is 1.
+        self.field = rotate(self.field, angle, order)
+        return self  
 
 
 
@@ -337,9 +365,16 @@ class Beam():
     
 
     #Propagation 
-    def propagate(self, z, method='conv', renorm=False):           #propagate the field by a distance z using fresnel integral with exp(-ikz)
-        if method == 'conv':
-            self = propagate_conv(self, z)
+    def propagate(self, z, method='fresnel', renorm=False):           
+        #propagate the field by a distance z
+        if method == 'fresnel':
+            self = propagate_fresnel(self, z)
+        elif method == 'fraunhofer':
+            self = propagate_fraunhofer(self, z)
+        elif method == 'incoherent':
+            self = propagate_incoherent(self, z)
+        else:
+            print('Unable to propagate, insert valid method.')
         if renorm == True:
             self.norm_beam()
         return self

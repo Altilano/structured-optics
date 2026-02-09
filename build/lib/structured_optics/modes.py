@@ -28,6 +28,35 @@ def hg_mode(Beam, N, M, z, pol_index=None):
         Beam.field[pol_index] = F
     return Beam
 
+def hg_astigmatic_mode(Beam, N, M, wx, wy, z=0, pol_index=None):                                                        
+        #get a astigmatic HG mode at distance z of order N+M
+        zrx = np.pi*wx**2/Beam.lamb
+        q0x = 1j*zrx
+        qx = -z + q0x
+        k = 2*np.pi/Beam.lamb
+        wxz = wx*np.sqrt(1 + (z/zrx)**2)
+        Cn = np.sqrt(np.sqrt(2/np.pi)*q0x/(2**N * special.factorial(N) * qx * wx))
+        un = Cn*(-np.conjugate(qx)/qx)**(N/2)*hermite(np.sqrt(2)*(Beam.x-Beam.x0)/wxz, N)*np.exp(-1j*k*(Beam.x-Beam.x0)**2/(2*qx))
+        
+        zry = np.pi*wy**2/Beam.lamb
+        q0y = 1j*zry
+        qy = -z + q0y
+        wyz = wy*np.sqrt(1 + (z/zry)**2)
+        Cm = np.sqrt(np.sqrt(2/np.pi)*q0y/(2**M * special.factorial(M) * qy * wy))
+        um = Cm*(-np.conjugate(qy)/qy)**(M/2)*hermite(np.sqrt(2)*(Beam.y-Beam.y0)/wyz, M)*np.exp(-1j*k*(Beam.y-Beam.y0)**2/(2*qy))
+        F = un*um*np.exp(1j*k*z)
+
+        if pol_index == None:
+            if Beam.pol_dim == 1:
+                Beam.field = F
+            elif Beam.pol_dim == 2:
+                Beam.field = np.array([F, F])/np.sqrt(2)
+            elif Beam.pol_dim == 3:
+                Beam.field = np.array([F, F, F])/np.sqrt(3)
+        else:
+            Beam.field[pol_index] = F
+        return Beam
+
 
 def lg_mode(Beam,l,p, z, pol_index=None):                                    
     #get a LG mode at distance z of order abs(N) + 2M
@@ -55,7 +84,7 @@ def bessel_mode(Beam, N, z, pol_index=None):
     #get a Bessel mode of order N at distance z
     k = 2*np.pi / Beam.lamb        # wavenumber
     j01 = special.jn_zeros(abs(N), 1)[0]  # first zero of J_N
-    # enforce the first zero at r = self.waist
+    # enforce the first zero at r = Beam.waist
     kr = j01 / Beam.waist
     kz = np.sqrt(k**2 - kr**2)    
     r = np.sqrt((Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2)
@@ -150,6 +179,34 @@ def frac_oam_mode(Beam, Ma, n_modes, beta, theta_0, z, pol_index):
     Beam.norm_beam()
     return Beam
 
+def frac_oam_qs_mode(Beam, Ma, n_modes, beta, theta_0, z, pol_index):
+    #get a quasi-stable fractional oam mode.
+    n_min = np.round(Ma-n_modes/2) 
+    n_max = n_min + n_modes - 1
+    mu = Ma%1
+    m = Ma-mu
+    F = np.zeros((Beam.Dy, Beam.Dx), dtype='complex128')
+    for l in np.arange(int(n_min), int(n_max)+1):
+        coef = np.exp(-1j*mu*beta)*1j*np.exp(1j*(Ma-l)*theta_0)/(2*np.pi*(Ma-l))*np.exp(1j*(m-l)*beta)*(1-np.exp(1j*mu*2*np.pi))
+        p = np.floor((np.abs(Ma) + n_modes/2 -np.abs(l))/2)
+        if Beam.pol_dim == 1:
+            F += coef*(Beam.lg(l, p, z = z).field) 
+        else:
+            F += coef*(Beam.lg(l, p, z = z, pol_index=0).field[0])
+    if pol_index == None:
+        if Beam.pol_dim == 1:
+            Beam.field = F
+        elif Beam.pol_dim == 2:
+            Beam.field = np.array([F, F])
+        elif Beam.pol_dim == 3:
+            Beam.field = np.array([F, F, F])
+    else:
+        Beam.field[pol_index] = F
+    Beam.norm_beam()
+    return Beam
+
+
+
 def IG_even_mode(Beam, p, m, q, z, pol_index):
     #Even Ince-Gaussian mode IG_p,m^e(x,y)
     
@@ -232,3 +289,105 @@ def HInceG_mode(Beam, p, m, q, z, helicity, pol_index):
         Beam.field[pol_index] = F
     Beam.norm_beam()
     return Beam
+
+def circle_mode(Beam, center, radius, pol_index):
+    if radius == None:
+        radius = Beam.waist
+    #Create a circular mode
+    center_x, center_y = center
+    # Calculate distance from center for all points
+    distances = np.sqrt((Beam.x - center_x)**2 + (Beam.y - center_y)**2)
+    # Set points within radius to 1
+    mask = distances <= radius
+    F = np.zeros((Beam.Dy, Beam.Dx), dtype='complex')
+    F[mask] = 1
+    if pol_index == None:
+        if Beam.pol_dim == 1:
+            Beam.field = F
+        elif Beam.pol_dim == 2:
+            Beam.field = np.array([F, F])
+        elif Beam.pol_dim == 3:
+            Beam.field = np.array([F, F, F])
+    else:
+        Beam.field[pol_index] = F
+    Beam.norm_beam()
+    return Beam
+
+
+def square_mode(Beam, center, side_length, pol_index):
+    if side_length == None:
+        side_length = Beam.waist
+    center_x, center_y = center
+    
+    # Calculate square boundaries
+    half_side = side_length / 2.0
+    
+    # Create mask for points inside square
+    mask = (np.abs(Beam.x - center_x) <= half_side) & (np.abs(Beam.y - center_y) <= half_side)
+    
+    # Set points inside square to 1
+    F = np.zeros((Beam.Dy, Beam.Dx), dtype='complex')
+    F[mask] = 1
+    if pol_index == None:
+        if Beam.pol_dim == 1:
+            Beam.field = F
+        elif Beam.pol_dim == 2:
+            Beam.field = np.array([F, F])
+        elif Beam.pol_dim == 3:
+            Beam.field = np.array([F, F, F])
+    else:
+        Beam.field[pol_index] = F
+    Beam.norm_beam()
+    return Beam
+
+
+def triangle_mode(Beam, center, side_length, pol_index):
+    if side_length == None:
+        side_length = Beam.waist
+    center_x, center_y = center
+    
+    # Height of equilateral triangle
+    height = side_length * np.sqrt(3) / 2
+    
+    # Vertices for upward-pointing equilateral triangle
+    # Top vertex
+    v0_x = center_x
+    v0_y = center_y + height * 2/3
+    
+    # Bottom left vertex
+    v1_x = center_x - side_length / 2
+    v1_y = center_y - height * 1/3
+    
+    # Bottom right vertex
+    v2_x = center_x + side_length / 2
+    v2_y = center_y - height * 1/3
+    
+    # Use barycentric coordinates to determine if point is inside triangle
+    def sign(px, py, v1_x, v1_y, v2_x, v2_y):
+        return (px - v2_x) * (v1_y - v2_y) - (v1_x - v2_x) * (py - v2_y)
+    
+    # Compute signs for all points
+    d1 = sign(Beam.x, Beam.y, v0_x, v0_y, v1_x, v1_y)
+    d2 = sign(Beam.x, Beam.y, v1_x, v1_y, v2_x, v2_y)
+    d3 = sign(Beam.x, Beam.y, v2_x, v2_y, v0_x, v0_y)
+    
+    # Point is inside if all signs are same
+    has_neg = (d1 < 0) | (d2 < 0) | (d3 < 0)
+    has_pos = (d1 > 0) | (d2 > 0) | (d3 > 0)
+    
+    mask = ~(has_neg & has_pos)
+    F = np.zeros((Beam.Dy, Beam.Dx), dtype='complex')
+    F[mask] = 1
+    if pol_index == None:
+        if Beam.pol_dim == 1:
+            Beam.field = F
+        elif Beam.pol_dim == 2:
+            Beam.field = np.array([F, F])
+        elif Beam.pol_dim == 3:
+            Beam.field = np.array([F, F, F])
+    else:
+        Beam.field[pol_index] = F
+    Beam.norm_beam()
+    return Beam
+
+
