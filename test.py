@@ -13,7 +13,7 @@ b1.triangle()
 #b1.field = b1.field**2
 #b1.lens(10e-2)
 print(b1.Power())
-#b1.propagate(0*b1.zr(), method='fresnel')
+b1.propagate(1*b1.zr(), method='fresnel')
 
 
 """b1.stripe_v(0.2e-3, move = 0.5e-3)
