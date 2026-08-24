@@ -1,17 +1,19 @@
 import numpy as np
-from scipy import special, ndimage
+from scipy import ndimage
+from scipy.special import hermite, genlaguerre, jv, j0, j1, kv, jn_zeros
+from scipy.optimize import brentq
 
 
 
 #utils for modes
 
-def hermite(X, N):              #hermite polynomial
-    HER = special.hermite(N)
+def herm(X, N):              #hermite polynomial
+    HER = hermite(N)
     sn = HER(X)
     return sn
 
 def laguerre(X, L, P):          #laguerre polynomial
-    LAG = special.genlaguerre(P, L)
+    LAG = genlaguerre(P, L)
     sn = LAG(X)
     return sn
 
@@ -221,6 +223,140 @@ def elliptic_to_cartesian(xi, eta, q, w0, z, lamb):
 
 
 
+
+
+
+
+#utils for fiber modes
+
+def v_number(n_core, n_clad, a, lamb):
+    return (2 * np.pi * a / lamb) * np.sqrt(n_core**2 - n_clad**2)
+ 
+ 
+def characteristic_eq(u, V, l):
+    v = np.sqrt(V**2 - u**2)
+    return u * jv(l + 1, u) / jv(l, u) - v * kv(l + 1, v) / kv(l, v)
+ 
+ 
+def _pole_positions(V, l):
+    n = 10
+    while True:
+        zeros = jn_zeros(l, n)
+        if zeros[-1] > V or n > 5000:
+            return zeros[zeros < V]
+        n += 10
+
+def find_LP_roots(V, l, m_max=6, n_samples=400):
+    """Find up to m_max roots u (i.e. LP_l,1 ... LP_l,m_max) for azimuthal order l."""
+    poles = _pole_positions(V, l)
+    edges = np.concatenate(([0.0], poles, [V]))
+    roots = []
+    eps = 1e-8
+    for i in range(len(edges) - 1):
+        lo, hi = edges[i] + eps, edges[i + 1] - eps
+        if hi <= lo:
+            continue
+        us = np.linspace(lo, hi, n_samples)
+        fs = characteristic_eq(us, V, l)
+        for j in range(len(us) - 1):
+            if np.isnan(fs[j]) or np.isnan(fs[j + 1]):
+                continue
+            if fs[j] == 0:
+                roots.append(us[j])
+            elif fs[j] * fs[j + 1] < 0:
+                try:
+                    r = brentq(characteristic_eq, us[j], us[j + 1], args=(V, l))
+                    roots.append(r)
+                except (ValueError, RuntimeError):
+                    pass
+        if len(roots) >= m_max:
+            break
+    return roots[:m_max]
+
+def effective_index(u, V, n_core, n_clad):
+    """n_eff via normalized propagation constant b = (V^2-u^2)/V^2? use standard: n_eff^2 = n_clad^2 + (v/V)^2*(n_core^2-n_clad^2)"""
+    v = np.sqrt(max(V**2 - u**2, 0.0))
+    b = (v / V) ** 2
+    return np.sqrt(n_clad**2 + b * (n_core**2 - n_clad**2))
+
+def lp_cutoff_V(l, m):
+    """Cutoff V-number for LP_lm: the m-th zero of J_{l-1} (l>0), or the
+    (m-1)-th zero of J_1 for l=0 (LP01 itself has no cutoff, V_c=0)."""
+    if l < 0 or m < 1:
+        raise ValueError(f"l must be >= 0 and m must be >= 1 (got l={l}, m={m}).")
+    if l == 0:
+        if m == 1:
+            return 0.0
+        return jn_zeros(1, m - 1)[-1]
+    return jn_zeros(l - 1, m)[-1]
+
+
+def find_all_LP_modes(V, l_max=4, m_max=4):
+    """Return dict {(l, m): (u, v)} for all supported LP_lm modes."""
+    modes = {}
+    for l in range(l_max + 1):
+        us = find_LP_roots(V, l, m_max=m_max)
+        if not us and l > 0:
+            # no modes at this l -> higher l will have even fewer, stop scanning
+            continue
+        for m, u in enumerate(us, start=1):
+            v = np.sqrt(max(V**2 - u**2, 0.0))
+            modes[(l, m)] = (u, v)
+    return modes
+
+def get_LP_params(l, m, n_core, n_clad, a, lamb):
+    """
+    Return the (u, v, n_eff, ...) parameters of a single LP_lm mode.
+ 
+    Raises ValueError, with an explanation, if:
+      - l, m are not valid integers (l >= 0, m >= 1)
+      - n_core <= n_clad (no guiding at all)
+      - the fiber's V-number does not exceed the cutoff V-number for LP_lm
+        (i.e. this mode is not supported by this fiber at this wavelength)
+    """
+    if not float(l).is_integer() or l < 0:
+        raise ValueError(f"l must be a non-negative integer, got l={l}.")
+    if not float(m).is_integer() or m < 1:
+        raise ValueError(f"m must be a positive integer (m >= 1), got m={m}.")
+    l, m = int(l), int(m)
+ 
+    if n_core <= n_clad:
+        raise ValueError(
+            f"n_core ({n_core}) must be greater than n_clad ({n_clad}) for the "
+            f"fiber to guide light at all; no LP modes exist."
+        )
+ 
+    V = v_number(n_core, n_clad, a, lamb)
+    Vc = lp_cutoff_V(l, m)
+ 
+    if V <= Vc:
+        raise ValueError(
+            f"LP{l}{m} does not exist for this fiber: V = {V:.4f}, but LP{l}{m} "
+            f"only propagates once V > {Vc:.4f} (cutoff = the {m}-th zero of the "
+            f"Bessel function J_{l-1}). To support LP{l}{m} you need to raise V, "
+            f"e.g. increase the core radius, increase (n_core - n_clad), or "
+            f"decrease the wavelength -- or choose a lower l and/or m."
+        )
+ 
+    us = find_LP_roots(V, l, m_max=m)
+    if len(us) < m:
+        raise ValueError(
+            f"LP{l}{m} could not be located numerically even though V={V:.4f} "
+            f"exceeds its cutoff {Vc:.4f} (only {len(us)} root(s) found for "
+            f"l={l}). Try increasing n_samples in find_LP_roots."
+        )
+ 
+    u = us[m - 1]
+    v = np.sqrt(max(V**2 - u**2, 0.0))
+    n_eff = effective_index(u, V, n_core, n_clad)
+    return {"l": l, "m": m, "u": u, "v": v, "V": V, "V_cutoff": Vc, "n_eff": n_eff}
+
+
+
+
+
+
+
 #utils for Beam class parameters calculation
 
 def overlap(first_beam:object, second_beam:object)->complex: 
@@ -251,22 +387,19 @@ def get_section(Beam, ang_min, ang_max):
     return Beam.field*sec
 
 
-def get_crop(Beam, center=None, std=None, window=2, pol_index:int=0):
+def get_crop(Beam, center=None, std=None, window=2):
     #Crops a field by its std*window arround the center of mass
     if center == None:
-        center = Beam.center_mass(pol_index)
+        center = Beam.center_mass()
     if std == None:
-        std = Beam.std(pol_index)
+        std = Beam.std()
     xmin = int(center[1] - window*std*Beam.Dx/Beam.nix/2)
     xmax = int(center[1] + window*std*Beam.Dx/Beam.nix/2)
     ymin = int(center[0] - window*std*Beam.Dy/Beam.niy/2)
     ymax = int(center[0] + window*std*Beam.Dy/Beam.niy/2)
     Beam.x = Beam.x[:,xmin:xmax]
     Beam.y = Beam.y[ymin:ymax, :]
-    if Beam.pol_dim >1:
-        Beam.field = Beam.field[:,ymin:ymax, xmin:xmax]
-    else:
-        Beam.field = Beam.field[ymin:ymax, xmin:xmax]
+    Beam.field = Beam.field[ymin:ymax, xmin:xmax]
     Beam.Dx = len(Beam.x[0,:])
     Beam.Dy = len(Beam.y[:,0])
     Beam.nix = (Beam.x[0,-1] - Beam.x[0,0])/2
@@ -313,7 +446,7 @@ def inv_J0(A, n=10000):
     #invert bessel function J0
     j01 = 2.404825557695773
     x = np.linspace(0.0, j01, n)
-    y = special.j0(x)  
+    y = j0(x)  
 
     return np.interp(A, y[::-1], x[::-1])
 
@@ -322,10 +455,11 @@ def inv_J1(A, a=None, n=10000):
     #invert bessel function J1
     x1_max = 1.8411837813406593
     if a == None:
-        a = special.j1(x1_max)  
+        a = j1(x1_max)  
     A = np.clip(A, 0.0, 1.0)
     x = np.linspace(0.0, x1_max, n)
-    y = special.j1(x) 
+    y = j1(x) 
 
     return np.interp(a * A, y, x)
+
 

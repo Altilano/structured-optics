@@ -6,9 +6,6 @@ import time
 
 def slm_hologram(Beam, x_grating, y_grating, method, input_beam, eps, max_range):
     #generate a hologram for a slm
-    if Beam.pol_dim != 1:
-        print('Beam must be scalar (pol_dim=1) to generate holograms')
-        return None
     
     dx = (Beam.x[0,1] - Beam.x[0,0])
     dy = (Beam.y[1,0] - Beam.y[0,0])
@@ -49,9 +46,6 @@ def slm_hologram(Beam, x_grating, y_grating, method, input_beam, eps, max_range)
 
 def dmd_hologram(Beam, cx, cy, sign):
     #generates a hologram for a dmd
-    if Beam.pol_dim != 1:
-        print('Beam must be scalar (pol_dim=1) to generate holograms')
-        return None
     U = np.abs(Beam.field)
     U = U/np.amax(U)
     phi = Beam.phase()
