@@ -9,6 +9,7 @@ from structured_optics.utils import *
 from structured_optics.modes import *
 from structured_optics.algebra_utils import *
 from structured_optics.hologram import *
+from structured_optics.polarization import *
 
 
 
@@ -21,7 +22,6 @@ class Beam():
                  lamb:float = 1064e-9,    #Wavelength. Standard value 1064nm
                  x0:float = 0,            #Beam center x position
                  y0:float = 0,
-                 theta = 0,
                  pol_dim = 1) -> object: #Beam center y position
         # Initiate an object with the necessary parameters for calculating transverse fields
 
@@ -72,20 +72,6 @@ class Beam():
     @Ez.setter
     def Ez(self, mode):
         self.field[2] = mode
-
-    """@Ex.getter
-    def Ex(self):
-        return self.field[0]
-
-    @Ey.getter
-    def Ey(self):
-        return self.field[1]
-
-    @Ez.getter
-    def Ez(self):
-        return self.field[2]"""
-
-
 
 
 
@@ -405,7 +391,7 @@ class Beam():
     def std(self, pol_index=None) -> float:
         """Calculate intensity-weighted radial standard deviation."""
         I = self.int_profile(pol_index)
-        c = ndimage.center_of_mass(I)
+        c = self.center_mass(pol_index)
         x0 = self.x[0, int(round(c[1]))]
         y0 = self.y[int(round(c[0])), 0]
         r2 = (self.x - x0)**2 + (self.y - y0)**2
@@ -512,11 +498,60 @@ class Beam():
     def square_slit(self, center=(0,0), side_length=None, babinet=False):
         mask = np.asarray(square(self, center, side_length), dtype=bool)
         return self._apply_bool_mask(mask, babinet)
+
+
+    #polarization
+
+    def _apply_jones(beam, J):
+        """
+        Apply a 2x2 Jones matrix to Beam's Ex, Ey components in place.
+
+        J : (2,2) complex array-like, acts on (Ex, Ey).
+        pol=1 -> no-op (scalar field, no polarization info)
+        pol=2 -> standard Jones matrix application
+        pol=3 -> acts only on Ex, Ey; Ez untouched
+        """
+        if beam.pol == 1:
+            return beam
+
+        J = np.asarray(J, dtype=complex)
+        if J.shape != (2, 2):
+            raise ValueError("Jones matrix must be 2x2")
+
+        if beam.pol not in (2, 3):
+            raise ValueError(f"Unsupported pol: {beam.pol}")
+
+        Ex, Ey = beam.Ex, beam.Ey
+        new_Ex = J[0, 0] * Ex + J[0, 1] * Ey
+        new_Ey = J[1, 0] * Ex + J[1, 1] * Ey
+
+        beam.Ex = new_Ex
+        beam.Ey = new_Ey
+        # Ez left alone 
+
+        return beam
+
+    def hwp(self, angle):
+        self._apply_jones(J_hwp(angle))
+        return self
+
+    def qwp(self, angle):
+        self._apply_jones(J_qwp(angle))
+        return self
+
+    def polarizer(self, proj='H'):
+        """Polarizer projector. Use proj = 'H', 'V', 'D', 'A', 'R', 'L' for 
+        horizontal, vertical, diagonal, antidiagonal, right and left polarizers"""
+        name = proj + 'PROJ'
+        self._apply_jones(eval(name))
+        return self
     
 
-    
-    
 
+
+
+
+    
     #Propagation 
     def propagate(self, z, method='fresnel', renorm=False):           
         #propagate the field by a distance z

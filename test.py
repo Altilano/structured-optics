@@ -30,11 +30,10 @@ exit()"""
 b1 = Beam(nix=20e-6, 
           Dx=1024,
           waist = 6e-6,
-          lamb = 1064e-9,
-          pol_dim=2)
+          lamb = 1064e-9)
 
 #b1.hg(1,1)
-b1.Ex = hg(b1, 1,1, angle = np.pi/3) + hg(b1, 2,1, angle=2*np.pi/3)
+#b1.Ex = hg(b1, 1,1, angle = np.pi/3) + hg(b1, 2,1, angle=2*np.pi/3)
 #b1.lp(2,2,1.7,1.4, angle=np.pi/3)
 
 #b1.vslit(b1.waist/4, babinet=True)
@@ -42,7 +41,7 @@ b1.Ex = hg(b1, 1,1, angle = np.pi/3) + hg(b1, 2,1, angle=2*np.pi/3)
 
 
 
-b1.propagate(z = b1.zr(), method='fresnel')
+#b1.propagate(z = b1.zr(), method='fresnel')
 
 
 
