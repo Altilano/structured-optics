@@ -34,15 +34,15 @@ b1 = Beam(nix=20e-6,
           pol_dim=2)
 
 #b1.hg(1,1)
-#b1.Ex = hg(b1, 1,1) + hg(b1, 2,1)
-b1.lp(2,2,1.7, 1.4, angle=np.pi/3, polarization=[0,1])
+b1.Ex = hg(b1, 1,1, angle = np.pi/3) + hg(b1, 2,1, angle=2*np.pi/3)
+#b1.lp(2,2,1.7,1.4, angle=np.pi/3)
 
-print(b1.Ex)
-
-
+#b1.vslit(b1.waist/4, babinet=True)
 
 
-#b1.propagate(z = 10*b1.zr(), method='fresnel')
+
+
+b1.propagate(z = b1.zr(), method='fresnel')
 
 
 
@@ -66,7 +66,7 @@ b1.lp_hel(l, m, n_core, n_clad)"""
 
 
 
-plt.pcolormesh(b1.x, b1.y, b1.int_profile(1), cmap='inferno')
+plt.pcolormesh(b1.x, b1.y, b1.int_profile(), cmap='inferno')
 #plt.imshow(H, cmap='gray')
 plt.colorbar()
 plt.show()

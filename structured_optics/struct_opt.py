@@ -181,7 +181,7 @@ class Beam():
             self.x = old_x
             self.y = old_y
 
-    def _set_mode(self, mode, polarization=None, angle=0):
+    def _set_mode(self, mode, polarization=None):
         """Calculate/distribute a mode to the polarization components."""
 
         if polarization is None:
@@ -197,9 +197,7 @@ class Beam():
         if norm == 0:
             raise ValueError("Polarization vector cannot be zero.")
         polarization /= norm
-        # Calculate mode using rotated grid
-        with self.rotated_grid(angle):
-            mode = mode()
+
         self.field[:] = polarization[:, None, None] * mode[None, :, :]
         return self
 
@@ -210,28 +208,28 @@ class Beam():
         """
         Get an HG mode at distance z.
         """
-        return self._set_mode(lambda: hg(self, n, m, z), angle=angle, polarization=polarization)
+        return self._set_mode(hg(self, n, m, z, angle=angle),  polarization=polarization)
 
 
     def hg_astigmatic(self, n: int, m: int, wx: float, wy: float, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
         Get an astigmatic HG mode at distance z.
         """
-        return self._set_mode(lambda: hg_astigmatic(self, n, m, wx, wy, z), angle=angle, polarization=polarization)
+        return self._set_mode(hg_astigmatic(self, n, m, wx, wy, z, angle=angle),  polarization=polarization)
 
 
     def lg(self, l: int, p: int, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
         Get an LG mode at distance z.
         """
-        return self._set_mode(lambda: lg(self, l, p, z), angle=angle, polarization=polarization)
+        return self._set_mode(lg(self, l, p, z, angle=angle),  polarization=polarization)
 
 
     def bessel(self, N: int, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
         Get a Bessel mode of order N at distance z.
         """
-        return self._set_mode(lambda: nbessel(self, N, z), angle=angle, polarization=polarization)
+        return self._set_mode(nbessel(self, N, z, angle=angle),  polarization=polarization)
 
 
     def gbessel(self, N: int, r0: int, angle:float=0, polarization:list=None) -> object:
@@ -239,84 +237,84 @@ class Beam():
         Get a Gaussian-Bessel beam of order N at z=0.
         r0 is the radius of the first intensity null.
         """
-        return self._set_mode(lambda: gbessel(self,N,r0), angle=angle, polarization=polarization)
+        return self._set_mode(gbessel(self,N,r0, angle=angle),  polarization=polarization)
 
 
     def lg_prod(self, N: int, ls: tuple = None, centers: tuple = None, angle:float=0, polarization:list=None) -> object:
         """
         Get a product/superposition of N LG modes.
         """
-        return self._set_mode(lambda: lg_prod(self, N, ls), angle=angle, polarization=polarization)
+        return self._set_mode(lg_prod(self, N, ls, angle=angle),  polarization=polarization)
 
 
     def frac_oam(self, Ma: float, n_modes: int, beta: float = 0, theta_0: float = 0, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
         Get a fractional OAM beam.
         """
-        return self._set_mode(lambda: frac_oam(self, Ma, n_modes, beta, theta_0, z), angle=angle, polarization=polarization)
+        return self._set_mode(frac_oam(self, Ma, n_modes, beta, theta_0, z, angle=angle),  polarization=polarization)
 
 
     def frac_oam_qs(self, Ma: float, n_modes: int, beta: float = 0, theta_0: float = 0, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
         Get a fractional OAM quasi-stable beam.
         """
-        return self._set_mode(lambda: frac_oam_qs(self, Ma, n_modes, beta, theta_0, z), angle=angle, polarization=polarization)
+        return self._set_mode(frac_oam_qs(self, Ma, n_modes, beta, theta_0, z, angle=angle),  polarization=polarization)
 
 
     def IG_even(self, p: int, m: int, q: float, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
         Get an even Ince-Gaussian beam.
         """
-        return self._set_mode(lambda: IG_even(self, p, m, q, z), angle=angle, polarization=polarization)
+        return self._set_mode(IG_even(self, p, m, q, z, angle=angle),  polarization=polarization)
 
 
     def IG_odd(self, p: int, m: int, q: float, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
         Get an odd Ince-Gaussian beam.
         """
-        return self._set_mode(lambda: IG_odd(self, p, m, q, z), angle=angle, polarization=polarization)
+        return self._set_mode(IG_odd(self, p, m, q, z, angle=angle),  polarization=polarization)
 
 
     def HelIG(self, p: int, m: int, q: float, z: float = 0, helicity: int = 1, angle:float=0, polarization:list=None) -> object:
         """
         Get a Ince-Gaussian beam with given helicity.
         """
-        return self._set_mode(lambda: HInceG(self, p, m, q, helicity=helicity, z=z), angle=angle, polarization=polarization)
+        return self._set_mode(HInceG(self, p, m, q, helicity=helicity, z=z, angle=angle),  polarization=polarization)
 
 
     def circle(self, center: tuple = (0, 0), radius: float = None, angle:float=0, polarization:list=None) -> object:
         """
         Get a circle mode.
         """
-        return self._set_mode(lambda: circle(self, center, radius), angle=angle, polarization=polarization)
+        return self._set_mode(circle(self, center, radius, angle=angle),  polarization=polarization)
 
 
     def square(self, center: tuple = (0, 0), side_length: float = None, angle:float=0, polarization:list=None) -> object:
         """
         Get a square mode.
         """
-        return self._set_mode(lambda: square(self, center, side_length), angle=angle, polarization=polarization)
+        return self._set_mode(square(self, center, side_length, angle=angle),  polarization=polarization)
 
 
     def triangle(self, center: tuple = (0, 0), side_length: float = None, angle:float=0, polarization:list=None) -> object:
         """
         Get a triangle mode.
         """
-        return self._set_mode(lambda: triangle(self, center, side_length), angle=angle, polarization=polarization)
+        return self._set_mode(triangle(self, center, side_length, angle=angle),  polarization=polarization)
 
 
     def lp(self, l: int, m: int, n_core:float, n_clad:float , parity:str = "cos", angle:float=0, polarization:list=None) -> object:
         """
         Get an LP fiber mode. cos or sin, with l>=0 and m>=1
         """
-        return self._set_mode(lambda: lp(self, l, m, n_core, n_clad, parity=parity), angle=angle, polarization=polarization)
+        return self._set_mode(lp(self, l, m, n_core, n_clad, parity=parity, angle=angle),  polarization=polarization)
 
 
     def lp_hel(self, l:int, m:int, n_core:float, n_clad:float, angle:float=0, polarization:list=None) -> object:
         """
         Get a helical LP fiber mode. With positive and negative l, and m>=1.
         """
-        return self._set_mode(lambda: lp_hel(self, l, m, n_core, n_clad), angle=angle, polarization=polarization)
+        return self._set_mode(lp_hel(self, l, m, n_core, n_clad, angle=angle),  polarization=polarization)
     
 
 
@@ -396,6 +394,8 @@ class Beam():
         p = np.angle(field)
         if twopi:
             p = np.mod(p, 2*np.pi)
+        if self.pol == 1:
+            return p[0]
         return p
     
     def center_mass(self, pol_index=None) -> tuple:
@@ -446,6 +446,7 @@ class Beam():
 
 
     #masks
+    
     def lens(self, f:float, f0:tuple=(0,0))-> object:                                
         #apply a lens operator to the field, with lens center at f0 and focus lenght equal to f
         k = 2*np.pi/self.lamb
@@ -466,45 +467,51 @@ class Beam():
             fx, fy = fy, fx
         return self.astigmatic_lens(fx,fy, f0)
 
-    
-    def stripe_v(self, size, move=0):
-        """Def vertical stripe"""
-        d = move*self.Dx/(2*self.nix)
-        s = size*self.Dx/(2*self.nix)
-        self.field[:,:,int(self.Dx/2 - s + d):int(self.Dx/2+s+d)] = 0
+
+    #boolean masks
+    def _apply_bool_mask(self, mask, babinet=False):
+        mask = np.asarray(mask, dtype=bool)
+        if mask.shape != self.field.shape[-2:]:
+            raise ValueError(f"Mask must have shape {self.field.shape[-2:]}, "f"got {mask.shape}")
+        if babinet:
+            mask = ~mask
+        self.field *= mask
         return self
     
-    def stripe_h(self, size):
-        """Def horizontal stripe"""
-        s = size*self.Dy/(2*self.niy)
-        self.field[:,int(self.Dy/2 - s):int(self.Dy/2+s),:] = 0
-        return self
-    
-    def stripe_cross(self, size, hsize=None):
+    def cross_slit(self, size, hsize=None, babinet=False):
         """Def cross stripe"""
         if hsize == None:
             hsize = size
-        s = size*self.Dx/(2*self.nix)
-        sh = hsize*self.Dy/(2*self.niy)
-        self.field[:,int(self.Dy/2 - sh):int(self.Dy/2+sh),:] = 0
-        self.field[:,:,int(self.Dx/2 - s):int(self.Dx/2+s)] = 0
-        return self
+        vertical = np.abs(self.x) < size
+        horizontal = np.abs(self.y) < hsize
+        mask = vertical | horizontal
+        return self._apply_bool_mask(mask, babinet)
 
-    def slit(self, size):
-        """Def 1 slit"""
-        s = size*self.Dx/(2*self.nix)
-        self.field[:,:,:int(self.Dx/2-s)] = 0
-        self.field[:,:,int(self.Dx/2 + s):] = 0
-        return self
+    def hslit(self, size, center=0, babinet=False):
+        mask = np.abs(self.x - center) <= size
+        return self._apply_bool_mask(mask, babinet)
+
+    def vslit(self, size, center=0, babinet=False):
+        mask = np.abs(self.y - center) <= size
+        return self._apply_bool_mask(mask, babinet)
     
-    def double_slit(self, size, dis):
-        """Def double slit"""
-        s = size*self.Dx/(2*self.nix)
-        d = dis*self.Dx/(2*self.nix)
-        self.field[:,:,0:int((self.Dx-d-s)/2)] = 0
-        self.field[:,:,int((self.Dx-d+s)/2):int((self.Dx+d-s)/2)] = 0
-        self.field[:,:,int((self.Dx+d+s)/2):] = 0
-        return self
+    def double_slit(self, size, dis, center=0, babinet=False):
+        slit1 = np.abs(self.x - (center - dis/2)) <= size
+        slit2 = np.abs(self.x - (center + dis/2)) <= size
+        mask = slit1 | slit2
+        return self._apply_bool_mask(mask, babinet)
+
+    def iris(self, center=(0, 0), radius=None, babinet=False):
+        mask = np.asarray(circle(self, center, radius), dtype=bool)
+        return self._apply_bool_mask(mask, babinet)
+
+    def triangle_slit(self, center=(0,0), side_length=None, babinet=False):
+        mask = np.asarray(triangle(self, center, side_length), dtype=bool)
+        return self._apply_bool_mask(mask, babinet)
+
+    def square_slit(self, center=(0,0), side_length=None, babinet=False):
+        mask = np.asarray(square(self, center, side_length), dtype=bool)
+        return self._apply_bool_mask(mask, babinet)
     
 
     

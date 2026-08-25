@@ -7,6 +7,7 @@ from scipy.optimize import brentq
 
 #modes implementations
 
+@rotated_mode
 def hg(Beam, N, M, z=0):                                                        
     #get a HG mode at distance z of order N+M
     zr = Beam.zr()
@@ -21,6 +22,7 @@ def hg(Beam, N, M, z=0):
     F = un*um*np.exp(1j*k*z)
     return F
 
+@rotated_mode
 def hg_astigmatic(Beam, N, M, wx, wy, z=0):                                                        
     #get a astigmatic HG mode at distance z of order N+M
     zrx = np.pi*wx**2/Beam.lamb
@@ -40,7 +42,7 @@ def hg_astigmatic(Beam, N, M, wx, wy, z=0):
     F = un*um*np.exp(1j*k*z)
     return F
 
-
+@rotated_mode
 def lg(Beam,l,p, z=0):                                    
     #get a LG mode at distance z of order abs(N) + 2M
     zr = Beam.zr()
@@ -54,6 +56,7 @@ def lg(Beam,l,p, z=0):
         np.exp(1j*(k*z + k*z*(r**2)/(2*R) + l*np.arctan2(Beam.y-Beam.y0,Beam.x-Beam.x0) - gouy))
     return F
 
+@rotated_mode
 def nbessel(Beam, N, z=0):                       
     #get a Bessel mode of order N at distance z
     k = 2*np.pi / Beam.lamb        # wavenumber
@@ -67,6 +70,7 @@ def nbessel(Beam, N, z=0):
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F
 
+@rotated_mode
 def gbessel(Beam, N, r0):                                    
     #get a gaussian bessel beam of order N at z=0
     rad = 2*np.pi*Beam.waist**2/r0
@@ -76,6 +80,7 @@ def gbessel(Beam, N, r0):
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F
 
+@rotated_mode
 def lg_prod(Beam, N, ls, centers):
     if centers is None:
         centers = np.zeros((N, 2))
@@ -98,6 +103,7 @@ def lg_prod(Beam, N, ls, centers):
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F
 
+@rotated_mode
 def frac_oam(Beam, Ma, n_modes, beta, theta_0, z=0):        
     #get a fractional OAM beam, with OAM Ma (!= integer), by the method of LG supperpositions.
     mu = Ma%1
@@ -115,6 +121,7 @@ def frac_oam(Beam, Ma, n_modes, beta, theta_0, z=0):
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F
 
+@rotated_mode
 def frac_oam_qs(Beam, Ma, n_modes, beta, theta_0, z=0):
     #get a quasi-stable fractional oam mode.
     n_min = np.round(Ma-n_modes/2) 
@@ -131,7 +138,7 @@ def frac_oam_qs(Beam, Ma, n_modes, beta, theta_0, z=0):
     return F
 
 
-
+@rotated_mode
 def IG_even(Beam, p, m, q, z=0):
     #Even Ince-Gaussian mode IG_p,m^e(x,y)
     
@@ -150,6 +157,7 @@ def IG_even(Beam, p, m, q, z=0):
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F
 
+@rotated_mode
 def IG_odd(Beam, p, m, q, z=0):
     #Odd Ince-Gaussian mode IG_p,m^o(x,y)
     
@@ -167,6 +175,7 @@ def IG_odd(Beam, p, m, q, z=0):
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F
 
+@rotated_mode
 def HInceG(Beam, p, m, q, helicity, z=0):
     #Hermite-Ince-Gaussian mode HIG_p,m^e(x,y), combining even and odd Ince-Gaussian modes with given helicity.
     #For some reason IG_odd has a 3*pi/2 phase shift wrt IG_even, so the helicity sign is inverted here.
@@ -188,6 +197,7 @@ def HInceG(Beam, p, m, q, helicity, z=0):
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F
 
+@rotated_mode
 def circle(Beam, center, radius):
     if radius == None:
         radius = Beam.waist
@@ -202,7 +212,7 @@ def circle(Beam, center, radius):
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F
 
-
+@rotated_mode
 def square(Beam, center, side_length):
     if side_length == None:
         side_length = Beam.waist
@@ -220,7 +230,7 @@ def square(Beam, center, side_length):
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F
 
-
+@rotated_mode
 def triangle(Beam, center, side_length):
     if side_length == None:
         side_length = Beam.waist
@@ -261,7 +271,7 @@ def triangle(Beam, center, side_length):
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F
 
-
+@rotated_mode
 def lp(Beam, l, m, n_core, n_clad, parity="cos"):
     """Evaluate the scalar LP_l field Psi(r,phi)"""
     params = get_LP_params(l,m, n_core, n_clad, Beam.waist, Beam.lamb)
@@ -277,6 +287,7 @@ def lp(Beam, l, m, n_core, n_clad, parity="cos"):
     ang = np.cos(l * PHI) if parity == "cos" else np.sin(l * PHI)
     return F * ang
 
+@rotated_mode
 def lp_hel(Beam, l, m, n_core, n_clad):
     co = lp(Beam, np.abs(l), m, n_core, n_clad, parity = 'cos')
     si = lp(Beam, np.abs(l), m, n_core, n_clad, parity = 'sin')

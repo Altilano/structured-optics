@@ -2,11 +2,23 @@ import numpy as np
 from scipy import ndimage
 from scipy.special import hermite, genlaguerre, jv, j0, j1, kv, jn_zeros
 from scipy.optimize import brentq
+from functools import wraps
 
 
 
 
 #utils for modes
+
+def rotated_mode(func):  #add angle to rotate modes analyticaly
+
+    @wraps(func)
+    def wrapper(Beam, *args, angle=0, **kwargs):
+
+        with Beam.rotated_grid(angle):
+            return func(Beam, *args, **kwargs)
+
+    return wrapper
+
 
 def herm(X, N):              #hermite polynomial
     HER = hermite(N)

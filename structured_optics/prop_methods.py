@@ -41,6 +41,6 @@ def propagate_fraunhofer(Beam, z):
         Beam.nix = np.max(Beam.x)
         Beam.niy = np.max(Beam.y)
         C = np.exp(1j*k*z)/(1j*Beam.lamb*z)*np.exp(1j*k*(Beam.x**2 + Beam.y**2)/(2*z))
-        Beam.fourier_field = fft.fft2(Beam.field)
+        Beam.fourier_field = fft.fft2(Beam.field, axes=(-2,-1))
         Beam.field = C*fft.fftshift(Beam.fourier_field)*dx*dy
     return Beam
