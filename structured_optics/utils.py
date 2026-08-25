@@ -5,6 +5,7 @@ from scipy.optimize import brentq
 
 
 
+
 #utils for modes
 
 def herm(X, N):              #hermite polynomial
@@ -369,67 +370,60 @@ def int_overlap(first_beam:object, second_beam:object)->float:
         *(first_beam.niy/first_beam.Dy)/(first_beam.Power()*second_beam.Power())
 
 
-def get_section(Beam, ang_min, ang_max):
-    #Return field distribution of given section, defined by minimum angle and maximum angle
-    if ang_min > ang_max:
-        ang_min, ang_max = ang_max, ang_min
-    if ang_max <= np.pi and ang_min <= np.pi:
-        sec = (np.arctan2(Beam.y,Beam.x)>=ang_min)*(np.arctan2(Beam.y,Beam.x)<ang_max)
-    if ang_max> np.pi and ang_min <= np.pi:
-        sec1 = (np.arctan2(Beam.y,Beam.x)>=ang_min)
-        ang_max = ang_max-2*np.pi
-        sec2 = (np.arctan2(Beam.y,Beam.x)<ang_max)
-        sec = sec1 + sec2
-    if ang_max>np.pi and ang_min > np.pi:
-        ang_max = ang_max - 2*np.pi
-        ang_min = ang_min - 2*np.pi
-        sec = (np.arctan2(Beam.y,Beam.x)>=ang_min)*(np.arctan2(Beam.y,Beam.x)<ang_max)
-    return Beam.field*sec
+def get_section(Beam, ang_min, ang_max, pol_index=None):
+    """
+    Return the field restricted to the angular section
+    [ang_min, ang_max).
+
+    Angles are given in radians.
+    """
+    # Map angles to [0, 2π)
+    ang_min = ang_min % (2 * np.pi)
+    ang_max = ang_max % (2 * np.pi)
+
+    theta = np.mod(np.arctan2(Beam.y, Beam.x), 2 * np.pi)
+
+    # Normal section
+    if ang_min < ang_max:
+        sec = ((theta >= ang_min) & (theta < ang_max))
+    # Section crosses 2π
+    else:
+        sec = ((theta >= ang_min) | (theta < ang_max))
+    if pol_index == None:
+        return Beam.field * sec[None, :, :]
+    else:
+        return Beam.field[pol_index]*sec[:,:]
 
 
 def get_crop(Beam, center=None, std=None, window=2):
-    #Crops a field by its std*window arround the center of mass
-    if center == None:
+    if center is None:
         center = Beam.center_mass()
-    if std == None:
+
+    if std is None:
         std = Beam.std()
-    xmin = int(center[1] - window*std*Beam.Dx/Beam.nix/2)
-    xmax = int(center[1] + window*std*Beam.Dx/Beam.nix/2)
-    ymin = int(center[0] - window*std*Beam.Dy/Beam.niy/2)
-    ymax = int(center[0] + window*std*Beam.Dy/Beam.niy/2)
-    Beam.x = Beam.x[:,xmin:xmax]
-    Beam.y = Beam.y[ymin:ymax, :]
-    Beam.field = Beam.field[ymin:ymax, xmin:xmax]
-    Beam.Dx = len(Beam.x[0,:])
-    Beam.Dy = len(Beam.y[:,0])
-    Beam.nix = (Beam.x[0,-1] - Beam.x[0,0])/2
-    Beam.niy = (Beam.y[-1,0] - Beam.y[0,0])/2
-    Beam.x0 = center[1]
-    Beam.y0 = center[0]
-    return Beam
 
-def rotate(matrix, angle, order=1):
+    cy, cx = center
 
-    angle_degrees = angle*180/np.pi
+    dx = Beam.x[0, 1] - Beam.x[0, 0]
+    dy = Beam.y[1, 0] - Beam.y[0, 0]
 
-    # Separate real and imaginary parts
-    real_part = np.real(matrix)
-    imag_part = np.imag(matrix)
+    half_x = window * std / (2 * dx)
+    half_y = window * std / (2 * dy)
+
+    xmin = max(0, int(np.floor(cx - half_x)))
+    xmax = min(Beam.Dx, int(np.ceil(cx + half_x)))
+
+    ymin = max(0, int(np.floor(cy - half_y)))
+    ymax = min(Beam.Dy, int(np.ceil(cy + half_y)))
+
+    # Crop everything
+    F = Beam.field[:, ymin:ymax, xmin:xmax]
+    return F
+
+
+
     
-    # Rotate both parts separately
-    # cval=0 sets out-of-bounds values to zero
-    real_rotated = ndimage.rotate(real_part, angle_degrees, 
-                                   reshape=False, order=order, 
-                                   cval=0.0, prefilter=True)
-    
-    imag_rotated = ndimage.rotate(imag_part, angle_degrees, 
-                                   reshape=False, order=order, 
-                                   cval=0.0, prefilter=True)
-    
-    # Recombine into complex matrix
-    rotated_matrix = real_rotated + 1j * imag_rotated
-    
-    return rotated_matrix
+
 
 
 

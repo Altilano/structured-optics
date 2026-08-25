@@ -12,8 +12,8 @@ def slm_hologram(Beam, x_grating, y_grating, method, input_beam, eps, max_range)
     if input_beam is None:
         input_field = np.exp(-((Beam.x**2 + Beam.y**2)/(2*np.max(Beam.x))**2))
     else:
-        input_field = input_beam.field
-    desired = Beam.field/np.max(np.abs(Beam.field))
+        input_field = input_beam.Ex
+    desired = Beam.Ex/np.max(np.abs(Beam.Ex))
     lamb_x = dx*x_grating
     lamb_y = dy*y_grating
     Ain = np.abs(input_field)
@@ -46,7 +46,7 @@ def slm_hologram(Beam, x_grating, y_grating, method, input_beam, eps, max_range)
 
 def dmd_hologram(Beam, cx, cy, sign):
     #generates a hologram for a dmd
-    U = np.abs(Beam.field)
+    U = np.abs(Beam.Ex)
     U = U/np.amax(U)
     phi = Beam.phase()
     A = np.arcsin(U)

@@ -29,14 +29,14 @@ def hg_astigmatic(Beam, N, M, wx, wy, z=0):
     k = 2*np.pi/Beam.lamb
     wxz = wx*np.sqrt(1 + (z/zrx)**2)
     Cn = np.sqrt(np.sqrt(2/np.pi)*q0x/(2**N * factorial(N) * qx * wx))
-    un = Cn*(-np.conjugate(qx)/qx)**(N/2)*hermite(np.sqrt(2)*(Beam.x-Beam.x0)/wxz, N)*np.exp(-1j*k*(Beam.x-Beam.x0)**2/(2*qx))
+    un = Cn*(-np.conjugate(qx)/qx)**(N/2)*herm(np.sqrt(2)*(Beam.x-Beam.x0)/wxz, N)*np.exp(-1j*k*(Beam.x-Beam.x0)**2/(2*qx))
     
     zry = np.pi*wy**2/Beam.lamb
     q0y = 1j*zry
     qy = -z + q0y
     wyz = wy*np.sqrt(1 + (z/zry)**2)
     Cm = np.sqrt(np.sqrt(2/np.pi)*q0y/(2**M * factorial(M) * qy * wy))
-    um = Cm*(-np.conjugate(qy)/qy)**(M/2)*hermite(np.sqrt(2)*(Beam.y-Beam.y0)/wyz, M)*np.exp(-1j*k*(Beam.y-Beam.y0)**2/(2*qy))
+    um = Cm*(-np.conjugate(qy)/qy)**(M/2)*herm(np.sqrt(2)*(Beam.y-Beam.y0)/wyz, M)*np.exp(-1j*k*(Beam.y-Beam.y0)**2/(2*qy))
     F = un*um*np.exp(1j*k*z)
     return F
 
@@ -110,7 +110,7 @@ def frac_oam(Beam, Ma, n_modes, beta, theta_0, z=0):
     F = np.zeros((Beam.Dy, Beam.Dx), dtype='complex128')
     for l in np.arange(int(n_min), int(n_max)+1):
         coef = np.exp(-1j*mu*beta)*1j*np.exp(1j*(Ma-l)*theta_0)/(2*np.pi*(Ma-l))*np.exp(1j*(m-l)*beta)*(1-np.exp(1j*mu*2*np.pi))
-        F += coef*(Beam.lg(l, 0, z = z).field) 
+        F += coef*(lg(Beam,l, 0, z = z)) 
 
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F
@@ -125,7 +125,7 @@ def frac_oam_qs(Beam, Ma, n_modes, beta, theta_0, z=0):
     for l in np.arange(int(n_min), int(n_max)+1):
         coef = np.exp(-1j*mu*beta)*1j*np.exp(1j*(Ma-l)*theta_0)/(2*np.pi*(Ma-l))*np.exp(1j*(m-l)*beta)*(1-np.exp(1j*mu*2*np.pi))
         p = np.floor((np.abs(Ma) + n_modes/2 -np.abs(l))/2)
-        F += coef*(Beam.lg(l, p, z = z).field) 
+        F += coef*(lg(Beam, l, p, z = z)) 
 
     F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
     return F

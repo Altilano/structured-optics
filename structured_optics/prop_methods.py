@@ -6,8 +6,8 @@ def propagate_fresnel(Beam, z):
     #Propagate the field by a distance z using fresnel integral. convolution method
     k = 2*np.pi/Beam.lamb
     prop = np.exp(-1j * z * (Beam.kx ** 2 + Beam.ky ** 2) / (2 * k) + 1j*k*z)
-    Beam.fourier_field = fft.fft2(Beam.field)
-    Beam.field = fft.ifft2(prop*Beam.fourier_field)
+    Beam.fourier_field = fft.fft2(Beam.field, axes=(-2,-1))
+    Beam.field = fft.ifft2(prop*Beam.fourier_field, axes=(-2,-1))
     return Beam
 
 def propagate_incoherent(Beam, z):
