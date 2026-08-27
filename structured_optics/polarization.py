@@ -9,7 +9,6 @@ RPROJ = np.array([[1,1j],[-1j,1]], dtype='complex')/2
 LPROJ = np.array([[1,-1j],[1j,1]], dtype='complex')/2
 
 
-
 def J_rot(matrix, ang):
     rt = np.array([[np.cos(ang), -np.sin(ang)],[np.sin(ang), np.cos(ang)]], dtype='complex')
     return rt@matrix@np.conjugate(rt.T)

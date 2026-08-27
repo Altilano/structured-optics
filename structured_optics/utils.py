@@ -13,8 +13,10 @@ def rotated_mode(func):  #add angle to rotate modes analyticaly
 
     @wraps(func)
     def wrapper(Beam, *args, angle=0, **kwargs):
-
-        with Beam.rotated_grid(angle):
+        if angle%(2*np.pi) != 0:
+            with Beam.rotated_grid(angle):
+                return func(Beam, *args, **kwargs)
+        else:
             return func(Beam, *args, **kwargs)
 
     return wrapper

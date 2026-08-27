@@ -36,9 +36,9 @@ class Beam():
             self.Dy = Dx
         else:
             self.Dy = Dy
-        self.x, self.y = np.meshgrid(np.linspace(-self.nix, self.nix, self.Dx), np.linspace(-self.niy, self.niy, self.Dy))
+        self.x, self.y = np.meshgrid(np.linspace(-self.nix, self.nix, self.Dx), np.linspace(-self.niy, self.niy, self.Dy), sparse=True)
         self.field = np.zeros((pol_dim, self.Dy, self.Dx), dtype='complex128')
-        self.kx, self.ky = np.meshgrid(2*np.pi*fft.fftfreq(self.Dx, 2*self.nix/self.Dx), 2*np.pi*fft.fftfreq(self.Dy, 2*self.niy/self.Dy))
+        self.kx, self.ky = np.meshgrid(2*np.pi*fft.fftfreq(self.Dx, 2*self.nix/(self.Dx-1)), 2*np.pi*fft.fftfreq(self.Dy, 2*self.niy/(self.Dy-1)), sparse=True)
         self.x0 = x0
         self.y0 = y0
         
@@ -341,9 +341,9 @@ class Beam():
 
     #Beam physical atributes and its utilities
 
-    def Power(self) -> float:
+    def Power(self, pol_index=None) -> float:
         """Get the total Power of a field within the region of interest"""
-        return np.sum(self.int_profile())*(4*self.nix/self.Dx)*(self.niy/self.Dy)
+        return np.sum(self.int_profile(pol_index))*(4*self.nix/self.Dx)*(self.niy/self.Dy)
 
     
     def zr(self) -> float:
@@ -500,6 +500,8 @@ class Beam():
         return self._apply_bool_mask(mask, babinet)
 
 
+
+
     #polarization
 
     def _apply_jones(beam, J):
@@ -528,7 +530,6 @@ class Beam():
         beam.Ex = new_Ex
         beam.Ey = new_Ey
         # Ez left alone 
-
         return beam
 
     def hwp(self, angle):
@@ -539,14 +540,13 @@ class Beam():
         self._apply_jones(J_qwp(angle))
         return self
 
-    def polarizer(self, proj='H'):
+    def polarizer(self, angle=0, proj='H'):
         """Polarizer projector. Use proj = 'H', 'V', 'D', 'A', 'R', 'L' for 
         horizontal, vertical, diagonal, antidiagonal, right and left polarizers"""
         name = proj + 'PROJ'
-        self._apply_jones(eval(name))
+        self._apply_jones(J_rot(eval(name), angle))
         return self
     
-
 
 
 

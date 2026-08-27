@@ -31,14 +31,17 @@ b1 = Beam(nix=20e-6,
           Dx=1024,
           waist = 6e-6,
           lamb = 1064e-9)
-
-#b1.hg(1,1)
+start1 = time.time()
+b1.hg(1,1, angle=np.pi)
+end1 = time.time()
 #b1.Ex = hg(b1, 1,1, angle = np.pi/3) + hg(b1, 2,1, angle=2*np.pi/3)
 #b1.lp(2,2,1.7,1.4, angle=np.pi/3)
 
 #b1.vslit(b1.waist/4, babinet=True)
 
+print(end1-start1)
 
+exit()
 
 
 #b1.propagate(z = b1.zr(), method='fresnel')

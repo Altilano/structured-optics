@@ -16,7 +16,7 @@ b1.Ex = hg(b1, 1,1, angle = np.pi/3) + hg(b1, 2,1, angle=2*np.pi/3)
 #b1.lp(2,2,1.7,1.4)
 b1.Ey = lg(b1,2,2)
 
-b1.polarizer('D')
+#b1.polarizer('D')
 
 
 
