@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "structured_optics"
-version = "0.2"
+version = "0.3"
 description = "Package for Structured Light simulation"
 requires-python = ">=3.9"
 authors = [

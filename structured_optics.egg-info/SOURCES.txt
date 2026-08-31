@@ -4,6 +4,7 @@ structured_optics/__init__.py
 structured_optics/algebra_utils.py
 structured_optics/hologram.py
 structured_optics/modes.py
+structured_optics/polarization.py
 structured_optics/prop_methods.py
 structured_optics/slmdisplay.py
 structured_optics/struct_opt.py

@@ -31,6 +31,7 @@ b1 = Beam(nix=20e-6,
           Dx=1024,
           waist = 6e-6,
           lamb = 1064e-9)
+
 start1 = time.time()
 b1.hg(1,1, angle=np.pi)
 end1 = time.time()
@@ -40,6 +41,11 @@ end1 = time.time()
 #b1.vslit(b1.waist/4, babinet=True)
 
 print(end1-start1)
+
+holo = b1.dmd_holo(0.07, 0.07)
+print(holo.shape)
+plt.imshow(holo)
+plt.show()
 
 exit()
 
