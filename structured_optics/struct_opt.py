@@ -14,6 +14,40 @@ from structured_optics.polarization import *
 
 
 class Beam():
+    """
+    Represents a monochromatic paraxial optical beam on a discretized transverse grid.
+
+    A Beam stores a complex electric field over a 2D (x, y) region of interest,
+    with 1, 2, or 3 polarization components (Ex, Ey, Ez). It provides methods to
+    populate the field with standard mode families (Hermite-Gaussian, Laguerre-Gaussian,
+    Bessel, Ince-Gaussian, fiber LP modes, etc.), apply optical elements (lenses,
+    apertures, polarization optics), propagate the field, and analyze its properties
+    (power, phase, centroid, mode decomposition).
+
+    The spatial grid spans [-nix, nix] x [-niy, niy] with Dx x Dy points. A matching
+    spatial-frequency grid (kx, ky) is precomputed for Fourier-based propagation.
+
+    Attributes
+    ----------
+    nix, niy : float
+        Half-width of the region of interest in x and y.
+    Dx, Dy : int
+        Number of grid points in x and y.
+    x, y : ndarray
+        Sparse meshgrid arrays of spatial coordinates.
+    kx, ky : ndarray
+        Sparse meshgrid arrays of spatial frequency coordinates (angular, rad/unit length).
+    field : ndarray, shape (pol_dim, Dy, Dx), complex128
+        The transverse field. Index 0 = Ex, 1 = Ey, 2 = Ez (when present).
+    x0, y0 : float
+        Reference center coordinates used by mode generators and rotations.
+    lamb : float
+        Wavelength.
+    waist : float
+        Reference beam waist used by mode-generating methods.
+    pol : int
+        Number of polarization components stored (1 = scalar, 2 = Ex/Ey, 3 = Ex/Ey/Ez).
+    """
     def __init__(self, nix: float,        #Region of interest in x (from -nix to +nix)
                  Dx: int,                 #Number of points in x
                  niy: float=None,         #Region of interest in y (from -niy to +niy), equals nix if None
@@ -21,9 +55,9 @@ class Beam():
                  waist:float=1e-3,        #Beam waist. Standard value 1mm
                  lamb:float = 1064e-9,    #Wavelength. Standard value 1064nm
                  x0:float = 0,            #Beam center x position
-                 y0:float = 0,
-                 pol_dim = 1) -> object: #Beam center y position
-        # Initiate an object with the necessary parameters for calculating transverse fields
+                 y0:float = 0,            #Beam center y position
+                 pol_dim:int = 1) -> object: #Beam center y position
+        """Initialize the spatial/spectral grids and an empty field array."""
 
         #Geometric properties
         self.nix = nix
@@ -48,17 +82,21 @@ class Beam():
         self.waist = waist   
         self.pol = pol_dim     
 
+
         
     @property
     def Ex(self):
+        """ndarray: View of the field's x-polarization component (field[0])."""
         return self.field[0]
     
     @property
     def Ey(self):
+        """ndarray: View of the field's y-polarization component (field[1])."""
         return self.field[1]
 
     @property
     def Ez(self):
+        """ndarray: View of the field's z-polarization component (field[2])."""
         return self.field[2]
 
     @Ex.setter
@@ -78,11 +116,25 @@ class Beam():
     #Auxialiary 
 
     def copy(self):                 
-        #Perform a deep copy of the Beam object
+        """Return a deep copy of this Beam, including its field data."""
         return copy.deepcopy(self)
     
     def copy_clean(self, pol_dim = None):           
-        #Perform a deep copy of the Beam object, but with field initialized to zero
+        """
+        Return a deep copy of this Beam with the field reset to zero.
+
+        Parameters
+        ----------
+        pol_dim : int, optional
+            Number of polarization components for the new (zeroed) field.
+            Defaults to this beam's current `pol`.
+
+        Returns
+        -------
+        Beam
+            A copy sharing this beam's grid/physical parameters but with an
+            all-zero field of shape (pol_dim, Dy, Dx).
+        """
         new = self.copy()
         if pol_dim == None:
             pol_dim = self.pol
@@ -92,10 +144,22 @@ class Beam():
 
 
 
+
     #Operator overloading
 
     def __mul__(self, other):
-        #Multiply the transverse fields point by point if multiplied by another field, or globally if multiplied by number.
+        """
+        Multiply fields.
+
+        If `other` is a Beam, multiplies the two fields element-wise (e.g. for
+        applying a transmission mask stored as a Beam). If `other` is a scalar
+        (int/float/complex), scales the field globally.
+
+        Raises
+        ------
+        TypeError
+            If `other` is neither a Beam nor a numeric scalar.
+        """
         if isinstance(other, (type(self))):
             new = self.copy()
             new.field = self.field*other.field
@@ -110,7 +174,7 @@ class Beam():
     __rmul__ = __mul__
     
     def __add__(self, other:object):       
-        #Add the transverse fields point by point
+        """Add another Beam's field to this one, element-wise (coherent superposition)."""
         if isinstance(other, (Beam, type(self))):
             new = self.copy()
             new.field = other.field + self.field
@@ -120,7 +184,7 @@ class Beam():
     __radd__ = __add__
         
     def __sub__(self, other:object):       
-        #Subtract the transverse fields point by point
+        """Subtract another Beam's field from this one, element-wise."""
         if isinstance(other, Beam):
             new = self.copy()
             new.field = self.field - other.field
@@ -128,7 +192,7 @@ class Beam():
         raise TypeError(f"sorry, don't know how to subtract by {type(other).__name__}")
         
     def __rsub__(self, other:object):       
-        #Subtract the transverse fields point by point
+        """Subtract this Beam's field from `other`'s field, element-wise."""
         if isinstance(other, Beam):
             new = self.copy()
             new.field = other.field - self.field
@@ -136,7 +200,7 @@ class Beam():
         raise TypeError(f"sorry, don't know how to subtract by {type(other).__name__}")
 
     def __truediv__(self, other):
-
+        """Divide the field by a numeric scalar."""
         if isinstance(other, (int, float, complex)):
             new = self.copy()
             new.field = self.field / other
@@ -147,11 +211,32 @@ class Beam():
 
 
 
+
+
     #modes
 
     @contextmanager
     def rotated_grid(self, angle):
-        # Save original grid
+        """
+        Temporarily rotate the beam's (x, y) coordinate grid about (x0, y0).
+
+        Within the `with` block, `self.x` and `self.y` are replaced by grids
+        rotated by `angle` (counter-clockwise, in radians) about the beam center.
+        The original grids are restored automatically on exit, even if an
+        exception occurs. Used internally by mode generators that accept an
+        `angle` argument.
+
+        Lose sparse property, so modes that can use this property to speed up calculation can be significantly slower. Eg: HG modes.
+
+        Parameters
+        ----------
+        angle : float
+            Rotation angle in radians.
+
+        Yields
+        ------
+        None
+        """
         old_x = self.x
         old_y = self.y
         try:
@@ -163,12 +248,34 @@ class Beam():
             self.y = -s*X + c*Y + self.y0
             yield
         finally:
-            # Always restore original grid
             self.x = old_x
             self.y = old_y
 
     def _set_mode(self, mode, polarization=None):
-        """Calculate/distribute a mode to the polarization components."""
+        """
+        Write a scalar transverse mode into the field, distributed across
+        polarization components according to a (normalized) Jones-like vector.
+
+        Parameters
+        ----------
+        mode : ndarray, shape (Dy, Dx)
+            Complex scalar spatial mode profile.
+        polarization : array_like, shape (pol,), optional
+            Complex weights describing how the scalar mode is distributed among
+            polarization components. Normalized to unit norm internally.
+            Defaults to putting all amplitude into the first component
+            (e.g. purely Ex-polarized).
+
+        Returns
+        -------
+        Beam
+            self, with `field` overwritten.
+
+        Raises
+        ------
+        ValueError
+            If `polarization` has the wrong shape or is the zero vector.
+        """
 
         if polarization is None:
             polarization = np.zeros(self.pol, dtype=np.complex128)
@@ -192,78 +299,283 @@ class Beam():
     #returns the Beam object with the mode stored in field according to _set_mode
     def hg(self, n: int, m: int, z: float = 0, angle:float=0, polarization:list=None):
         """
-        Get an HG mode at distance z.
+        Set the field to a Hermite-Gaussian mode HG_{n,m}, analytically propagated to distance z.
+
+        Parameters
+        ----------
+        n, m : int
+            Mode indices along the (possibly rotated) x and y axes.
+        z : float, optional
+            Propagation distance from the beam waist at which the mode is evaluated.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(hg(self, n, m, z, angle=angle),  polarization=polarization)
 
 
     def hg_astigmatic(self, n: int, m: int, wx: float, wy: float, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
-        Get an astigmatic HG mode at distance z.
+        Set the field to an astigmatic Hermite-Gaussian mode with independent
+        waists wx (x-axis) and wy (y-axis), analytically propagated to distance z.
+
+        Parameters
+        ----------
+        n, m : int
+            Mode indices along the (possibly rotated) x and y axes.
+        wx, wy : float
+            waists along x-axis and y-axis
+        z : float, optional
+            Propagation distance from the beam waist at which the mode is evaluated.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(hg_astigmatic(self, n, m, wx, wy, z, angle=angle),  polarization=polarization)
 
 
     def lg(self, l: int, p: int, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
-        Get an LG mode at distance z.
+        Set the field to a Laguerre-Gaussian mode LG_{l,p} (azimuthal index l,
+        radial index p), analytically propagated to distance z.
+
+        Parameters
+        ----------
+        l, p : int
+            Mode indices, l for orbital angular momentum and p for radial order.
+        z : float, optional
+            Propagation distance from the beam waist at which the mode is evaluated.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(lg(self, l, p, z, angle=angle),  polarization=polarization)
 
 
     def bessel(self, N: int, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
-        Get a Bessel mode of order N at distance z.
+        Set the field to an ideal (non-diffracting) Bessel mode of order N, 
+        analytically propagated to distance z.
+
+        Parameters
+        ----------
+        N : int
+            Order of the bessel mode.
+        z : float, optional
+            Propagation distance from the beam waist at which the mode is evaluated.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(nbessel(self, N, z, angle=angle),  polarization=polarization)
 
 
     def gbessel(self, N: int, r0: int, angle:float=0, polarization:list=None) -> object:
         """
-        Get a Gaussian-Bessel beam of order N at z=0.
-        r0 is the radius of the first intensity null.
+        Set the field to a Gaussian-apodized Bessel beam of order N at z=0.
+
+        Parameters
+        ----------
+        N : int
+            Bessel order.
+        r0 : float
+            Radius of the first intensity null, sets the transverse scale.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(gbessel(self,N,r0, angle=angle),  polarization=polarization)
 
 
     def lg_prod(self, N: int, ls: tuple = None, centers: tuple = None, angle:float=0, polarization:list=None) -> object:
         """
-        Get a product/superposition of N LG modes.
+        Set the field to a superposition/product of N Laguerre-Gaussian modes.
+
+        Parameters
+        ----------
+        N : int
+            Number of LG modes to combine.
+        ls : tuple, optional
+            Azimuthal indices for each of the N modes.
+        centers : tuple, optional
+            Transverse center offsets for each of the N modes.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
-        return self._set_mode(lg_prod(self, N, ls, angle=angle),  polarization=polarization)
+        return self._set_mode(lg_prod(self, N, ls, centers, angle=angle),  polarization=polarization)
 
 
     def frac_oam(self, Ma: float, n_modes: int, beta: float = 0, theta_0: float = 0, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
-        Get a fractional OAM beam.
+        Set the field to a fractional orbital-angular-momentum (OAM) beam,
+        built from `n_modes` OAM components approximating a non-integer
+        topological charge Ma.
+
+        Parameters
+        ----------
+        Ma : float
+            Target (possibly non-integer) OAM/topological charge.
+        n_modes : int
+            Number of integer-OAM components used in the expansion.
+        beta : float, optional
+            ???
+        theta_0 : float, optional
+            ???
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(frac_oam(self, Ma, n_modes, beta, theta_0, z, angle=angle),  polarization=polarization)
 
 
     def frac_oam_qs(self, Ma: float, n_modes: int, beta: float = 0, theta_0: float = 0, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
-        Get a fractional OAM quasi-stable beam.
+        Quasi-stable variant of `frac_oam`: constructs a fractional-OAM beam
+        using a mode expansion designed to propagate with reduced gouy phase
+        differences, so quasi-stable propagation, compared to the standard construction.
+
+        Parameters
+        ----------
+        Ma : float
+            Target (possibly non-integer) OAM/topological charge.
+        n_modes : int
+            Number of integer-OAM components used in the expansion.
+        beta : float, optional
+            ???
+        theta_0 : float, optional
+            ???
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(frac_oam_qs(self, Ma, n_modes, beta, theta_0, z, angle=angle),  polarization=polarization)
 
 
     def IG_even(self, p: int, m: int, q: float, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
-        Get an even Ince-Gaussian beam.
+        Set the field to an even-parity Ince-Gaussian mode IG^e_{p,m} with
+        ellipticity parameter q, propagated to distance z.
+
+        Parameters
+        ----------
+        p, m : int
+            Ince-Gauss index with (p-m)%2 = 0
+        q : float
+            Ellipticity parameter
+        z : float, optional
+            Propagation distance from the beam waist at which the mode is evaluated.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(IG_even(self, p, m, q, z, angle=angle),  polarization=polarization)
 
 
     def IG_odd(self, p: int, m: int, q: float, z: float = 0, angle:float=0, polarization:list=None) -> object:
         """
-        Get an odd Ince-Gaussian beam.
+        Set the field to an odd-parity Ince-Gaussian mode IG^o_{p,m} with
+        ellipticity parameter q, propagated to distance z.
+
+        Parameters
+        ----------
+        p, m : int
+            Ince-Gauss index with (p-m)%2 = 0
+        q : float
+            Ellipticity parameter
+        z : float, optional
+            Propagation distance from the beam waist at which the mode is evaluated.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+        
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(IG_odd(self, p, m, q, z, angle=angle),  polarization=polarization)
 
 
     def HelIG(self, p: int, m: int, q: float, z: float = 0, helicity: int = 1, angle:float=0, polarization:list=None) -> object:
         """
-        Get a Ince-Gaussian beam with given helicity.
+        Set the field to an helical Ince-Gaussian mode HelIG_{p,m} with
+        ellipticity parameter q, propagated to distance z. Helical is a superposition of the kind IG^e +- 1j*IG^o.
+
+        Parameters
+        ----------
+        p, m : int
+            Ince-Gauss index with (p-m)%2 = 0
+        q : float
+            Ellipticity parameter
+        z : float, optional
+            Propagation distance from the beam waist at which the mode is evaluated.
+        helicity : int
+            Defines the helicity +1 or -1. Must be one of the two.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+        
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(HInceG(self, p, m, q, helicity=helicity, z=z, angle=angle),  polarization=polarization)
 
