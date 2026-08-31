@@ -565,7 +565,7 @@ class Beam():
             Ellipticity parameter
         z : float, optional
             Propagation distance from the beam waist at which the mode is evaluated.
-        helicity : int
+        helicity : {-1, 1}, optional
             Defines the helicity +1 or -1. Must be one of the two.
         angle : float, optional
             Rotation of the mode's axes (radians) relative to the beam's x/y axes.
@@ -582,35 +582,122 @@ class Beam():
 
     def circle(self, center: tuple = (0, 0), radius: float = None, angle:float=0, polarization:list=None) -> object:
         """
-        Get a circle mode.
+        Set the field to a filled circular aperture (uniform amplitude) mode.
+
+        Parameters
+        ----------
+        center : tuple, optional
+            (x, y) center of the circle.
+        radius : float, optional
+            Radius of the circle.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(circle(self, center, radius, angle=angle),  polarization=polarization)
 
 
     def square(self, center: tuple = (0, 0), side_length: float = None, angle:float=0, polarization:list=None) -> object:
         """
-        Get a square mode.
+        Set the field to a filled square aperture (uniform amplitude) mode.
+
+        Parameters
+        ----------
+        center : tuple, optional
+            (x, y) center of the square.
+        side_length : float, optional
+            Side length of the square.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(square(self, center, side_length, angle=angle),  polarization=polarization)
 
 
     def triangle(self, center: tuple = (0, 0), side_length: float = None, angle:float=0, polarization:list=None) -> object:
         """
-        Get a triangle mode.
+        Set the field to a filled triangular aperture (uniform amplitude) mode.
+
+        Parameters
+        ----------
+        center : tuple, optional
+            (x, y) center of the triangle.
+        side_length : float, optional
+            Side length of the triangle.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(triangle(self, center, side_length, angle=angle),  polarization=polarization)
 
 
     def lp(self, l: int, m: int, n_core:float, n_clad:float , parity:str = "cos", angle:float=0, polarization:list=None) -> object:
         """
-        Get an LP fiber mode. cos or sin, with l>=0 and m>=1
+        Set the field to a linearly-polarized (LP) step-index fiber mode LP_{l,m}.
+
+        Parameters
+        ----------
+        l : int
+            Azimuthal mode index (l >= 0).
+        m : int
+            Radial mode index (m >= 1).
+        n_core, n_clad : float
+            Refractive indices of the fiber core and cladding.
+        parity : {'cos', 'sin'}, optional
+            Azimuthal parity of the mode.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(lp(self, l, m, n_core, n_clad, parity=parity, angle=angle),  polarization=polarization)
 
 
     def lp_hel(self, l:int, m:int, n_core:float, n_clad:float, angle:float=0, polarization:list=None) -> object:
-        """
-        Get a helical LP fiber mode. With positive and negative l, and m>=1.
+        """"
+        Set the field to a helical LP fiber mode, formed as LP_cos +- 1j*LP_sin,
+        carrying orbital angular momentum whose handedness is set by the sign of `l`.
+
+        Parameters
+        ----------
+        l : int
+            Azimuthal mode index; sign selects the helicity.
+        m : int
+            Radial mode index (m >= 1).
+        n_core, n_clad : float
+            Refractive indices of the fiber core and cladding.
+        angle : float, optional
+            Rotation of the mode's axes (radians) relative to the beam's x/y axes.
+        polarization : array_like, optional
+            Polarization weighting; see `_set_mode`.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the requested mode.
         """
         return self._set_mode(lp_hel(self, l, m, n_core, n_clad, angle=angle),  polarization=polarization)
     
@@ -622,29 +709,117 @@ class Beam():
     #Linear Algebra with modes utils
 
     def hg_projector(self,N:int) -> tuple:
-        #Project the beam into HG basis up to order N
-        #returns tuple with n, m index and overlaps array
+        """
+        Project the beam's field onto the Hermite-Gaussian basis up to order N.
+
+        Parameters
+        ----------
+        N : int
+            Maximum combined mode order to project onto.
+
+        Returns
+        -------
+        tuple
+            (n, m, overlaps): arrays of HG mode indices n, m and the array of
+            complex overlap coefficients between the beam and each basis mode.
+        """
         return hg_proj(self, N)
 
     def lg_projector(self, N:int) -> tuple:
-        #Project the beam into LG basis up to order N
-        #returns tuple with l, p index and overlaps array
+        """
+        Project the beam's field onto the Laguerre-Gaussian basis up to order N.
+
+        Parameters
+        ----------
+        N : int
+            Maximum combined mode order to project onto.
+
+        Returns
+        -------
+        tuple
+            (l, p, overlaps): arrays of LG mode indices l, p and the array of
+            complex overlap coefficients between the beam and each basis mode.
+        """
         return lg_proj(self, N)
         
     def hg_basis(self, N:int, waist:float=None, norm1:bool = False) -> np.ndarray:
-        #Create a HG basis up to order N
+        """
+        Build a Hermite-Gaussian basis set up to order N on this beam's grid.
+
+        Parameters
+        ----------
+        N : int
+            Maximum combined mode order.
+        waist : float, optional
+            Waist used to generate the basis modes. Defaults to `self.waist`.
+        norm1 : bool, optional
+            If True, normalize each basis mode to unit power.
+
+        Returns
+        -------
+        ndarray
+            Array of HG basis mode fields.
+        """
         return hg_basis(self, N, waist, norm1)
     
     def lg_basis(self, N:int, waist:float=None, norm1:bool=False) -> np.ndarray:
-        #Create a LG basis up to order N
+        """
+        Build a Laguerre-Gaussian basis set up to order N on this beam's grid.
+
+        Parameters
+        ----------
+        N : int
+            Maximum combined mode order.
+        waist : float, optional
+            Waist used to generate the basis modes. Defaults to `self.waist`.
+        norm1 : bool, optional
+            If True, normalize each basis mode to unit power.
+
+        Returns
+        -------
+        ndarray
+            Array of LG basis mode fields.
+        """
         return lg_basis(self, N, waist, norm1)
     
     def bessel_basis(self, Nmax:int, waist:float=None, norm1:bool=False) -> np.ndarray:
-        #Create a Bessel basis up to Nmax
+        """
+        Build a Bessel mode basis up to order Nmax on this beam's grid.
+
+        Parameters
+        ----------
+        Nmax : int
+            Maximum Bessel order.
+        waist : float, optional
+            Waist/scale used to generate the basis modes. Defaults to `self.waist`.
+        norm1 : bool, optional
+            If True, normalize each basis mode to unit power.
+
+        Returns
+        -------
+        ndarray
+            Array of Bessel basis mode fields.
+        """
         return bessel_basis(self, Nmax, waist, norm1)
 
     def build_from_coefs_and_basis(self, coefs:np.ndarray, basis:np.ndarray, pol_index:int = 0) -> object:
-        #Build beam from given coefficients and basis
+        """
+        Build the field as a linear combination of basis modes weighted by coefs.
+
+        Parameters
+        ----------
+        coefs : ndarray
+            Complex expansion coefficients, one per basis mode.
+        basis : ndarray
+            Array of basis mode fields (e.g. from `hg_basis`/`lg_basis`/`bessel_basis`).
+        pol_index : int, optional
+            Polarization component into which the resulting field is written.
+
+        Returns
+        -------
+        Beam
+            self, with field set to the weighted sum of basis modes.
+        """
         return build_from_coefs_and_basis(self, coefs, basis, pol_index = pol_index)
     
     
@@ -654,12 +829,30 @@ class Beam():
     #Beam physical atributes and its utilities
 
     def Power(self, pol_index=None) -> float:
-        """Get the total Power of a field within the region of interest"""
+        """Get the total Power of the field.
+        
+        Parameters
+        ----------
+        pol_index: int, optional
+            Polarization component into which the resulting power is measured. Default is power of 
+            all field components.
+
+        Returns
+        -------
+        float
+        """
         return np.sum(self.int_profile(pol_index))*(4*self.nix/self.Dx)*(self.niy/self.Dy)
 
     
     def zr(self) -> float:
-        #Get the Rayleigh range of the beam
+        """
+        Compute the Rayleigh range of the beam from its `waist` and `lamb`.
+
+        Returns
+        -------
+        float
+            Rayleigh range, zr = pi*waist**2/lamb.
+        """
         return np.pi*self.waist**2/self.lamb
     
     def int_profile(self, pol_index=None) -> np.ndarray:
@@ -670,6 +863,17 @@ class Beam():
         pol_index=0    -> Ex intensity
         pol_index=1    -> Ey intensity
         pol_index=2    -> Ez intensity
+
+        Parameters
+        ----------
+        pol_index: int, optional
+            Polarization component into which the resulting intensity profile is measured. Default is sum of 
+            all intensity components.
+
+        Return
+        ------
+        ndarray
+            Array with intensity profile (x,y).
         """
         if pol_index is None:
             return np.sum(np.abs(self.field)**2, axis=0)
@@ -684,6 +888,17 @@ class Beam():
         pol_index=0    -> Ex
         pol_index=1    -> Ey
         pol_index=2    -> Ez 
+
+        Parameters
+        ----------
+        pol_index: int, optional
+            Polarization component into which the resulting phase profile is measured. Default is array with 
+            all phase components.
+
+        Return
+        ------
+        ndarray
+            Array of phase profile (x,y).
         """
         if pol_index is None:
             field = self.field
@@ -697,11 +912,38 @@ class Beam():
         return p
     
     def center_mass(self, pol_index=None) -> tuple:
-        #Calculates the center of mass of intensities of a given field in given polarization
+        """
+        Compute the intensity-weighted center of mass of the field, in grid
+        index coordinates.
+
+        Parameters
+        ----------
+        pol_index : int, optional
+            Polarization component to use; None uses total intensity.
+
+        Returns
+        -------
+        tuple
+            (row, col) center-of-mass indices, as returned by
+            `scipy.ndimage.center_of_mass`.
+        """
         return ndimage.center_of_mass(self.int_profile(pol_index))
   
     def std(self, pol_index=None) -> float:
-        """Calculate intensity-weighted radial standard deviation."""
+        """
+        Calculate the intensity-weighted radial standard deviation of the field
+        about its center of mass.
+
+        Parameters
+        ----------
+        pol_index : int, optional
+            Polarization component to use; None uses total intensity.
+
+        Returns
+        -------
+        float
+            Intensity-weighted radial standard deviation.
+        """
         I = self.int_profile(pol_index)
         c = self.center_mass(pol_index)
         x0 = self.x[0, int(round(c[1]))]
