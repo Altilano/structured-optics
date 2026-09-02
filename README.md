@@ -28,15 +28,13 @@ on a discretized transverse grid.
 pip install structured-optics
 ```
 
-<!-- TODO: confirm this is the real distribution name on PyPI -->
-
 ## Quick start
 
 ```python
-from structured_optics import Beam
+import structured_optics as so
 
-# Create a beam on a 5mm x 5mm grid with 256x256 points
-beam = Beam(nix=5e-3, Dx=256, waist=1e-3, lamb=1064e-9)
+# Create a beam on a 10mm x 10mm (2*5e-3) grid with 256x256 points
+beam = so.Beam(nix=5e-3, Dx=256, waist=1e-3, lamb=1064e-9)
 
 # Set the field to a Laguerre-Gaussian mode with l=2, p=0
 beam.lg(l=2, p=0)
@@ -47,7 +45,7 @@ print(beam.Power())
 
 # Look at the intensity profile
 import matplotlib.pyplot as plt
-plt.imshow(beam.int_profile())
+plt.pcolormesh(beam.x, beam.y, beam.int_profile())
 plt.show()
 ```
 
@@ -56,16 +54,16 @@ plt.show()
 Full API documentation, including all mode types, propagation methods, and
 optical elements, is available at:
 
-<!-- TODO: link to your Read the Docs / GitHub Pages site -->
-**https://structured-optics.readthedocs.io**
+Soon...
 
 ## Requirements
 
 - Python 3.9+
 - numpy
 - scipy
+- PyQt6
 
-<!-- TODO: confirm actual minimum versions and any other dependencies -->
+
 
 ## Contributing
 
@@ -78,4 +76,4 @@ This project is licensed under the BSD-3-Clause License. See `LICENSE` for detai
 
 ## Citation
 
-<!-- TODO: if this accompanies a paper, add a BibTeX entry here -->
+

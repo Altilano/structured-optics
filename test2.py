@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from structured_optics import *
+from structured_optics import Beam
 import numpy as np
 
 
