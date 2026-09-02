@@ -1,3 +1,5 @@
+LICENSE
+README.md
 pyproject.toml
 setup.py
 structured_optics/__init__.py
