@@ -829,7 +829,8 @@ class Beam():
     #Beam physical atributes and its utilities
 
     def Power(self, pol_index=None) -> float:
-        """Get the total Power of the field.
+        """Get the total optical Power via numerical integration of the intensity profile 
+        (trapezoidal-like Riemann sum with the grid's cell area)
         
         Parameters
         ----------
@@ -882,23 +883,19 @@ class Beam():
     
     def phase(self, pol_index=None, twopi=False) -> np.ndarray:
         """
-        Get phase profile.
-
-        pol_index=None -> phase of all components
-        pol_index=0    -> Ex
-        pol_index=1    -> Ey
-        pol_index=2    -> Ez 
-
         Parameters
         ----------
-        pol_index: int, optional
-            Polarization component into which the resulting phase profile is measured. Default is array with 
-            all phase components.
+        pol_index : int or None, optional
+            None returns phase of all components; 0/1/2 returns the phase of
+            Ex/Ey/Ez respectively.
+        twopi : bool, optional
+            If True, wrap phase into [0, 2*pi) instead of the default (-pi, pi].
 
-        Return
-        ------
+        Returns
+        -------
         ndarray
-            Array of phase profile (x,y).
+            Phase profile, shape (Dy, Dx) if pol_index is given or pol==1,
+            otherwise shape (pol, Dy, Dx).
         """
         if pol_index is None:
             field = self.field
@@ -952,29 +949,96 @@ class Beam():
         return np.sqrt(np.average(r2, weights=I))
     
     def section(self, ang_min:float, ang_max:float, pol_index:int=0) -> np.ndarray:
-        #Return field distribution of given section, defined by minimum angle and maximum angle
+        """
+        Parameters
+        ----------
+        ang_min : float
+            Minimum angle (radians) defining the angular wedge.
+        ang_max : float
+            Maximum angle (radians) defining the angular wedge.
+        pol_index : int, optional
+            Polarization component to extract the section from.
+
+        Returns
+        -------
+        ndarray
+            Complex field values restricted to the angular wedge [ang_min, ang_max].
+        """
         return get_section(self, ang_min, ang_max, pol_index = pol_index)
     
     def int_section(self, ang_min:float, ang_max:float, pol_index:int=0)-> np.ndarray:
-        #Get intensity profile of given section, defined by minimum angle and maximum angle
+        """
+        Parameters
+        ----------
+        ang_min : float
+            Minimum angle (radians) defining the angular wedge.
+        ang_max : float
+            Maximum angle (radians) defining the angular wedge.
+        pol_index : int, optional
+            Polarization component to extract the section from.
+
+        Returns
+        -------
+        ndarray
+            Intensity |field|^2 within the angular wedge [ang_min, ang_max].
+        """
         return np.abs(self.section(ang_min, ang_max, pol_index = pol_index))**2
     
     def Power_section(self, ang_min:float, ang_max:float, pol_index:int=0)-> float:
-        #Get power of given section
+        """
+        Parameters
+        ----------
+        ang_min : float
+            Minimum angle (radians) defining the angular wedge.
+        ang_max : float
+            Maximum angle (radians) defining the angular wedge.
+        pol_index : int, optional
+            Polarization component to compute power for.
+
+        Returns
+        -------
+        float
+            Optical power contained within the angular wedge [ang_min, ang_max].
+        """
         return np.sum(np.abs(self.section(ang_min, ang_max, pol_index = pol_index))**2*(4*self.nix/self.Dx)*(self.niy/self.Dy))
     
     def norm_beam(self)-> object:                                       
-        #normalize beam so that Total Power = 1 in region of interest
+        """
+        Returns
+        -------
+        Beam
+            self, with field rescaled in place so that self.Power() == 1.
+        """
         self.field = self.field/np.sqrt(self.Power())
         return self
     
     def Max_int1(self)-> object:                                         
-        #rescale the field such that the maximum Intensity point is equal to one.
+        """
+        Returns
+        -------
+        Beam
+            self, with field rescaled in place so that the peak intensity equals 1.
+        """
         self.field = self.field/np.sqrt(np.max(self.int_profile()))
         return self
     
     def crop(self, center:tuple=None, std:float=None, window:float=2) -> object:
-        #Crops a field by its std*window arround the center of mass
+        """
+        Parameters
+        ----------
+        center : tuple of float, optional
+            (x, y) center of the crop window. Defaults to the beam's own centroid.
+        std : float, optional
+            Standard deviation used to size the crop window. Defaults to the
+            beam's own computed std.
+        window : float, optional
+            Multiplier on `std` defining the half-width of the crop region.
+
+        Returns
+        -------
+        Beam
+            A new, spatially cropped Beam.
+        """
         return get_crop(self, center, std, window)
     
 
@@ -988,19 +1052,62 @@ class Beam():
     #masks
     
     def lens(self, f:float, f0:tuple=(0,0))-> object:                                
-        #apply a lens operator to the field, with lens center at f0 and focus lenght equal to f
+        """
+        Parameters
+        ----------
+        f : float
+            Focal length of the thin lens.
+        f0 : tuple of float, optional
+            (x, y) center of the lens.
+
+        Returns
+        -------
+        Beam
+            self, with field multiplied in place by the lens's quadratic phase factor.
+        """
         k = 2*np.pi/self.lamb
         self.field = self.field*np.exp(-1j*k*(((self.x-f0[0])**2 + (self.y-f0[1])**2)/(2*f)))
         return self
 
     def astigmatic_lens(self, fx:float, fy:float, f0:tuple=(0,0))-> object:                      
-        #apply a astigmatic lens with two focal axis, with focus fx and fy.
+        """
+        Parameters
+        ----------
+        fx : float
+            Focal length along x.
+        fy : float
+            Focal length along y.
+        f0 : tuple of float, optional
+            (x, y) center of the lens.
+
+        Returns
+        -------
+        Beam
+            self, with field multiplied in place by the astigmatic lens phase factor.
+        """
         k = 2*np.pi/self.lamb
         self.field = self.field*np.exp(-1j*k*(((self.x-f0[0])**2)/fx + ((self.y-f0[1])**2)/fy)/2)
         return self
     
     def tilted_lens(self, f:float, phi:float, f0:tuple=(0,0), flip_axis:bool=False)-> object:                      
-        #apply a astigmatic lens with two focal axis, with each focus given by a tilt phi.
+        """
+        Parameters
+        ----------
+        f : float
+            Focal length of the (untilted) spherical lens.
+        phi : float
+            Tilt angle (radians) of the lens about one transverse axis.
+        f0 : tuple of float, optional
+            (x, y) center of the lens.
+        flip_axis : bool, optional
+            If True, swap which axis (x or y) receives the fx vs fy focal length.
+
+        Returns
+        -------
+        Beam
+            self, with field multiplied in place by the tilted lens's effective
+            astigmatic phase factor (fx = f*cos^3(phi), fy = f*cos(phi)).
+        """
         fx = f*np.cos(phi)**3
         fy = f*np.cos(phi)
         if flip_axis == True:
@@ -1010,6 +1117,24 @@ class Beam():
 
     #boolean masks
     def _apply_bool_mask(self, mask, babinet=False):
+        """
+        Parameters
+        ----------
+        mask : array_like of bool, shape (Dy, Dx)
+            Transmission mask; True passes the field, False blocks it.
+        babinet : bool, optional
+            If True, use the complementary mask (~mask) instead.
+
+        Returns
+        -------
+        Beam
+            self, with field multiplied in place by the (possibly inverted) mask.
+
+        Raises
+        ------
+        ValueError
+            If `mask.shape` does not match `self.field.shape[-2:]`.
+        """
         mask = np.asarray(mask, dtype=bool)
         if mask.shape != self.field.shape[-2:]:
             raise ValueError(f"Mask must have shape {self.field.shape[-2:]}, "f"got {mask.shape}")
@@ -1019,7 +1144,21 @@ class Beam():
         return self
     
     def cross_slit(self, size, hsize=None, babinet=False):
-        """Def cross stripe"""
+        """
+        Parameters
+        ----------
+        size : float
+            Half-width of the vertical strip (along x).
+        hsize : float, optional
+            Half-width of the horizontal strip (along y). Defaults to `size`.
+        babinet : bool, optional
+            If True, apply the complementary mask.
+
+        Returns
+        -------
+        Beam
+            self, with field masked in place by the cross-shaped aperture.
+        """
         if hsize == None:
             hsize = size
         vertical = np.abs(self.x) < size
@@ -1028,28 +1167,120 @@ class Beam():
         return self._apply_bool_mask(mask, babinet)
 
     def hslit(self, size, center=0, babinet=False):
+        """
+        Parameters
+        ----------
+        size : float
+            Half-width of the slit along x.
+        center : float, optional
+            x-position of the slit center.
+        babinet : bool, optional
+            If True, apply the complementary mask.
+
+        Returns
+        -------
+        Beam
+            self, with field masked in place by the horizontal slit (|x-center| <= size).
+        """
         mask = np.abs(self.x - center) <= size
         return self._apply_bool_mask(mask, babinet)
 
     def vslit(self, size, center=0, babinet=False):
+        """
+        Parameters
+        ----------
+        size : float
+            Half-width of the slit along y.
+        center : float, optional
+            y-position of the slit center.
+        babinet : bool, optional
+            If True, apply the complementary mask.
+
+        Returns
+        -------
+        Beam
+            self, with field masked in place by the vertical slit (|y-center| <= size).
+        """
         mask = np.abs(self.y - center) <= size
         return self._apply_bool_mask(mask, babinet)
     
     def double_slit(self, size, dis, center=0, babinet=False):
+        """
+        Parameters
+        ----------
+        size : float
+            Half-width of each slit.
+        dis : float
+            Center-to-center distance between the two slits.
+        center : float, optional
+            x-position of the midpoint between the two slits.
+        babinet : bool, optional
+            If True, apply the complementary mask.
+
+        Returns
+        -------
+        Beam
+            self, with field masked in place by the double-slit aperture.
+        """
         slit1 = np.abs(self.x - (center - dis/2)) <= size
         slit2 = np.abs(self.x - (center + dis/2)) <= size
         mask = slit1 | slit2
         return self._apply_bool_mask(mask, babinet)
 
     def iris(self, center=(0, 0), radius=None, babinet=False):
+        """
+        Parameters
+        ----------
+        center : tuple of float, optional
+            (x, y) center of the iris.
+        radius : float, optional
+            Radius of the circular aperture.
+        babinet : bool, optional
+            If True, apply the complementary mask.
+
+        Returns
+        -------
+        Beam
+            self, with field masked in place by the circular aperture.
+        """
         mask = np.asarray(circle(self, center, radius), dtype=bool)
         return self._apply_bool_mask(mask, babinet)
 
     def triangle_slit(self, center=(0,0), side_length=None, babinet=False):
+        """
+        Parameters
+        ----------
+        center : tuple of float, optional
+            (x, y) center of the triangular aperture.
+        side_length : float, optional
+            Side length of the triangular aperture.
+        babinet : bool, optional
+            If True, apply the complementary mask.
+
+        Returns
+        -------
+        Beam
+            self, with field masked in place by the triangular aperture.
+        """
         mask = np.asarray(triangle(self, center, side_length), dtype=bool)
         return self._apply_bool_mask(mask, babinet)
 
     def square_slit(self, center=(0,0), side_length=None, babinet=False):
+        """
+        Parameters
+        ----------
+        center : tuple of float, optional
+            (x, y) center of the square aperture.
+        side_length : float, optional
+            Side length of the square aperture.
+        babinet : bool, optional
+            If True, apply the complementary mask.
+
+        Returns
+        -------
+        Beam
+            self, with field masked in place by the square aperture.
+        """
         mask = np.asarray(square(self, center, side_length), dtype=bool)
         return self._apply_bool_mask(mask, babinet)
 
@@ -1060,12 +1291,24 @@ class Beam():
 
     def _apply_jones(beam, J):
         """
-        Apply a 2x2 Jones matrix to Beam's Ex, Ey components in place.
+        Parameters
+        ----------
+        beam : Beam
+            Beam whose Ex, Ey components will be transformed in place
+            (named `beam` instead of `self` — note this is inconsistent with
+            the rest of the class but functionally equivalent).
+        J : array_like, shape (2, 2), complex
+            Jones matrix acting on the (Ex, Ey) vector.
 
-        J : (2,2) complex array-like, acts on (Ex, Ey).
-        pol=1 -> no-op (scalar field, no polarization info)
-        pol=2 -> standard Jones matrix application
-        pol=3 -> acts only on Ex, Ey; Ez untouched
+        Returns
+        -------
+        Beam
+            beam, with Ex, Ey updated in place; Ez (if present) is left unchanged.
+
+        Raises
+        ------
+        ValueError
+            If J is not 2x2, or beam.pol is not in {2, 3}.
         """
         if beam.pol == 1:
             return beam
@@ -1087,16 +1330,50 @@ class Beam():
         return beam
 
     def hwp(self, angle):
+        """
+        Parameters
+        ----------
+        angle : float
+            Fast-axis orientation of the half-wave plate (radians).
+
+        Returns
+        -------
+        Beam
+            self, with Ex, Ey transformed in place by the HWP Jones matrix.
+        """
         self._apply_jones(J_hwp(angle))
         return self
 
     def qwp(self, angle):
+        """
+        Parameters
+        ----------
+        angle : float
+            Fast-axis orientation of the quarter-wave plate (radians).
+
+        Returns
+        -------
+        Beam
+            self, with Ex, Ey transformed in place by the QWP Jones matrix.
+        """
         self._apply_jones(J_qwp(angle))
         return self
 
     def polarizer(self, angle=0, proj='H'):
-        """Polarizer projector. Use proj = 'H', 'V', 'D', 'A', 'R', 'L' for 
-        horizontal, vertical, diagonal, antidiagonal, right and left polarizers"""
+        """
+        Parameters
+        ----------
+        angle : float, optional
+            Rotation of the polarizer's transmission axis (radians).
+        proj : {'H', 'V', 'D', 'A', 'R', 'L'}, optional
+            Projection basis: horizontal, vertical, diagonal, antidiagonal,
+            right-circular, or left-circular.
+
+        Returns
+        -------
+        Beam
+            self, with Ex, Ey projected in place onto the chosen polarization state.
+        """
         name = proj + 'PROJ'
         self._apply_jones(J_rot(eval(name), angle))
         return self
@@ -1108,7 +1385,22 @@ class Beam():
     
     #Propagation 
     def propagate(self, z, method='fresnel', renorm=False):           
-        #propagate the field by a distance z
+        """
+        Parameters
+        ----------
+        z : float
+            Propagation distance.
+        method : {'fresnel', 'fraunhofer', 'incoherent'}, optional
+            Diffraction model used for propagation. An unrecognized value
+            currently prints a warning and leaves the field unchanged.
+        renorm : bool, optional
+            If True, renormalize total power to 1 after propagation.
+
+        Returns
+        -------
+        Beam
+            self, with field propagated by distance z (and renormalized if requested).
+        """
         if method == 'fresnel':
             self = propagate_fresnel(self, z)
         elif method == 'fraunhofer':
@@ -1116,7 +1408,7 @@ class Beam():
         elif method == 'incoherent':
             self = propagate_incoherent(self, z)
         else:
-            print('Unable to propagate, insert valid method.')
+            raise Exception('Unable to propagate, insert valid method.') 
         if renorm == True:
             self.norm_beam()
         return self
@@ -1126,9 +1418,43 @@ class Beam():
 
     def slm_holo(self, x_grating:int, y_grating:int, method:str = 'bessel1', input_beam:object= None, 
                  eps:float = 1e-12, max_range:int = 255)-> np.ndarray:
-        #generates hologram for slm
+        """
+        Parameters
+        ----------
+        x_grating : int
+            Carrier grating spatial frequency along x (grid pixels).
+        y_grating : int
+            Carrier grating spatial frequency along y (grid pixels).
+        method : str, optional
+            Amplitude/phase encoding scheme used to build the hologram.
+        input_beam : Beam, optional
+            Reference illumination beam; defaults to self if None.
+        eps : float, optional
+            Small value added to avoid division by zero during encoding.
+        max_range : int, optional
+            Output gray-level range (e.g. 255 for an 8-bit SLM lookup table).
+
+        Returns
+        -------
+        ndarray
+            Encoded hologram pattern, shape (Dy, Dx), ready for SLM display.
+        """
         return slm_hologram(self, x_grating, y_grating, method = method, input_beam = input_beam, eps = eps, max_range = max_range)
     
     def dmd_holo(self, cx:float, cy:float, sign:int=1)-> np.ndarray:
-        #generates hologram for dmd
+        """
+        Parameters
+        ----------
+        cx : float
+            Carrier grating frequency component along x.
+        cy : float
+            Carrier grating frequency component along y.
+        sign : int, optional
+            Sign convention for the diffraction order encoded.
+
+        Returns
+        -------
+        ndarray
+            Binary Lee-type hologram pattern, shape (Dy, Dx), ready for DMD display.
+        """
         return dmd_hologram(self, cx, cy, sign)

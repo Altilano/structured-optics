@@ -39,7 +39,7 @@ b1.Ex = hg(b1, 0,0) + hg(b1, 6,0)
 #b1.vslit(b1.waist/4, babinet=True)
 
 
-
+b1.propagate(1e-3, method='fresnel')
 
 
 

@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "structured_optics"
 version = "0.3"
 description = "Package for Structured Light simulation"
+license = "BSD-3-Clause"
 requires-python = ">=3.9"
 authors = [
     { name = "Altilano C. Barbosa" }
