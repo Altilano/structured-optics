@@ -1,15 +1,14 @@
-
-
 import numpy as np
-from scipy import fft, ndimage
+import copy
+from scipy import fft
 from contextlib import contextmanager
 from structured_optics.prop_methods import *
-import copy
 from structured_optics.utils import *
 from structured_optics.modes import *
 from structured_optics.algebra_utils import *
 from structured_optics.hologram import *
 from structured_optics.polarization import *
+
 
 
 
@@ -908,25 +907,73 @@ class Beam():
             return p[0]
         return p
     
-    def center_mass(self, pol_index=None) -> tuple:
-        """
-        Compute the intensity-weighted center of mass of the field, in grid
-        index coordinates.
 
-        Parameters
-        ----------
-        pol_index : int, optional
-            Polarization component to use; None uses total intensity.
+    def center_mass(self, pol_index=None) -> tuple: 
+        """ 
+        Compute the intensity-weighted center of mass of the field in physical x and y coordinates. 
+        
+        Parameters 
+        ---------- 
+        pol_index : int, optional 
+            Polarization component to use; None uses total intensity. 
+            
+        Returns 
+        ------- 
+        tuple (x_cm, y_cm) 
+            center-of-mass coordinates in physical units. """ 
+        I = self.int_profile(pol_index) 
+
+        x = np.asarray(self.x) 
+        y = np.asarray(self.y) 
+        if x.ndim == 2: 
+            x = x[0, :] if x.shape[0] == 1 else x[0, :] 
+        if y.ndim == 2: 
+            y = y[:, 0] if y.shape[1] == 1 else y[:, 0] 
+        # Total intensity 
+        norm = np.sum(I) 
+
+        if norm == 0: 
+            raise ValueError("Cannot calculate center of mass of zero intensity.") 
+
+        # Intensity marginalized along each direction 
+        Ix = np.sum(I, axis=0) 
+        Iy = np.sum(I, axis=1) 
+
+        # Physical center of mass 
+        x_cm = np.sum(x * Ix) / norm 
+        y_cm = np.sum(y * Iy) / norm 
+
+        return x_cm, y_cm
+  
+    def std(self, pol_index=None): 
+        """
+        Calculate the intensity-weighted spatial standard deviation
+        along x and y.
+
+        Parameters 
+        ---------- 
+        pol_index : int, optional 
+            Polarization component to use; None uses total intensity. 
 
         Returns
         -------
-        tuple
-            (row, col) center-of-mass indices, as returned by
-            `scipy.ndimage.center_of_mass`.
+        sigma_x, sigma_y : float
+            Intensity-weighted spatial standard deviations.
         """
-        return ndimage.center_of_mass(self.int_profile(pol_index))
-  
-    def std(self, pol_index=None) -> float:
+        I = self.int_profile(pol_index) 
+        x = np.asarray(self.x) 
+        y = np.asarray(self.y) 
+        x = x[0, :] if x.ndim == 2 else x 
+        y = y[:, 0] if y.ndim == 2 else y 
+        norm = np.sum(I) 
+        Ix = np.sum(I, axis=0) 
+        Iy = np.sum(I, axis=1) 
+        x_cm, y_cm = self.center_mass(pol_index) 
+        var_x = np.sum(Ix * (x - x_cm)**2) / norm 
+        var_y = np.sum(Iy * (y - y_cm)**2) / norm 
+        return np.sqrt(var_x), np.sqrt(var_y)
+        
+    def radial_std(self, pol_index=None) -> float:
         """
         Calculate the intensity-weighted radial standard deviation of the field
         about its center of mass.
@@ -941,12 +988,9 @@ class Beam():
         float
             Intensity-weighted radial standard deviation.
         """
-        I = self.int_profile(pol_index)
-        c = self.center_mass(pol_index)
-        x0 = self.x[0, int(round(c[1]))]
-        y0 = self.y[int(round(c[0])), 0]
-        r2 = (self.x - x0)**2 + (self.y - y0)**2
-        return np.sqrt(np.average(r2, weights=I))
+        sx, sy = self.std(pol_index)
+
+        return np.sqrt(sx**2 + sy**2)
     
     def section(self, ang_min:float, ang_max:float, pol_index:int=0) -> np.ndarray:
         """
@@ -1040,6 +1084,29 @@ class Beam():
             A new, spatially cropped Beam.
         """
         return get_crop(self, center, std, window)
+
+    def apply_zernike(self, n: int, m: int, strength: float = 1) -> object:
+        """ 
+        Apply a zernike polynomial of indexes n,m where (n-m)%2 == 0  and m <=n. Action normalized by waist.
+        Used to perform aberration correction.
+
+        Parameters
+        ----------
+        n : int
+            Zernike Polynomial radial degree.
+        m : int
+            Zernike Polynomial azimuthal degree.
+        strength: float, optional
+            Intensity of the aberration correction normalized by waist. Default equals one waist.
+        
+        Returns
+        -------
+        Beam
+            self, with zernike polynomial applyed to field phase.
+
+        """
+        self.field = apply_zernike(self.x, self.y, self.waist, self.field, n, m, strenght= strength)
+        return self
     
 
     

@@ -3,6 +3,7 @@ from scipy import ndimage
 from scipy.special import hermite, genlaguerre, jv, j0, j1, kv, jn_zeros
 from scipy.optimize import brentq
 from functools import wraps
+import math
 
 
 
@@ -471,3 +472,29 @@ def inv_J1(A, a=None, n=10000):
     return np.interp(a * A, y, x)
 
 
+
+#utils for aberration correction
+
+def radial_poly(n, m, r):
+    s = 0
+    if (n - m) % 2 == 0 and m <= n:
+        for k in range((n - m) // 2 + 1):
+            s += (-1)**k * math.factorial(n-k) / (math.factorial(k) * math.factorial((n + m) // 2 - k) 
+                                                     * math.factorial((n + m) // 2 - k))* r**(n - 2*k)
+    elif (n - m) % 2 == 1 and m <= n:
+        raise ValueError("Warning: (n - m) is odd, Zernike Polynomial is zero.")
+    else:
+        raise ValueError("Invalid n and m values for Zernike polynomials.")
+    return s 
+
+def zernike(n, m, r, phi):
+    if m >= 0:
+        return radial_poly(n, m, r) * np.cos(m*phi)
+    else:
+        return radial_poly(n, -m, r) * np.sin(-m*phi)
+    
+def apply_zernike(x, y, waist, desired, n, m, strength):
+    r = np.sqrt(x**2 + y**2)/waist
+    phi = np.arctan2(y, x)
+    phase = strength * zernike(n, m, r, phi)
+    return  desired*np.exp(1j*phase)

@@ -61,7 +61,7 @@ Soon...
 - Python 3.9+
 - numpy
 - scipy
-- PyQt6
+- screeninfo
 
 
 

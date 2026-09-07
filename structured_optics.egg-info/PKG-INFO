@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: structured_optics
-Version: 0.4
+Version: 0.4.1
 Summary: Package for Structured Light simulation
 Author: Altilano C. Barbosa
 License-Expression: BSD-3-Clause
@@ -9,7 +9,7 @@ Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: numpy
 Requires-Dist: scipy
-Requires-Dist: PyQt6
+Requires-Dist: screeninfo
 Dynamic: license-file
 
 # structured-optics
@@ -75,7 +75,7 @@ Soon...
 - Python 3.9+
 - numpy
 - scipy
-- PyQt6
+- screeninfo
 
 
 

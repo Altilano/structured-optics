@@ -6,7 +6,7 @@ import numpy as np
 import time
 
 
-"""slm = soslm.My_SLM(screen_index = 1)
+slm = soslm.My_SLM(screen_index = 1)
 
 print(slm.width, slm.height)
 pixel_size = 0.31e-3
@@ -24,7 +24,16 @@ slm.update_image(holo)
 
 time.sleep(5)
 
-exit()"""
+b2.lg(2,2)
+holo = b2.slm_holo(3, 4)
+slm.update_image(holo)
+
+time.sleep(5)
+
+
+
+
+exit()
 
 
 b1 = Beam(nix=20e-6, 
@@ -33,13 +42,14 @@ b1 = Beam(nix=20e-6,
           lamb = 1064e-9)
 
 
-b1.Ex = hg(b1, 0,0) + hg(b1, 6,0)
+b1.Ex = lg(b1, 1,0)
 #b1.lp(2,2,1.7,1.4, angle=np.pi/3)
 
 #b1.vslit(b1.waist/4, babinet=True)
-
-
-b1.propagate(1e-3, method='fresnel')
+print(b1.center_mass())
+print(b1.radial_std())
+print(b1.waist/np.sqrt(2))
+#b1.propagate(1e-3, method='fresnel')
 
 
 

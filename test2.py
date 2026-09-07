@@ -20,8 +20,6 @@ b1.Ey = lg(b1,2,2)
 
 
 
-
-
 plt.pcolormesh(b1.x, b1.y, b1.int_profile(), cmap='inferno')
 plt.colorbar()
 plt.show()
