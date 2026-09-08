@@ -19,16 +19,34 @@ b2 = Beam(nix = pixel_size*slm.width,
 
 b2.hg(2,2)
 
-holo = b2.slm_holo(3, 4)
+
+step = 0.1
+strength = np.arange(-1,1.1, step)
+strength2 = strength
+
+coefs_zern = np.array([(2,-2), (2,2)])
+
+for s in strength:
+    for s2 in strength2:
+        
+        aux = b2.copy()
+        aux.apply_zernike(coefs_zern[0, 0], coefs_zern[0,1], s)
+        aux.apply_zernike(coefs_zern[1, 0], coefs_zern[1,1], s2)
+        
+        start = time.time()
+        holo = aux.slm_holo(3,4)
+        end  = time.time()
+        
+        slm.update_image(holo)
+        
+        print(end-start)
+        time.sleep(0.1)
+
+print("finished")
+"""holo = b2.slm_holo(3, 4)
 slm.update_image(holo)
 
-time.sleep(5)
-
-b2.lg(2,2)
-holo = b2.slm_holo(3, 4)
-slm.update_image(holo)
-
-time.sleep(5)
+time.sleep(0.1)"""
 
 
 

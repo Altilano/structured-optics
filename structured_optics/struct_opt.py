@@ -1105,7 +1105,7 @@ class Beam():
             self, with zernike polynomial applyed to field phase.
 
         """
-        self.field = apply_zernike(self.x, self.y, self.waist, self.field, n, m, strenght= strength)
+        self.field = apply_zernike(self.x, self.y, self.waist, self.field, n, m, strength= strength)
         return self
     
 
