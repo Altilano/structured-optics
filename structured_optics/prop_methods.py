@@ -10,6 +10,20 @@ def propagate_fresnel(Beam, z):
     Beam.field = fft.ifft2(prop*Beam.fourier_field, axes=(-2,-1))
     return Beam
 
+def propagate_AS(Beam, z, evanescent=False):
+    #Propagate the field by a distance z using Angular Spectrum method.
+    k = 2*np.pi/Beam.lamb
+    kz2 = k**2 - Beam.kx**2 - Beam.ky**2
+    kz = np.sqrt(kz2.astype(complex))
+    if not evanescent:
+        not_evanescent = kz2 >= 0
+        kz = kz*not_evanescent
+    prop = np.exp(1j*kz*z + 1j*k*z)
+    Beam.fourier_field = fft.fft2(Beam.field, axes=(-2,-1))
+    Beam.field = fft.ifft2(prop*Beam.fourier_field, axes=(-2,-1))
+    return Beam
+
+
 def propagate_incoherent(Beam, z):
     #Propagates the INTENSITY by a distance z using incoherent propagation. Loses phase information.
     #without pupil function doesn't seems to work
@@ -44,3 +58,25 @@ def propagate_fraunhofer(Beam, z):
         Beam.fourier_field = fft.fft2(Beam.field, axes=(-2,-1))
         Beam.field = C*fft.fftshift(Beam.fourier_field)*dx*dy
     return Beam
+
+
+
+
+
+
+
+
+def max_propagation_distance(Nx, Ny, dx, dy, wavelength, n=1.0):
+    """
+    Rough estimate of the maximum propagation distance for which the
+    angular spectrum transfer function is adequately sampled, based on
+    the Nyquist criterion applied to the quadratic phase of H.
+ 
+    Returns (z_max_x, z_max_y): safe distances in x and y directions.
+    """
+    Lx = Nx * dx
+    Ly = Ny * dy
+    lam = wavelength / n
+    z_max_x = Lx * dx / lam
+    z_max_y = Ly * dy / lam
+    return z_max_x, z_max_y

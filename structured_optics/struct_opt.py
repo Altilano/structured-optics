@@ -1451,7 +1451,7 @@ class Beam():
 
     
     #Propagation 
-    def propagate(self, z, method='fresnel', renorm=False):           
+    def propagate(self, z, method='fresnel', renorm=False, evanescent=False):           
         """
         Parameters
         ----------
@@ -1470,6 +1470,8 @@ class Beam():
         """
         if method == 'fresnel':
             self = propagate_fresnel(self, z)
+        elif method == 'AS':
+            self = propagate_AS(self, z, evanescent=evanescent)
         elif method == 'fraunhofer':
             self = propagate_fraunhofer(self, z)
         elif method == 'incoherent':
