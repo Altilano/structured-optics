@@ -1467,13 +1467,19 @@ class Beam():
         ----------
         z : float
             Propagation distance.
-        method : {'fresnel', 'fraunhofer', 'incoherent'}, optional
-            Diffraction model used for propagation. An unrecognized value
-            currently prints a warning and leaves the field unchanged.
+        method : {'auto', 'fresn_c', 'AS', 'fraun', 'fres_f', 'blue', 'blue_fix', 'inc'}, optional
+            Diffraction model used for propagation. Default is 'fres_c'.
         renorm : bool, optional
             If True, renormalize total power to 1 after propagation.
         evanescent : bool, optional
-            Used in Angular Spectrum method. Default is False, but if True the code keeps the evanscent contribution to the field.
+            Optional in Angular Spectrum method. Default is False, but if True the code keeps the evanscent contribution to the field.
+        x_out_range, y_out_range : tuple
+            Necessary for bluestein method without fixed window range. tuple containing (x_min, x_max), (y_min, y_max) of the output window.
+        Dx_out, Dy_out : int, optional
+            Optional for bluestein method. Sets number of output samples along x and y.
+        n_sigma : float, optional
+            Optional in Bluestein Fix. How many standard deviations the bluestein_fix window range should be.
+        
 
         Returns
         -------
@@ -1481,7 +1487,9 @@ class Beam():
             self, with field propagated by distance z (and renormalized if requested).
         """
         if method == 'auto':
-            method, _ = suggest_propagation_method(self, z, **kwargs)
+            method, _ = suggest_propagation_method(self, z)
+            if method == 'none':
+                return self
 
         if method == 'fres_c':
             self = propagate_fresnel_conv(self, z)

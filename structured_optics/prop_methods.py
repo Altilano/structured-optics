@@ -21,42 +21,37 @@ def propagate_fresnel_fft(Beam, z):
     Beam : object
         Beam class containing all physical information of your beam.
     z : float
-        Propagation distance (must be > 0; the Fresnel single-FFT form
-        is a forward-propagation formula).
+        Propagation distance.
  
     Returns
     -------
     Beam : object
+        Beam class containing all physical information of your beam, with updated field and x,y meshgrid.
     """
     if z == 0:
         return Beam
- 
 
     Dy, Dx = Beam.field.shape[-2:]
- 
     dx = 2*Beam.nix/Beam.Dx
     dy = 2*Beam.niy/Beam.Dy
- 
     k = Beam.k()
  
- 
-    # --- Output grid, fixed by the physics (fx = x_out / (lambda*z)) ---
+    # Output grid, fixed by the physics (fx = x_out / (lambda*z)) 
     dx_out = Beam.lamb * z / (Dx * dx)
     dy_out = Beam.lamb * z / (Dy * dy)
     x_out = (np.arange(Dx) - Dx // 2) * dx_out
     y_out = (np.arange(Dy) - Dy // 2) * dy_out
     X_out, Y_out = np.meshgrid(x_out, y_out)
  
-    # --- Input quadratic phase ---
+    # Input quadratic phase 
     Q1 = np.exp(1j * k / (2 * z) * (Beam.x**2 + Beam.y**2))
  
-    # --- Single FFT (fftshift/ifftshift keep x=0 <-> zero frequency) ---
+    # Single FFT (fftshift/ifftshift keep x=0 <-> zero frequency) 
     U1 = np.fft.fftshift(np.fft.fft2(np.fft.ifftshift(Beam.field * Q1, axes=(-2, -1)), axes=(-2, -1)), axes=(-2, -1)) * dx * dy
  
-    # --- Output prefactor and quadratic phase ---
+    # Output prefactor and quadratic phase 
     Q2 = (np.exp(1j * k * z) / (1j * Beam.lamb * z)) * \
          np.exp(1j * k / (2 * z) * (X_out**2 + Y_out**2))
- 
     field_z = Q2 * U1
 
     if dx_out < 0:
@@ -71,7 +66,7 @@ def propagate_fresnel_fft(Beam, z):
  
     return Beam
 
-def propagate_bluestein(Beam, z, x_out_range, y_out_range, Dx_out, Dy_out):
+def propagate_bluestein(Beam, z, x_out_range, y_out_range, Dx_out=None, Dy_out=None):
     """
     Single-FFT Fresnel propagation with an arbitrary, independently
     chosen output grid, using the Bluestein (chirp-z) transform.
@@ -92,6 +87,7 @@ def propagate_bluestein(Beam, z, x_out_range, y_out_range, Dx_out, Dy_out):
     Returns
     -------
     Beam : object
+        Beam class containing all physical information of your beam, with updated field and x,y meshgrid.
     """
     if z == 0:
         raise ValueError("Bluestein propagation requires z != 0.")
@@ -115,7 +111,6 @@ def propagate_bluestein(Beam, z, x_out_range, y_out_range, Dx_out, Dy_out):
  
 
     k = Beam.k()
- 
     X, Y = np.meshgrid(x, y)                   # input grid, (Dy, Dx)
     X_out, Y_out = np.meshgrid(x_out, y_out)   # output grid, (Dy_out, Dx_out)
  
@@ -212,7 +207,7 @@ def propagate_fraunhofer(Beam, z):
 
 
 def suggest_propagation_method(Beam, z, aperture_sigma_factor=3.0,
-                                fraunhofer_threshold=0.1, verbose=True):
+                                fraunhofer_threshold=0.1):
     """
     Recommend a propagation method for Beam.propagate(z, method=...).
  
@@ -223,7 +218,7 @@ def suggest_propagation_method(Beam, z, aperture_sigma_factor=3.0,
     z : float
         Intended propagation distance.
     aperture_sigma_factor : float, optional
-        With sigma = Beam.std()[0] the effective aperture half-width
+        With sigma as the spatial standart deviation, the effective aperture half-width
         used for the Fraunhofer/paraxial checks is
         aperture_sigma_factor * sigma (default 3.0, i.e. ~99.7% of the
         energy for a Gaussian profile). Only affects the far-field/paraxial
@@ -246,8 +241,7 @@ def suggest_propagation_method(Beam, z, aperture_sigma_factor=3.0,
         want to make the decision yourself.
     """
     if z == 0:
-        if verbose:
-            print("z = 0: no propagation needed.")
+        print("z = 0: no propagation needed.")
         return 'none', {}
  
     abs_z = abs(z)
@@ -307,21 +301,21 @@ def suggest_propagation_method(Beam, z, aperture_sigma_factor=3.0,
         method = 'AS'
     else:
         method = 'fres_c'
- 
-    if verbose:
-        print(f"z = {z:.4g} m")
-        print(f"  aperture size used ({size_source}): ax={ax:.4g} m, ay={ay:.4g} m")
-        print(f"  critical (transfer-function) distance z_crit = {z_crit:.4g} m")
-        print(f"  Fresnel number                       Nf      = {fresnel_number:.4g}")
-        print(f"  paraxial validity floor               z_min   = {z_paraxial_min:.4g} m")
-        print(f"  -> recommended method: {method}")
+
+    print("Estimating best propagation method.")
+    print(f"z = {z:.4g} m")
+    print(f"  aperture size used ({size_source}): ax={ax:.4g} m, ay={ay:.4g} m")
+    print(f"  critical (transfer-function) distance z_crit = {z_crit:.4g} m")
+    print(f"  Fresnel number                       Nf      = {fresnel_number:.4g}")
+    print(f"  paraxial validity floor               z_min   = {z_paraxial_min:.4g} m")
+    print(f"  -> recommended method: {method}")
  
     return method, info
 
 
 
 
-def estimate_bluestein_range(Beam, z, n_sigma=5.0):#, include_cross_term=True):
+def estimate_bluestein_range(Beam, z, n_sigma=5.0, equal_grid=True):
     """
     Estimate the output window to pass to propagate_bluestein so the
     propagated beam is fully contained without edge clipping.
@@ -329,7 +323,7 @@ def estimate_bluestein_range(Beam, z, n_sigma=5.0):#, include_cross_term=True):
     Parameters
     ----------
     Beam : object
-        Your Beam instance (uses .field, .x, .y, .kx, .ky, .k()).
+        Beam instance.
     z : float
         Propagation distance you intend to use.
     n_sigma : float, optional
@@ -337,11 +331,8 @@ def estimate_bluestein_range(Beam, z, n_sigma=5.0):#, include_cross_term=True):
         include on each side (default 5.0 -- for a Gaussian-like profile
         this captures effectively all the energy; increase for beams
         with heavier tails, e.g. Bessel-like profiles).
-    include_cross_term : bool, optional
-        If True (default), account for any existing wavefront curvature
-        (beam already converging/diverging at the current plane). Set to
-        False only if you know the current plane is a true waist/collimated
-        plane and want to skip the extra derivative computation.
+    equal_grid : Bool, optional
+        If True x and y grid have the same output size, set to the bigger one.
  
     Returns
     -------
@@ -386,7 +377,7 @@ def estimate_bluestein_range(Beam, z, n_sigma=5.0):#, include_cross_term=True):
     # --- Cross term: existing wavefront curvature, via local phase gradient ---
     cross_x0 = 0.0
     cross_y0 = 0.0
-    #if include_cross_term:
+
     dUdx = fft.ifft2(1j * Beam.kx * A, axes=(-2, -1))
     dUdy = fft.ifft2(1j * Beam.ky * A, axes=(-2, -1))
     # Im(U* dU/dx) = |U|^2 * dphi/dx  (local intensity-weighted phase slope)
@@ -394,7 +385,7 @@ def estimate_bluestein_range(Beam, z, n_sigma=5.0):#, include_cross_term=True):
     local_py = np.sum(np.conj(field) * dUdy, axis=0).imag
     cross_x0 = np.sum((X - xbar0) * local_px) * dx * dy / (k * P)
     cross_y0 = np.sum((Y - ybar0) * local_py) * dx * dy / (k * P)
-    #end if
+    
 
     
     # --- Propagate moments to the target z (exact paraxial identity) ---
@@ -408,6 +399,11 @@ def estimate_bluestein_range(Beam, z, n_sigma=5.0):#, include_cross_term=True):
  
     half_x = n_sigma * sigma_x_z
     half_y = n_sigma * sigma_y_z
+
+    if equal_grid ==True:
+        hm = np.max((half_x, half_y))
+    half_x = hm
+    half_y = hm
  
     x_out_range = (xbar_z - half_x, xbar_z + half_x)
     y_out_range = (ybar_z - half_y, ybar_z + half_y)
