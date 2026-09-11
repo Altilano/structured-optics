@@ -854,6 +854,16 @@ class Beam():
             Rayleigh range, zr = pi*waist**2/lamb.
         """
         return np.pi*self.waist**2/self.lamb
+
+    def k(self) -> float:
+        """
+        Compute k vector magnitude in vacum.
+        
+        Returns
+        -------
+        float
+            k vector magniture in vaccum"""
+        return 2*np.pi/self.lamb
     
     def int_profile(self, pol_index=None) -> np.ndarray:
         """
@@ -1451,7 +1461,7 @@ class Beam():
 
     
     #Propagation 
-    def propagate(self, z, method='fresnel', renorm=False, evanescent=False):           
+    def propagate(self, z, method='fres_c', renorm=False, **kwargs):           
         """
         Parameters
         ----------
@@ -1462,20 +1472,35 @@ class Beam():
             currently prints a warning and leaves the field unchanged.
         renorm : bool, optional
             If True, renormalize total power to 1 after propagation.
+        evanescent : bool, optional
+            Used in Angular Spectrum method. Default is False, but if True the code keeps the evanscent contribution to the field.
 
         Returns
         -------
         Beam
             self, with field propagated by distance z (and renormalized if requested).
         """
-        if method == 'fresnel':
-            self = propagate_fresnel(self, z)
+        if method == 'auto':
+            method, _ = suggest_propagation_method(self, z, **kwargs)
+
+        if method == 'fres_c':
+            self = propagate_fresnel_conv(self, z)
         elif method == 'AS':
-            self = propagate_AS(self, z, evanescent=evanescent)
-        elif method == 'fraunhofer':
+            self = propagate_angular_spectrum(self, z, **kwargs)
+        elif method == 'fraun':
             self = propagate_fraunhofer(self, z)
-        elif method == 'incoherent':
+
+        elif method == 'fres_f':
+            self = propagate_fresnel_fft(self, z)
+        elif method == 'blue':
+            self = propagate_bluestein(self, z, **kwargs)
+        elif method == 'blue_fix':
+            x_out_range, y_out_range, _ = estimate_bluestein_range(self, z, **kwargs)
+            self = propagate_bluestein(self, z, x_out_range = x_out_range, y_out_range = y_out_range, Dx_out = self.Dx, Dy_out = self.Dy)
+
+        elif method == 'inc':
             self = propagate_incoherent(self, z)
+
         else:
             raise Exception('Unable to propagate, insert valid method.') 
         if renorm == True:
