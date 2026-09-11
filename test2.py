@@ -22,13 +22,13 @@ plt.pcolormesh(b1.x, b1.y, b1.int_profile(), cmap='inferno')
 plt.colorbar()
 
 range = 500e-3
-b1.propagate(100*b1.zr(), method='blue_fix')#, x_out_range=(-range, range), y_out_range=(-range, range), Dx_out = 1024, Dy_out = 1024)
+b1.propagate(5*b1.zr(), method='blue_fix')#, x_out_range=(-range, range), y_out_range=(-range, range), Dx_out = 1024, Dy_out = 1024)
 
-"""plt.figure()
+plt.figure()
 plt.pcolormesh(b1.x, b1.y, b1.int_profile(), cmap='inferno')
 plt.colorbar()
 
-b1.propagate(-b1.zr(), method='fres_f')"""
+b1.propagate(-5*b1.zr(), method='blue_fix')
 
 plt.figure()
 plt.pcolormesh(b1.x, b1.y, b1.int_profile(), cmap='inferno')

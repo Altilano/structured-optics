@@ -150,6 +150,7 @@ def propagate_bluestein(Beam, z, x_out_range, y_out_range, Dx_out, Dy_out):
     Beam.Dy = Dy_out
     Beam.nix = (x_out_range[1] - x_out_range[0])/2
     Beam.niy = (y_out_range[1] - y_out_range[0])/2
+    Beam.kx, Beam.ky = np.meshgrid(2*np.pi*fft.fftfreq(Beam.Dx, 2*Beam.nix/(Beam.Dx-1)), 2*np.pi*fft.fftfreq(Beam.Dy, 2*Beam.niy/(Beam.Dy-1)), sparse=True)
  
     return Beam
 
@@ -316,6 +317,9 @@ def suggest_propagation_method(Beam, z, aperture_sigma_factor=3.0,
         print(f"  -> recommended method: {method}")
  
     return method, info
+
+
+
 
 def estimate_bluestein_range(Beam, z, n_sigma=5.0):#, include_cross_term=True):
     """
