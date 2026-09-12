@@ -16,11 +16,16 @@ b1.Ex = hg(b1, 0,0) #+ hg(b1, 7,1, angle=2*np.pi/3)
 #b1.lp(2,2,1.7,1.4)
 #b1.Ey = lg(b1,2,2)
 
+b1.hslit(1e-4)
+
 
 #b1.polarizer('D')
 plt.figure()
 plt.pcolormesh(b1.x, b1.y, b1.int_profile(), cmap='inferno')
 plt.colorbar()
+plt.show()
+exit()
+
 
 range = 500e-3
 b1.propagate(5*b1.zr(), method='blue_fix', n_sigma=4)#, x_out_range=(-range, range), y_out_range=(-range, range), Dx_out = 1024, Dy_out = 1024)

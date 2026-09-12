@@ -1210,14 +1210,22 @@ class Beam():
         Raises
         ------
         ValueError
-            If `mask.shape` does not match `self.field.shape[-2:]`.
+            If mask isn't broadcastable to spatial shape.
         """
         mask = np.asarray(mask, dtype=bool)
-        if mask.shape != self.field.shape[-2:]:
-            raise ValueError(f"Mask must have shape {self.field.shape[-2:]}, "f"got {mask.shape}")
+        spatial_shape = self.field.shape[-2:]
+        try:
+            mask = np.broadcast_to(mask, spatial_shape)
+        except ValueError:
+            raise ValueError(
+                f"Mask must be broadcastable to spatial shape "
+                f"{spatial_shape}, got {mask.shape}")
+
         if babinet:
             mask = ~mask
+
         self.field *= mask
+
         return self
     
     def cross_slit(self, size, hsize=None, babinet=False):
