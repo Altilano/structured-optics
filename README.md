@@ -48,6 +48,9 @@ plt.pcolormesh(beam.x, beam.y, beam.int_profile())
 plt.show()
 ```
 
+Expected output:
+![LG_20](examples/image_examples/LG_20 prop.png)
+
 ## Documentation
 
 Full API documentation, including all mode types, propagation methods, and
