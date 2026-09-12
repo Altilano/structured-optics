@@ -49,7 +49,7 @@ plt.show()
 ```
 
 Expected output:
-![LG_20]([examples/image_examples/LG_20 prop.png](https://github.com/Altilano/structured-optics/blob/main/examples/image_examples/LG_20%20prop.png))
+([examples/image_examples/LG_20 prop.png](https://github.com/Altilano/structured-optics/blob/main/examples/image_examples/LG_20%20prop.png))
 
 ## Documentation
 
