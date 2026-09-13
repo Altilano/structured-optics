@@ -402,8 +402,8 @@ def estimate_bluestein_range(Beam, z, n_sigma=5.0, equal_grid=True):
 
     if equal_grid ==True:
         hm = np.max((half_x, half_y))
-    half_x = hm
-    half_y = hm
+        half_x = hm
+        half_y = hm
  
     x_out_range = (xbar_z - half_x, xbar_z + half_x)
     y_out_range = (ybar_z - half_y, ybar_z + half_y)

@@ -1,4 +1,7 @@
+from abc import abstractmethod
 import numpy as np
+
+from structured_optics.masks import Mask
 
 
 HPROJ = np.array([[1,0],[0,0]], dtype='complex')
@@ -23,3 +26,49 @@ def J_qwp(ang):
     return J_rot(J_phase_retarder(np.pi/4), ang)
 
 
+_PROJECTORS = {"H": HPROJ, "V": VPROJ, "D": DPROJ, "A": APROJ, "R": RPROJ, "L": LPROJ}
+
+
+class JonesMask(Mask):
+    """A Mask defined by a 2x2 Jones matrix, acting on (Ex, Ey) only.
+
+    Subclasses implement `matrix(beam)`; Ez (if present) is left untouched.
+    """
+
+    @abstractmethod
+    def matrix(self, beam) -> np.ndarray:
+        raise NotImplementedError
+
+    def apply_inplace(self, beam):
+        if beam.pol == 1:
+            return beam
+        J = self.matrix(beam)
+        Ex, Ey = beam.Ex.copy(), beam.Ey.copy()
+        beam.Ex = J[0, 0] * Ex + J[0, 1] * Ey
+        beam.Ey = J[1, 0] * Ex + J[1, 1] * Ey
+        return beam
+
+
+
+class HWP(JonesMask):
+    def __init__(self, angle: float):
+        self.angle = angle
+
+    def matrix(self, beam):
+        return J_hwp(self.angle)
+
+
+class QWP(JonesMask):
+    def __init__(self, angle: float):
+        self.angle = angle
+
+    def matrix(self, beam):
+        return J_qwp(self.angle)
+
+
+class Polarizer(JonesMask):
+    def __init__(self, angle: float = 0, proj: str = "H"):
+        self.angle, self.proj = angle, proj
+
+    def matrix(self, beam):
+        return J_rot(_PROJECTORS[self.proj], self.angle)

@@ -2,12 +2,13 @@ import numpy as np
 import copy
 from scipy import fft
 from contextlib import contextmanager
-from structured_optics.prop_methods import *
-from structured_optics.utils import *
-from structured_optics.modes import *
-from structured_optics.algebra_utils import *
-from structured_optics.hologram import *
-from structured_optics.polarization import *
+from .prop_methods import *
+from .utils import *
+from .modes import *
+from .algebra_utils import *
+from .hologram import *
+from .polarization import *
+from .masks import *
 
 
 
@@ -152,12 +153,9 @@ class Beam():
 
         If `other` is a Beam, multiplies the two fields element-wise (e.g. for
         applying a transmission mask stored as a Beam). If `other` is a scalar
-        (int/float/complex), scales the field globally.
-
-        Raises
-        ------
-        TypeError
-            If `other` is neither a Beam nor a numeric scalar.
+        (int/float/complex), scales the field globally. If `other` is a Mask
+        (see masks.py / polarization.py), returns NotImplemented so Python
+        falls back to `other.__rmul__(self)`, which applies the mask.
         """
         if isinstance(other, (type(self))):
             new = self.copy()
@@ -168,35 +166,35 @@ class Beam():
             new.field = other*self.field
             return new
 
-        raise TypeError(f"sorry, don't know how to multiply by {type(other).__name__}")
-        
+        return NotImplemented   
+
     __rmul__ = __mul__
     
-    def __add__(self, other:object):       
+    def __add__(self, other: object):
         """Add another Beam's field to this one, element-wise (coherent superposition)."""
         if isinstance(other, (Beam, type(self))):
             new = self.copy()
             new.field = other.field + self.field
             return new
-        raise TypeError(f"sorry, don't know how to add by {type(other).__name__}")
-        
+        return NotImplemented
+
     __radd__ = __add__
-        
-    def __sub__(self, other:object):       
+
+    def __sub__(self, other: object):
         """Subtract another Beam's field from this one, element-wise."""
         if isinstance(other, Beam):
             new = self.copy()
             new.field = self.field - other.field
             return new
-        raise TypeError(f"sorry, don't know how to subtract by {type(other).__name__}")
-        
-    def __rsub__(self, other:object):       
+        return NotImplemented
+
+    def __rsub__(self, other: object):
         """Subtract this Beam's field from `other`'s field, element-wise."""
         if isinstance(other, Beam):
             new = self.copy()
             new.field = other.field - self.field
             return new
-        raise TypeError(f"sorry, don't know how to subtract by {type(other).__name__}")
+        return NotImplemented
 
     def __truediv__(self, other):
         """Divide the field by a numeric scalar."""
@@ -204,8 +202,7 @@ class Beam():
             new = self.copy()
             new.field = self.field / other
             return new
-
-        raise TypeError(f"Cannot divide Beam by {type(other).__name__}")
+        return NotImplemented
     
 
 
@@ -1074,397 +1071,16 @@ class Beam():
             self, with field rescaled in place so that the peak intensity equals 1.
         """
         self.field = self.field/np.sqrt(np.max(self.int_profile()))
+        return self    
+
+
+
+    #apply masks
+    def apply(self, mask) -> "Beam":
+        """Apply a Mask (see masks.py) to this beam."""
+        result = mask.apply(self)
+        self.field = result.field
         return self
-    
-    def crop(self, center:tuple=None, std:float=None, window:float=2) -> object:
-        """
-        Parameters
-        ----------
-        center : tuple of float, optional
-            (x, y) center of the crop window. Defaults to the beam's own centroid.
-        std : float, optional
-            Standard deviation used to size the crop window. Defaults to the
-            beam's own computed std.
-        window : float, optional
-            Multiplier on `std` defining the half-width of the crop region.
-
-        Returns
-        -------
-        Beam
-            A new, spatially cropped Beam.
-        """
-        return get_crop(self, center, std, window)
-
-    def apply_zernike(self, n: int, m: int, strength: float = 1) -> object:
-        """ 
-        Apply a zernike polynomial of indexes n,m where (n-m)%2 == 0  and m <=n. Action normalized by waist.
-        Used to perform aberration correction.
-
-        Parameters
-        ----------
-        n : int
-            Zernike Polynomial radial degree.
-        m : int
-            Zernike Polynomial azimuthal degree.
-        strength: float, optional
-            Intensity of the aberration correction normalized by waist. Default equals one waist.
-        
-        Returns
-        -------
-        Beam
-            self, with zernike polynomial applyed to field phase.
-
-        """
-        self.field = apply_zernike(self.x, self.y, self.waist, self.field, n, m, strength= strength)
-        return self
-    
-
-    
-
-
-
-
-
-
-    #masks
-    
-    def lens(self, f:float, f0:tuple=(0,0))-> object:                                
-        """
-        Parameters
-        ----------
-        f : float
-            Focal length of the thin lens.
-        f0 : tuple of float, optional
-            (x, y) center of the lens.
-
-        Returns
-        -------
-        Beam
-            self, with field multiplied in place by the lens's quadratic phase factor.
-        """
-        k = 2*np.pi/self.lamb
-        self.field = self.field*np.exp(-1j*k*(((self.x-f0[0])**2 + (self.y-f0[1])**2)/(2*f)))
-        return self
-
-    def astigmatic_lens(self, fx:float, fy:float, f0:tuple=(0,0))-> object:                      
-        """
-        Parameters
-        ----------
-        fx : float
-            Focal length along x.
-        fy : float
-            Focal length along y.
-        f0 : tuple of float, optional
-            (x, y) center of the lens.
-
-        Returns
-        -------
-        Beam
-            self, with field multiplied in place by the astigmatic lens phase factor.
-        """
-        k = 2*np.pi/self.lamb
-        self.field = self.field*np.exp(-1j*k*(((self.x-f0[0])**2)/fx + ((self.y-f0[1])**2)/fy)/2)
-        return self
-    
-    def tilted_lens(self, f:float, phi:float, f0:tuple=(0,0), flip_axis:bool=False)-> object:                      
-        """
-        Parameters
-        ----------
-        f : float
-            Focal length of the (untilted) spherical lens.
-        phi : float
-            Tilt angle (radians) of the lens about one transverse axis.
-        f0 : tuple of float, optional
-            (x, y) center of the lens.
-        flip_axis : bool, optional
-            If True, swap which axis (x or y) receives the fx vs fy focal length.
-
-        Returns
-        -------
-        Beam
-            self, with field multiplied in place by the tilted lens's effective
-            astigmatic phase factor (fx = f*cos^3(phi), fy = f*cos(phi)).
-        """
-        fx = f*np.cos(phi)**3
-        fy = f*np.cos(phi)
-        if flip_axis == True:
-            fx, fy = fy, fx
-        return self.astigmatic_lens(fx,fy, f0)
-
-
-    #boolean masks
-    def _apply_bool_mask(self, mask, babinet=False):
-        """
-        Parameters
-        ----------
-        mask : array_like of bool, shape (Dy, Dx)
-            Transmission mask; True passes the field, False blocks it.
-        babinet : bool, optional
-            If True, use the complementary mask (~mask) instead.
-
-        Returns
-        -------
-        Beam
-            self, with field multiplied in place by the (possibly inverted) mask.
-
-        Raises
-        ------
-        ValueError
-            If mask isn't broadcastable to spatial shape.
-        """
-        mask = np.asarray(mask, dtype=bool)
-        spatial_shape = self.field.shape[-2:]
-        try:
-            mask = np.broadcast_to(mask, spatial_shape)
-        except ValueError:
-            raise ValueError(
-                f"Mask must be broadcastable to spatial shape "
-                f"{spatial_shape}, got {mask.shape}")
-
-        if babinet:
-            mask = ~mask
-
-        self.field *= mask
-
-        return self
-    
-    def cross_slit(self, size, hsize=None, babinet=False):
-        """
-        Parameters
-        ----------
-        size : float
-            Half-width of the vertical strip (along x).
-        hsize : float, optional
-            Half-width of the horizontal strip (along y). Defaults to `size`.
-        babinet : bool, optional
-            If True, apply the complementary mask.
-
-        Returns
-        -------
-        Beam
-            self, with field masked in place by the cross-shaped aperture.
-        """
-        if hsize == None:
-            hsize = size
-        vertical = np.abs(self.x) < size
-        horizontal = np.abs(self.y) < hsize
-        mask = vertical | horizontal
-        return self._apply_bool_mask(mask, babinet)
-
-    def hslit(self, size, center=0, babinet=False):
-        """
-        Parameters
-        ----------
-        size : float
-            Half-width of the slit along x.
-        center : float, optional
-            x-position of the slit center.
-        babinet : bool, optional
-            If True, apply the complementary mask.
-
-        Returns
-        -------
-        Beam
-            self, with field masked in place by the horizontal slit (|x-center| <= size).
-        """
-        mask = np.abs(self.x - center) <= size
-        return self._apply_bool_mask(mask, babinet)
-
-    def vslit(self, size, center=0, babinet=False):
-        """
-        Parameters
-        ----------
-        size : float
-            Half-width of the slit along y.
-        center : float, optional
-            y-position of the slit center.
-        babinet : bool, optional
-            If True, apply the complementary mask.
-
-        Returns
-        -------
-        Beam
-            self, with field masked in place by the vertical slit (|y-center| <= size).
-        """
-        mask = np.abs(self.y - center) <= size
-        return self._apply_bool_mask(mask, babinet)
-    
-    def double_slit(self, size, dis, center=0, babinet=False):
-        """
-        Parameters
-        ----------
-        size : float
-            Half-width of each slit.
-        dis : float
-            Center-to-center distance between the two slits.
-        center : float, optional
-            x-position of the midpoint between the two slits.
-        babinet : bool, optional
-            If True, apply the complementary mask.
-
-        Returns
-        -------
-        Beam
-            self, with field masked in place by the double-slit aperture.
-        """
-        slit1 = np.abs(self.x - (center - dis/2)) <= size
-        slit2 = np.abs(self.x - (center + dis/2)) <= size
-        mask = slit1 | slit2
-        return self._apply_bool_mask(mask, babinet)
-
-    def iris(self, center=(0, 0), radius=None, babinet=False):
-        """
-        Parameters
-        ----------
-        center : tuple of float, optional
-            (x, y) center of the iris.
-        radius : float, optional
-            Radius of the circular aperture.
-        babinet : bool, optional
-            If True, apply the complementary mask.
-
-        Returns
-        -------
-        Beam
-            self, with field masked in place by the circular aperture.
-        """
-        mask = np.asarray(circle(self, center, radius), dtype=bool)
-        return self._apply_bool_mask(mask, babinet)
-
-    def triangle_slit(self, center=(0,0), side_length=None, babinet=False):
-        """
-        Parameters
-        ----------
-        center : tuple of float, optional
-            (x, y) center of the triangular aperture.
-        side_length : float, optional
-            Side length of the triangular aperture.
-        babinet : bool, optional
-            If True, apply the complementary mask.
-
-        Returns
-        -------
-        Beam
-            self, with field masked in place by the triangular aperture.
-        """
-        mask = np.asarray(triangle(self, center, side_length), dtype=bool)
-        return self._apply_bool_mask(mask, babinet)
-
-    def square_slit(self, center=(0,0), side_length=None, babinet=False):
-        """
-        Parameters
-        ----------
-        center : tuple of float, optional
-            (x, y) center of the square aperture.
-        side_length : float, optional
-            Side length of the square aperture.
-        babinet : bool, optional
-            If True, apply the complementary mask.
-
-        Returns
-        -------
-        Beam
-            self, with field masked in place by the square aperture.
-        """
-        mask = np.asarray(square(self, center, side_length), dtype=bool)
-        return self._apply_bool_mask(mask, babinet)
-
-
-
-
-    #polarization
-
-    def _apply_jones(beam, J):
-        """
-        Parameters
-        ----------
-        beam : Beam
-            Beam whose Ex, Ey components will be transformed in place
-            (named `beam` instead of `self` — note this is inconsistent with
-            the rest of the class but functionally equivalent).
-        J : array_like, shape (2, 2), complex
-            Jones matrix acting on the (Ex, Ey) vector.
-
-        Returns
-        -------
-        Beam
-            beam, with Ex, Ey updated in place; Ez (if present) is left unchanged.
-
-        Raises
-        ------
-        ValueError
-            If J is not 2x2, or beam.pol is not in {2, 3}.
-        """
-        if beam.pol == 1:
-            return beam
-
-        J = np.asarray(J, dtype=complex)
-        if J.shape != (2, 2):
-            raise ValueError("Jones matrix must be 2x2")
-
-        if beam.pol not in (2, 3):
-            raise ValueError(f"Unsupported pol: {beam.pol}")
-
-        Ex, Ey = beam.Ex, beam.Ey
-        new_Ex = J[0, 0] * Ex + J[0, 1] * Ey
-        new_Ey = J[1, 0] * Ex + J[1, 1] * Ey
-
-        beam.Ex = new_Ex
-        beam.Ey = new_Ey
-        # Ez left alone 
-        return beam
-
-    def hwp(self, angle):
-        """
-        Parameters
-        ----------
-        angle : float
-            Fast-axis orientation of the half-wave plate (radians).
-
-        Returns
-        -------
-        Beam
-            self, with Ex, Ey transformed in place by the HWP Jones matrix.
-        """
-        self._apply_jones(J_hwp(angle))
-        return self
-
-    def qwp(self, angle):
-        """
-        Parameters
-        ----------
-        angle : float
-            Fast-axis orientation of the quarter-wave plate (radians).
-
-        Returns
-        -------
-        Beam
-            self, with Ex, Ey transformed in place by the QWP Jones matrix.
-        """
-        self._apply_jones(J_qwp(angle))
-        return self
-
-    def polarizer(self, angle=0, proj='H'):
-        """
-        Parameters
-        ----------
-        angle : float, optional
-            Rotation of the polarizer's transmission axis (radians).
-        proj : {'H', 'V', 'D', 'A', 'R', 'L'}, optional
-            Projection basis: horizontal, vertical, diagonal, antidiagonal,
-            right-circular, or left-circular.
-
-        Returns
-        -------
-        Beam
-            self, with Ex, Ey projected in place onto the chosen polarization state.
-        """
-        name = proj + 'PROJ'
-        self._apply_jones(J_rot(eval(name), angle))
-        return self
-    
-
-
 
 
     
@@ -1487,6 +1103,8 @@ class Beam():
             Optional for bluestein method. Sets number of output samples along x and y.
         n_sigma : float, optional
             Optional in Bluestein Fix. How many standard deviations the bluestein_fix window range should be.
+        equal_grid : bool, optional
+            Optional in Bluestein Fix. When True, the output grid is equal in x and y. Set to the bigger range between x and y. Default is True.
         
 
         Returns
@@ -1495,7 +1113,7 @@ class Beam():
             self, with field propagated by distance z (and renormalized if requested).
         """
         if method == 'auto':
-            method, _ = suggest_propagation_method(self, z)
+            method, _ = suggest_propagation_method(self, z, **kwargs)
             if method == 'none':
                 return self
 
@@ -1522,6 +1140,8 @@ class Beam():
         if renorm == True:
             self.norm_beam()
         return self
+
+
     
 
     #Holograms

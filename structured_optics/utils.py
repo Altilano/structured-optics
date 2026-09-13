@@ -410,31 +410,6 @@ def get_section(Beam, ang_min, ang_max, pol_index=None):
         return Beam.field[pol_index]*sec[:,:]
 
 
-def get_crop(Beam, center=None, std=None, window=2):
-    if center is None:
-        center = Beam.center_mass()
-
-    if std is None:
-        std = Beam.std()
-
-    cy, cx = center
-
-    dx = Beam.x[0, 1] - Beam.x[0, 0]
-    dy = Beam.y[1, 0] - Beam.y[0, 0]
-
-    half_x = window * std / (2 * dx)
-    half_y = window * std / (2 * dy)
-
-    xmin = max(0, int(np.floor(cx - half_x)))
-    xmax = min(Beam.Dx, int(np.ceil(cx + half_x)))
-
-    ymin = max(0, int(np.floor(cy - half_y)))
-    ymax = min(Beam.Dy, int(np.ceil(cy + half_y)))
-
-    # Crop everything
-    F = Beam.field[:, ymin:ymax, xmin:xmax]
-    return F
-
 
 
     
