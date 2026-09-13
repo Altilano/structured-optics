@@ -48,6 +48,9 @@ plt.pcolormesh(beam.x, beam.y, beam.int_profile())
 plt.show()
 ```
 
+Expected output:
+([examples/image_examples/LG_20 prop.png](https://github.com/Altilano/structured-optics/blob/main/examples/image_examples/LG_20%20prop.png))
+
 ## Documentation
 
 Full API documentation, including all mode types, propagation methods, and
