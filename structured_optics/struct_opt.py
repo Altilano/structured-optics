@@ -3,12 +3,12 @@ import copy
 from scipy import fft
 from contextlib import contextmanager
 
-from .prop_methods import (propagate_fresnel_conv, propagate_fresnel_fft, propagate_bluestein,
-                                            propagate_angular_spectrum, propagate_incoherent, propagate_fraunhofer,
-                                            suggest_propagation_method, estimate_bluestein_range)
+from .prop_methods import(  propagate_fresnel_conv, propagate_fresnel_fft, propagate_bluestein,
+                            propagate_angular_spectrum, propagate_incoherent, propagate_fraunhofer,
+                            suggest_propagation_method, estimate_bluestein_range)
 
 from .modes import (hg, hg_astigmatic, lg, nbessel, gbessel, lg_prod, frac_oam, frac_oam_qs,
-                                    IG_even, IG_odd, HInceG, circle, square, triangle, lp, lp_hel)
+                    IG_even, IG_odd, HInceG, circle, square, triangle, lp, lp_hel)
 
 from .algebra_utils import (hg_proj, lg_proj, hg_basis, lg_basis, bessel_basis, build_from_coefs_and_basis)
 from .hologram import slm_hologram, dmd_hologram
