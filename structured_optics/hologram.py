@@ -1,7 +1,6 @@
-from structured_optics.struct_opt import *
 import numpy as np
-from structured_optics.utils import *
-import time
+from .utils import inv_J0, inv_J1, inv_sinc
+
 
 
 def slm_hologram(Beam, x_grating, y_grating, method, input_beam, eps, max_range):
@@ -40,7 +39,7 @@ def slm_hologram(Beam, x_grating, y_grating, method, input_beam, eps, max_range)
     elif method == 'bessel1':
         H = inv_J1(A_rel)*np.sin(phi_relg)
     else:
-        print('Error! method must be simple, g_holo, davis, bolduc, bessel0 or bessel1.')
+        raise ValueError('Error! method must be simple, g_holo, davis, bolduc, bessel0 or bessel1.')
     H = max_range * (H - H.min()) / (H.max() - H.min())
     return H.astype(np.uint8)
 

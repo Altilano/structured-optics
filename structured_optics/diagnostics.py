@@ -1,6 +1,6 @@
 import numpy as np
 
-from structured_optics.utils import *
+from .utils import get_section
 
 
 class BeamDiagnostics:

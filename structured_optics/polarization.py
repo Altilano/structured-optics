@@ -3,6 +3,10 @@ import numpy as np
 
 from structured_optics.masks import Mask
 
+__all__ = [ "HPROJ", "VPROJ", "DPROJ", "APROJ", "RPROJ", "LPROJ",
+            "J_rot", "J_phase_retarder", "J_hwp", "J_qwp",
+            "HWP", "QWP", "Polarizer"]
+
 
 HPROJ = np.array([[1,0],[0,0]], dtype='complex')
 VPROJ = np.array([[0,0],[0,1]], dtype='complex')

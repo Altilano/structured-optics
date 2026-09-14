@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import fft
-from structured_optics.bluestein import *
+from .bluestein import fft_bluestein
 
 
 def propagate_fresnel_conv(Beam, z):                                     

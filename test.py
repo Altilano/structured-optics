@@ -1,4 +1,3 @@
-#import structured_optics as so
 import matplotlib.pyplot as plt
 from structured_optics import *
 import structured_optics.slmdisplay as soslm
@@ -30,8 +29,8 @@ for s in strength:
     for s2 in strength2:
         
         aux = b2.copy()
-        aux.apply_zernike(coefs_zern[0, 0], coefs_zern[0,1], s)
-        aux.apply_zernike(coefs_zern[1, 0], coefs_zern[1,1], s2)
+        aux*ZernikeMask(coefs_zern[0, 0], coefs_zern[0,1], s)
+        aux*ZernikeMask(coefs_zern[1, 0], coefs_zern[1,1], s2)
         
         start = time.time()
         holo = aux.slm_holo(3,4)

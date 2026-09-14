@@ -1,7 +1,11 @@
-from structured_optics.utils import *
+from .utils import C_ince, S_ince, cartesian_to_elliptic, get_LP_params, herm, laguerre, rotated_mode
 import numpy as np
-from scipy.special import factorial, jn_zeros, jv
-from scipy.optimize import brentq
+from scipy.special import factorial, jn_zeros, jv, kv
+
+__all__ = [ "hg", "hg_astigmatic", "lg", "nbessel", "gbessel", "lg_prod",
+            "frac_oam", "frac_oam_qs", "IG_even", "IG_odd", "HInceG",
+            "circle", "square", "triangle", "lp", "lp_hel"]
+
 
 
 
@@ -198,10 +202,12 @@ def HInceG(Beam, p, m, q, helicity, z=0):
     return F
 
 @rotated_mode
-def circle(Beam, center, radius):
+def circle(Beam, center=None, radius=None):
     if radius == None:
         radius = Beam.waist
     #Create a circular mode
+    if center == None:
+        center = Beam.x0, Beam.y0
     center_x, center_y = center
     # Calculate distance from center for all points
     distances = np.sqrt((Beam.x - center_x)**2 + (Beam.y - center_y)**2)
@@ -213,9 +219,11 @@ def circle(Beam, center, radius):
     return F
 
 @rotated_mode
-def square(Beam, center, side_length):
+def square(Beam, center=None, side_length=None):
     if side_length == None:
         side_length = Beam.waist
+    if center == None:
+        center = Beam.x0, Beam.y0
     center_x, center_y = center
     
     # Calculate square boundaries
@@ -231,9 +239,11 @@ def square(Beam, center, side_length):
     return F
 
 @rotated_mode
-def triangle(Beam, center, side_length):
+def triangle(Beam, center=None, side_length=None):
     if side_length == None:
         side_length = Beam.waist
+    if center == None:
+        center = Beam.x0, Beam.y0
     center_x, center_y = center
     
     # Height of equilateral triangle
@@ -276,8 +286,8 @@ def lp(Beam, l, m, n_core, n_clad, parity="cos"):
     """Evaluate the scalar LP_l field Psi(r,phi)"""
     params = get_LP_params(l,m, n_core, n_clad, Beam.waist, Beam.lamb)
 
-    r = np.sqrt(Beam.x**2 + Beam.y**2)
-    PHI = np.arctan2(Beam.y, Beam.x)
+    r = np.sqrt((Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2)
+    PHI = np.arctan2((Beam.y-Beam.y0), (Beam.x-Beam.x0))
     a = Beam.waist
     inside = r <= a
     F = np.zeros_like(r)

@@ -2,15 +2,19 @@ import numpy as np
 import copy
 from scipy import fft
 from contextlib import contextmanager
-from .prop_methods import *
-from .utils import *
-from .modes import *
-from .algebra_utils import *
-from .hologram import *
-from .polarization import *
-from .masks import *
-from .diagnostics import *
 
+from .prop_methods import (propagate_fresnel_conv, propagate_fresnel_fft, propagate_bluestein,
+                                            propagate_angular_spectrum, propagate_incoherent, propagate_fraunhofer,
+                                            suggest_propagation_method, estimate_bluestein_range)
+
+from .modes import (hg, hg_astigmatic, lg, nbessel, gbessel, lg_prod, frac_oam, frac_oam_qs,
+                                    IG_even, IG_odd, HInceG, circle, square, triangle, lp, lp_hel)
+
+from .algebra_utils import (hg_proj, lg_proj, hg_basis, lg_basis, bessel_basis, build_from_coefs_and_basis)
+from .hologram import slm_hologram, dmd_hologram
+from .diagnostics import BeamDiagnostics
+
+__all__ = ["Beam"]
 
 
 
@@ -579,7 +583,7 @@ class Beam(BeamDiagnostics):
         return self._set_mode(HInceG(self, p, m, q, helicity=helicity, z=z, angle=angle),  polarization=polarization)
 
 
-    def circle(self, center: tuple = (0, 0), radius: float = None, angle:float=0, polarization:list=None) -> object:
+    def circle(self, center: tuple = None, radius: float = None, angle:float=0, polarization:list=None) -> object:
         """
         Set the field to a filled circular aperture (uniform amplitude) mode.
 
@@ -599,10 +603,10 @@ class Beam(BeamDiagnostics):
         Beam
             self, with field set to the requested mode.
         """
-        return self._set_mode(circle(self, center, radius, angle=angle),  polarization=polarization)
+        return self._set_mode(circle(self, center=center, radius=radius, angle=angle),  polarization=polarization)
 
 
-    def square(self, center: tuple = (0, 0), side_length: float = None, angle:float=0, polarization:list=None) -> object:
+    def square(self, center: tuple = None, side_length: float = None, angle:float=0, polarization:list=None) -> object:
         """
         Set the field to a filled square aperture (uniform amplitude) mode.
 
@@ -625,7 +629,7 @@ class Beam(BeamDiagnostics):
         return self._set_mode(square(self, center, side_length, angle=angle),  polarization=polarization)
 
 
-    def triangle(self, center: tuple = (0, 0), side_length: float = None, angle:float=0, polarization:list=None) -> object:
+    def triangle(self, center: tuple = None, side_length: float = None, angle:float=0, polarization:list=None) -> object:
         """
         Set the field to a filled triangular aperture (uniform amplitude) mode.
 

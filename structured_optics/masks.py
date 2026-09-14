@@ -13,8 +13,12 @@ Usage:
 from abc import ABC, abstractmethod
 import numpy as np
 
-from structured_optics.modes import circle, square, triangle
-from structured_optics.utils import zernike
+from .modes import circle, square, triangle
+from .utils import zernike
+
+__all__ = [ "Lens", "AstigmaticLens", "TiltedLens", "ZernikeMask",
+            "Iris", "SquareAperture", "TriangleAperture", "HSlit", 
+            "VSlit", "DoubleSlit", "CrossSlit"]
 
 
 class Mask(ABC):
@@ -185,7 +189,7 @@ class CrossSlit(BooleanMask):
 
 
 
-"""
+""" #for the future
     def get_turbulence_mvk(self, d, r0, l0, L0):
         deltax = d/self.Dx
         deltay = d/self.Dy
