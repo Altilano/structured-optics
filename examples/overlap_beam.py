@@ -16,9 +16,12 @@ from structured_optics import *
 beam = Beam(nix=5e-3, Dx=512, waist=1e-3, lamb=1064e-9, pol_dim=2)
 
 beam2 = beam.copy()  #create deep copy
+beam3 = beam.copy()
 
 beam.hg(1,0)  #n=1, m=0
 beam2.hg(0,0) #n=0, m=0
+beam3.lg(1,0) #l=1, p=0
 
 print(f"Modulus squared overlap between gaussian and HG_10: {np.abs(overlap(beam, beam2))**2:.2f}     (expected ~0)")
 print(f"Modulus squared overlap between HG_10 and itself:   {np.abs(overlap(beam2, beam2))**2:.2f}    (expected ~1)")
+print(f"Modulus squared overlap between HG_10 and LG_10:   {np.abs(overlap(beam, beam3))**2:.2f}    (expected ~0.5)")
