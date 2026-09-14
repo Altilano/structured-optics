@@ -185,60 +185,7 @@ class CrossSlit(BooleanMask):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""class Mask():
-    def __init__(self, space):
-        self.nix = space.nix
-        self.niy = space.niy
-        self.Dx = space.Dx
-        self.Dy = space.Dy
-        self.x = space.x
-        self.y = space.y
-        self.mask = np.zeros((self.Dy, self.Dx), dtype='complex128')
-    
+"""
     def get_turbulence_mvk(self, d, r0, l0, L0):
         deltax = d/self.Dx
         deltay = d/self.Dy

@@ -21,10 +21,11 @@ b1.apply(Lens(10e-2))
 
 #b1.propagate(20e-2, method='blue_fix', equal_grid=True)
 
-b1.apply(Polarizer())
+#b1.apply(Polarizer())
 
 
 print(b1.Power(0), b1.Power(1))
+print(b1.Power())
 plt.figure()
 plt.pcolormesh(b1.x, b1.y, b1.int_profile(), cmap='inferno')
 plt.colorbar()

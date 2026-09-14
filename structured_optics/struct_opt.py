@@ -9,11 +9,12 @@ from .algebra_utils import *
 from .hologram import *
 from .polarization import *
 from .masks import *
+from .diagnostics import *
 
 
 
 
-class Beam():
+class Beam(BeamDiagnostics):
     """
     Represents a monochromatic paraxial optical beam on a discretized transverse grid.
 
@@ -26,6 +27,8 @@ class Beam():
 
     The spatial grid spans [-nix, nix] x [-niy, niy] with Dx x Dy points. A matching
     spatial-frequency grid (kx, ky) is precomputed for Fourier-based propagation.
+
+    All input values in meters.
 
     Attributes
     ----------
@@ -48,15 +51,15 @@ class Beam():
     pol : int
         Number of polarization components stored (1 = scalar, 2 = Ex/Ey, 3 = Ex/Ey/Ez).
     """
-    def __init__(self, nix: float,        #Region of interest in x (from -nix to +nix)
-                 Dx: int,                 #Number of points in x
-                 niy: float=None,         #Region of interest in y (from -niy to +niy), equals nix if None
-                 Dy: int=None,            #Number of points in y, equals Dx if None
-                 waist:float=1e-3,        #Beam waist. Standard value 1mm
-                 lamb:float = 1064e-9,    #Wavelength. Standard value 1064nm
-                 x0:float = 0,            #Beam center x position
-                 y0:float = 0,            #Beam center y position
-                 pol_dim:int = 1) -> object: #Beam center y position
+    def __init__(self, nix: float,        
+                 Dx: int,                 
+                 niy: float=None,         
+                 Dy: int=None,            
+                 waist:float=1e-3,        
+                 lamb:float = 1064e-9,    
+                 x0:float = 0,            
+                 y0:float = 0,            
+                 pol_dim:int = 1) -> object: 
         """Initialize the spatial/spectral grids and an empty field array."""
 
         #Geometric properties
@@ -700,8 +703,6 @@ class Beam():
 
 
 
-
-
     #Linear Algebra with modes utils
 
     def hg_projector(self,N:int) -> tuple:
@@ -818,269 +819,14 @@ class Beam():
         """
         return build_from_coefs_and_basis(self, coefs, basis, pol_index = pol_index)
     
-    
 
-
-
-    #Beam physical atributes and its utilities
-
-    def Power(self, pol_index=None) -> float:
-        """Get the total optical Power via numerical integration of the intensity profile 
-        (trapezoidal-like Riemann sum with the grid's cell area)
-        
-        Parameters
-        ----------
-        pol_index: int, optional
-            Polarization component into which the resulting power is measured. Default is power of 
-            all field components.
-
-        Returns
-        -------
-        float
-        """
-        return np.sum(self.int_profile(pol_index))*(4*self.nix/self.Dx)*(self.niy/self.Dy)
-
-    
-    def zr(self) -> float:
-        """
-        Compute the Rayleigh range of the beam from its `waist` and `lamb`.
-
-        Returns
-        -------
-        float
-            Rayleigh range, zr = pi*waist**2/lamb.
-        """
-        return np.pi*self.waist**2/self.lamb
-
-    def k(self) -> float:
-        """
-        Compute k vector magnitude in vacum.
-        
-        Returns
-        -------
-        float
-            k vector magniture in vaccum"""
-        return 2*np.pi/self.lamb
-    
-    def int_profile(self, pol_index=None) -> np.ndarray:
-        """
-        Get intensity profile.
-
-        pol_index=None -> total intensity
-        pol_index=0    -> Ex intensity
-        pol_index=1    -> Ey intensity
-        pol_index=2    -> Ez intensity
-
-        Parameters
-        ----------
-        pol_index: int, optional
-            Polarization component into which the resulting intensity profile is measured. Default is sum of 
-            all intensity components.
-
-        Return
-        ------
-        ndarray
-            Array with intensity profile (x,y).
-        """
-        if pol_index is None:
-            return np.sum(np.abs(self.field)**2, axis=0)
-        return np.abs(self.field[pol_index])**2
-
-    
-    def phase(self, pol_index=None, twopi=False) -> np.ndarray:
-        """
-        Parameters
-        ----------
-        pol_index : int or None, optional
-            None returns phase of all components; 0/1/2 returns the phase of
-            Ex/Ey/Ez respectively.
-        twopi : bool, optional
-            If True, wrap phase into [0, 2*pi) instead of the default (-pi, pi].
-
-        Returns
-        -------
-        ndarray
-            Phase profile, shape (Dy, Dx) if pol_index is given or pol==1,
-            otherwise shape (pol, Dy, Dx).
-        """
-        if pol_index is None:
-            field = self.field
-        else:
-            field = self.field[pol_index]
-        p = np.angle(field)
-        if twopi:
-            p = np.mod(p, 2*np.pi)
-        if self.pol == 1:
-            return p[0]
-        return p
-    
-
-    def center_mass(self, pol_index=None) -> tuple: 
-        """ 
-        Compute the intensity-weighted center of mass of the field in physical x and y coordinates. 
-        
-        Parameters 
-        ---------- 
-        pol_index : int, optional 
-            Polarization component to use; None uses total intensity. 
-            
-        Returns 
-        ------- 
-        tuple (x_cm, y_cm) 
-            center-of-mass coordinates in physical units. """ 
-        I = self.int_profile(pol_index) 
-
-        x = np.asarray(self.x) 
-        y = np.asarray(self.y) 
-        if x.ndim == 2: 
-            x = x[0, :] if x.shape[0] == 1 else x[0, :] 
-        if y.ndim == 2: 
-            y = y[:, 0] if y.shape[1] == 1 else y[:, 0] 
-        # Total intensity 
-        norm = np.sum(I) 
-
-        if norm == 0: 
-            raise ValueError("Cannot calculate center of mass of zero intensity.") 
-
-        # Intensity marginalized along each direction 
-        Ix = np.sum(I, axis=0) 
-        Iy = np.sum(I, axis=1) 
-
-        # Physical center of mass 
-        x_cm = np.sum(x * Ix) / norm 
-        y_cm = np.sum(y * Iy) / norm 
-
-        return x_cm, y_cm
-  
-    def std(self, pol_index=None): 
-        """
-        Calculate the intensity-weighted spatial standard deviation
-        along x and y.
-
-        Parameters 
-        ---------- 
-        pol_index : int, optional 
-            Polarization component to use; None uses total intensity. 
-
-        Returns
-        -------
-        sigma_x, sigma_y : float
-            Intensity-weighted spatial standard deviations.
-        """
-        I = self.int_profile(pol_index) 
-        x = np.asarray(self.x) 
-        y = np.asarray(self.y) 
-        x = x[0, :] if x.ndim == 2 else x 
-        y = y[:, 0] if y.ndim == 2 else y 
-        norm = np.sum(I) 
-        Ix = np.sum(I, axis=0) 
-        Iy = np.sum(I, axis=1) 
-        x_cm, y_cm = self.center_mass(pol_index) 
-        var_x = np.sum(Ix * (x - x_cm)**2) / norm 
-        var_y = np.sum(Iy * (y - y_cm)**2) / norm 
-        return np.sqrt(var_x), np.sqrt(var_y)
-        
-    def radial_std(self, pol_index=None) -> float:
-        """
-        Calculate the intensity-weighted radial standard deviation of the field
-        about its center of mass.
-
-        Parameters
-        ----------
-        pol_index : int, optional
-            Polarization component to use; None uses total intensity.
-
-        Returns
-        -------
-        float
-            Intensity-weighted radial standard deviation.
-        """
-        sx, sy = self.std(pol_index)
-
-        return np.sqrt(sx**2 + sy**2)
-    
-    def section(self, ang_min:float, ang_max:float, pol_index:int=0) -> np.ndarray:
-        """
-        Parameters
-        ----------
-        ang_min : float
-            Minimum angle (radians) defining the angular wedge.
-        ang_max : float
-            Maximum angle (radians) defining the angular wedge.
-        pol_index : int, optional
-            Polarization component to extract the section from.
-
-        Returns
-        -------
-        ndarray
-            Complex field values restricted to the angular wedge [ang_min, ang_max].
-        """
-        return get_section(self, ang_min, ang_max, pol_index = pol_index)
-    
-    def int_section(self, ang_min:float, ang_max:float, pol_index:int=0)-> np.ndarray:
-        """
-        Parameters
-        ----------
-        ang_min : float
-            Minimum angle (radians) defining the angular wedge.
-        ang_max : float
-            Maximum angle (radians) defining the angular wedge.
-        pol_index : int, optional
-            Polarization component to extract the section from.
-
-        Returns
-        -------
-        ndarray
-            Intensity |field|^2 within the angular wedge [ang_min, ang_max].
-        """
-        return np.abs(self.section(ang_min, ang_max, pol_index = pol_index))**2
-    
-    def Power_section(self, ang_min:float, ang_max:float, pol_index:int=0)-> float:
-        """
-        Parameters
-        ----------
-        ang_min : float
-            Minimum angle (radians) defining the angular wedge.
-        ang_max : float
-            Maximum angle (radians) defining the angular wedge.
-        pol_index : int, optional
-            Polarization component to compute power for.
-
-        Returns
-        -------
-        float
-            Optical power contained within the angular wedge [ang_min, ang_max].
-        """
-        return np.sum(np.abs(self.section(ang_min, ang_max, pol_index = pol_index))**2*(4*self.nix/self.Dx)*(self.niy/self.Dy))
-    
-    def norm_beam(self)-> object:                                       
-        """
-        Returns
-        -------
-        Beam
-            self, with field rescaled in place so that self.Power() == 1.
-        """
-        self.field = self.field/np.sqrt(self.Power())
-        return self
-    
-    def Max_int1(self)-> object:                                         
-        """
-        Returns
-        -------
-        Beam
-            self, with field rescaled in place so that the peak intensity equals 1.
-        """
-        self.field = self.field/np.sqrt(np.max(self.int_profile()))
-        return self    
 
 
 
     #apply masks
     def apply(self, mask) -> "Beam":
-        """Apply a Mask (see masks.py) to this beam."""
-        result = mask.apply(self)
-        self.field = result.field
-        return self
+        """Apply a Mask (see masks.py / polarization.py) to this beam, in place."""
+        return mask.apply_inplace(self)
 
 
     
@@ -1140,9 +886,59 @@ class Beam():
         if renorm == True:
             self.norm_beam()
         return self
-
-
     
+
+    #Propagation 
+
+    _PROPAGATORS = {
+        'fres_c':   lambda beam, z, **kw: propagate_fresnel_conv(beam, z),
+        'AS':       propagate_angular_spectrum,
+        'fraun':    lambda beam, z, **kw: propagate_fraunhofer(beam, z),
+        'fres_f':   lambda beam, z, **kw: propagate_fresnel_fft(beam, z),
+        'blue':     propagate_bluestein,
+        'blue_fix': lambda beam, z, **kw: propagate_bluestein(beam, z, Dx_out=beam.Dx, Dy_out=beam.Dy,**dict(zip(('x_out_range', 'y_out_range'), estimate_bluestein_range(beam, z, **kw)))),
+        'inc':      lambda beam, z, **kw: propagate_incoherent(beam, z),
+    }
+
+    def propagate(self, z, method='fres_c', **kwargs):           
+        """
+        Parameters
+        ----------
+        z : float
+            Propagation distance.
+        method : {'auto', 'fresn_c', 'AS', 'fraun', 'fres_f', 'blue', 'blue_fix', 'inc'}, optional
+            Diffraction model used for propagation. Default is 'fres_c'.
+        renorm : bool, optional
+            If True, renormalize total power to 1 after propagation.
+        evanescent : bool, optional
+            Optional in Angular Spectrum method. Default is False, but if True the code keeps the evanscent contribution to the field.
+        x_out_range, y_out_range : tuple
+            Necessary for bluestein method without fixed window range. tuple containing (x_min, x_max), (y_min, y_max) of the output window.
+        Dx_out, Dy_out : int, optional
+            Optional for bluestein method. Sets number of output samples along x and y.
+        n_sigma : float, optional
+            Optional in Bluestein Fix. How many standard deviations the bluestein_fix window range should be.
+
+        Returns
+        -------
+        Beam
+            self, with field propagated by distance z.
+
+        """
+        if method == 'auto':
+            method, _ = suggest_propagation_method(self, z)
+            if method == 'none':
+                return self
+        try:
+            propagator = self._PROPAGATORS[method]
+        except KeyError:
+            raise ValueError(f"Unable to propagate, invalid method {method!r}. " 
+                             f"Valid options: {list(self._PROPAGATORS)}")
+
+        self = propagator(self, z, **kwargs)
+        return self
+
+
 
     #Holograms
 

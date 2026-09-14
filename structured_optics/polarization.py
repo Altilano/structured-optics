@@ -48,8 +48,6 @@ class JonesMask(Mask):
         beam.Ey = J[1, 0] * Ex + J[1, 1] * Ey
         return beam
 
-
-
 class HWP(JonesMask):
     def __init__(self, angle: float):
         self.angle = angle

@@ -1,5 +1,4 @@
 import numpy as np
-from scipy import ndimage
 from scipy.special import hermite, genlaguerre, jv, j0, j1, kv, jn_zeros
 from scipy.optimize import brentq
 from functools import wraps
@@ -408,9 +407,6 @@ def get_section(Beam, ang_min, ang_max, pol_index=None):
         return Beam.field * sec[None, :, :]
     else:
         return Beam.field[pol_index]*sec[:,:]
-
-
-
 
     
 

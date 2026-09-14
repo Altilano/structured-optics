@@ -159,7 +159,7 @@ def propagate_angular_spectrum(Beam, z, evanescent=False):
     if not evanescent:
         not_evanescent = kz2 >= 0
         kz = kz*not_evanescent
-    prop = np.exp(1j*kz*z + 1j*k*z)
+    prop = np.exp(1j*kz*z)
     Beam.fourier_field = fft.fft2(Beam.field, axes=(-2,-1))
     Beam.field = fft.ifft2(prop*Beam.fourier_field, axes=(-2,-1))
     return Beam
