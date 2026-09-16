@@ -45,11 +45,15 @@ beam.propagate(z=0.1, method='fres_c')
 # Look at the intensity profile
 import matplotlib.pyplot as plt
 plt.pcolormesh(beam.x, beam.y, beam.int_profile())
+plt.colorbar()
 plt.show()
 ```
 
 Expected output:
-([examples/image_examples/LG_20 prop.png](https://github.com/Altilano/structured-optics/blob/main/examples/image_examples/LG_20%20prop.png))
+<p align="center">
+  <img src="https://github.com/Altilano/structured-optics/blob/main/examples/image_examples/LG_20%20prop.png" width="400" alt="LG20">
+</p>
+
 
 ## Documentation
 
