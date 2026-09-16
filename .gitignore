@@ -1,1 +1,4 @@
 .venv/
+dist/
+build/
+structured_optics.egg-info/
