@@ -464,8 +464,22 @@ def zernike(n, m, r, phi):
     else:
         return radial_poly(n, -m, r) * np.sin(-m*phi)
     
-def apply_zernike(x, y, waist, desired, n, m, strength):
-    r = np.sqrt(x**2 + y**2)/waist
-    phi = np.arctan2(y, x)
-    phase = strength * zernike(n, m, r, phi)
-    return  desired*np.exp(1j*phase)
+def zernikes_phase(beam, coefs, strengths,):
+
+    coefs = np.asarray(coefs, dtype=int)
+    strengths = np.asarray(strengths, dtype=float)
+
+    if coefs.ndim != 2 or coefs.shape[1] != 2:
+        raise ValueError("coefs must have shape (N, 2), containing (n, m).")
+
+    if len(coefs) != len(strengths):
+        raise ValueError("coefs and strengths must have the same length.")
+
+    r = np.sqrt(beam.x**2 + beam.y**2) / beam.waist
+    phi = np.arctan2(beam.y, beam.x)
+
+    phase = np.zeros_like(r, dtype=float)
+
+    for (n, m), strength in zip(coefs, strengths):
+        phase += strength * zernike(n, m, r, phi)
+    return np.exp(1j * phase)
