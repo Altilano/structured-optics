@@ -11,7 +11,6 @@ from .modes import (hg, hg_astigmatic, lg, nbessel, gbessel, lg_prod, frac_oam, 
                     IG_even, IG_odd, HInceG, circle, square, triangle, lp, lp_hel)
 
 from .tools import _build_from_coefs_and_basis
-from .hologram import slm_hologram, dmd_hologram
 from .diagnostics import BeamDiagnostics
 
 __all__ = ["Beam"]
@@ -848,48 +847,3 @@ class Beam(BeamDiagnostics):
         return self
 
 
-
-    #Holograms
-
-    def slm_holo(self, x_grating:int, y_grating:int, method:str = 'bessel1', input_beam:object= None, 
-                 eps:float = 1e-12, max_range:int = 255)-> np.ndarray:
-        """
-        Parameters
-        ----------
-        x_grating : int
-            Carrier grating spatial frequency along x (grid pixels).
-        y_grating : int
-            Carrier grating spatial frequency along y (grid pixels).
-        method : str, optional
-            Amplitude/phase encoding scheme used to build the hologram.
-        input_beam : Beam, optional
-            Reference illumination beam; defaults to self if None.
-        eps : float, optional
-            Small value added to avoid division by zero during encoding.
-        max_range : int, optional
-            Output gray-level range (e.g. 255 for an 8-bit SLM lookup table).
-
-        Returns
-        -------
-        ndarray
-            Encoded hologram pattern, shape (Dy, Dx), ready for SLM display.
-        """
-        return slm_hologram(self, x_grating, y_grating, method = method, input_beam = input_beam, eps = eps, max_range = max_range)
-    
-    def dmd_holo(self, cx:float, cy:float, sign:int=1)-> np.ndarray:
-        """
-        Parameters
-        ----------
-        cx : float
-            Carrier grating frequency component along x.
-        cy : float
-            Carrier grating frequency component along y.
-        sign : int, optional
-            Sign convention for the diffraction order encoded.
-
-        Returns
-        -------
-        ndarray
-            Binary Lee-type hologram pattern, shape (Dy, Dx), ready for DMD display.
-        """
-        return dmd_hologram(self, cx, cy, sign)

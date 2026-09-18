@@ -1,5 +1,4 @@
 import numpy as np
-
 from .utils import get_section
 
 
@@ -260,21 +259,5 @@ class BeamDiagnostics:
         return self
     
 
-        """
-        Parameters
-        ----------
-        center : tuple of float, optional
-            (x, y) center of the crop window. Defaults to the beam's own centroid.
-        std : float, optional
-            Standard deviation used to size the crop window. Defaults to the
-            beam's own computed std.
-        window : float, optional
-            Multiplier on `std` defining the half-width of the crop region.
 
-        Returns
-        -------
-        Beam
-            A new, spatially cropped Beam.
-        """
-        return get_crop(self, center, std, window)
 
