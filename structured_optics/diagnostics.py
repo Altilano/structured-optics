@@ -1,5 +1,5 @@
 import numpy as np
-from .utils import get_section
+from .tools import get_section
 
 
 class BeamDiagnostics:
