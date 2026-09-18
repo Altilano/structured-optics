@@ -740,7 +740,7 @@ class Beam(BeamDiagnostics):
 
     
     #Propagation 
-    def propagate(self, z, method='fres_c', renorm=False, **kwargs):           
+    def propagatex(self, z, method='fres_c', renorm=False, **kwargs):           
         """
         Parameters
         ----------

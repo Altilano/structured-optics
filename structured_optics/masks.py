@@ -14,7 +14,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 from .modes import circle, square, triangle
-from .utils import zernike
+from .utils import zernikes_phase
 
 __all__ = [ "Lens", "AstigmaticLens", "TiltedLens", "ZernikeMask",
             "Iris", "SquareAperture", "TriangleAperture", "HSlit", 
@@ -81,14 +81,11 @@ class TiltedLens(AstigmaticLens):
 
 
 class ZernikeMask(SpatialMask):
-    def __init__(self, n: int, m: int, strength: float = 1):
-        self.n, self.m, self.strength = n, m, strength
+    def __init__(self, coefs: tuple, strengths: tuple):
+        self.coefs, self.strengths = coefs, strengths
 
     def array(self, beam):
-        r = np.sqrt(beam.x**2 + beam.y**2) / beam.waist
-        phi = np.arctan2(beam.y, beam.x)
-        return np.exp(1j * self.strength * zernike(self.n, self.m, r, phi))
-
+        return zernikes_phase(beam, coefs=self.coefs, strengths=self.strengths)
 
 class BooleanMask(SpatialMask):
     """Base class for hard-edged apertures. Subclasses implement bool_array;

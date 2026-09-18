@@ -4,9 +4,9 @@ import numpy as np
 
 
 
-b1 = Beam(nix=5e-6, 
+b1 = Beam(nix=5e-3, 
           Dx=1024,
-          waist = 1e-6,
+          waist = 1e-3,
           lamb = 633e-9,
           pol_dim=2)
 
