@@ -726,75 +726,8 @@ class Beam(BeamDiagnostics):
             self, with field set to the weighted sum of basis modes.
         """
         return _build_from_coefs_and_basis(self, coefs, basis, pol_index = pol_index)
-    
 
 
-
-
-    #apply masks
-    def apply(self, mask) -> "Beam":
-        """Apply a Mask (see masks.py / polarization.py) to this beam, in place."""
-        return mask.apply_inplace(self)
-
-
-    
-    #Propagation 
-    def propagatex(self, z, method='fres_c', renorm=False, **kwargs):           
-        """
-        Parameters
-        ----------
-        z : float
-            Propagation distance.
-        method : {'auto', 'fresn_c', 'AS', 'fraun', 'fres_f', 'blue', 'blue_fix', 'inc'}, optional
-            Diffraction model used for propagation. Default is 'fres_c'.
-        renorm : bool, optional
-            If True, renormalize total power to 1 after propagation.
-        evanescent : bool, optional
-            Optional in Angular Spectrum method. Default is False, but if True the code keeps the evanscent contribution to the field.
-        x_out_range, y_out_range : tuple
-            Necessary for bluestein method without fixed window range. tuple containing (x_min, x_max), (y_min, y_max) of the output window.
-        Dx_out, Dy_out : int, optional
-            Optional for bluestein method. Sets number of output samples along x and y.
-        n_sigma : float, optional
-            Optional in Bluestein Fix. How many standard deviations the bluestein_fix window range should be.
-        equal_grid : bool, optional
-            Optional in Bluestein Fix. When True, the output grid is equal in x and y. Set to the bigger range between x and y. Default is True.
-        
-
-        Returns
-        -------
-        Beam
-            self, with field propagated by distance z (and renormalized if requested).
-        """
-        if method == 'auto':
-            method, _ = suggest_propagation_method(self, z, **kwargs)
-            if method == 'none':
-                return self
-
-        if method == 'fres_c':
-            self = propagate_fresnel_conv(self, z)
-        elif method == 'AS':
-            self = propagate_angular_spectrum(self, z, **kwargs)
-        elif method == 'fraun':
-            self = propagate_fraunhofer(self, z)
-
-        elif method == 'fres_f':
-            self = propagate_fresnel_fft(self, z)
-        elif method == 'blue':
-            self = propagate_bluestein(self, z, **kwargs)
-        elif method == 'blue_fix':
-            x_out_range, y_out_range, _ = estimate_bluestein_range(self, z, **kwargs)
-            self = propagate_bluestein(self, z, x_out_range = x_out_range, y_out_range = y_out_range, Dx_out = self.Dx, Dy_out = self.Dy)
-
-        elif method == 'inc':
-            self = propagate_incoherent(self, z)
-
-        else:
-            raise Exception('Unable to propagate, insert valid method.') 
-        if renorm == True:
-            self.norm_beam()
-        return self
-    
 
     #Propagation 
 

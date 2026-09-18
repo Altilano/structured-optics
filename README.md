@@ -86,7 +86,7 @@ This project is licensed under the BSD-3-Clause License. See `LICENSE` for detai
 
  - Documentation.
  - Benchmark and optimization.
- - Support for high NA focalization. (Non paraxial propagation)
+ - Support for high NA focalization. (Non paraxial propagation, no scalar field)
  - Cuda and ROCm speed up.
  - Support for propagation inside linear medium.
 

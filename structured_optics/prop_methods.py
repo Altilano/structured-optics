@@ -3,8 +3,25 @@ from scipy import fft
 from .bluestein import fft_bluestein
 
 
-def propagate_fresnel_conv(Beam, z):                                     
-    #Propagate the field by a distance z using fresnel integral. convolution method
+def propagate_fresnel_conv(Beam, z):
+    """
+    Propagate the field by a distance z using the Fresnel integral,
+    evaluated as a convolution (transfer-function) via a single
+    forward/inverse FFT pair. The x, y grid is unchanged.
+
+    Parameters
+    ----------
+    Beam : object
+        Beam class containing all physical information of your beam.
+    z : float
+        Propagation distance.
+
+    Returns
+    -------
+    Beam : object
+        Beam class containing all physical information of your beam, with
+        updated `field` and `fourier_field`. `x`, `y` are left unchanged.
+    """
     k = Beam.k()
     prop = np.exp(-1j * z * (Beam.kx ** 2 + Beam.ky ** 2) / (2 * k) + 1j*k*z)
     Beam.fourier_field = fft.fft2(Beam.field, axes=(-2,-1))
@@ -152,7 +169,29 @@ def propagate_bluestein(Beam, z, x_out_range, y_out_range, Dx_out=None, Dy_out=N
 
 
 def propagate_angular_spectrum(Beam, z, evanescent=False):
-    #Propagate the field by a distance z using Angular Spectrum method.
+    """
+    Propagate the field by a distance z using the Angular Spectrum
+    method (exact scalar diffraction, no paraxial approximation). The
+    x, y grid is unchanged.
+
+    Parameters
+    ----------
+    Beam : object
+        Beam class containing all physical information of your beam.
+    z : float
+        Propagation distance.
+    evanescent : bool, optional
+        If True, evanescent components (where kx**2 + ky**2 > k**2) are
+        kept and propagated with a decaying/growing exponential. If
+        False (default), those components are zeroed out before
+        propagation.
+
+    Returns
+    -------
+    Beam : object
+        Beam class containing all physical information of your beam, with
+        updated `field` and `fourier_field`. `x`, `y` are left unchanged.
+    """
     k = Beam.k()
     kz2 = k**2 - Beam.kx**2 - Beam.ky**2
     kz = np.sqrt(kz2.astype(complex))
@@ -166,8 +205,30 @@ def propagate_angular_spectrum(Beam, z, evanescent=False):
 
 
 def propagate_incoherent(Beam, z):
-    #Propagates the INTENSITY by a distance z using incoherent propagation. Loses phase information.
-    #without pupil function doesn't seems to work
+    """
+    Propagate the beam's INTENSITY (not the complex field) by a distance
+    z, using incoherent propagation. This loses phase information: the
+    result is only meaningful as an intensity profile.
+
+    Note
+    ----
+    Without a pupil function (Like Iris) this does not currently seem to produce a
+    physically correct result -- treat with caution.
+
+    Parameters
+    ----------
+    Beam : object
+        Beam class containing all physical information of your beam.
+    z : float
+        Propagation distance.
+
+    Returns
+    -------
+    Beam : object
+        Beam class containing all physical information of your beam, with
+        `field` set to the square root of the propagated intensity
+        (as a complex array with no meaningful phase).
+    """
     k = Beam.k()
     if z != 0:
         h2 = np.ones_like(Beam.field)/(Beam.lamb*z)**2
@@ -180,7 +241,31 @@ def propagate_incoherent(Beam, z):
     
     
 def propagate_fraunhofer(Beam, z):
-    #Propagate the field by a distance z using fraunhofer integral. Changes XY grid.
+    """
+    Propagate the field by a distance z using the Fraunhofer (far-field)
+    integral. Unlike the other propagation methods, this changes the
+    beam's x, y grid, since the Fraunhofer diffraction pattern lives in
+    spatial-frequency-scaled coordinates (x = lambda*z*fx).
+
+    A warning is printed if z is smaller than the conventional far-field
+    distance ``2*waist**2/lamb``, since the Fraunhofer approximation is
+    likely inaccurate at shorter distances.
+
+    Parameters
+    ----------
+    Beam : object
+        Beam class containing all physical information of your beam.
+    z : float
+        Propagation distance. If `z == 0`, the beam is returned
+        unchanged.
+
+    Returns
+    -------
+    Beam : object
+        Beam class containing all physical information of your beam, with
+        updated `field`, `fourier_field`, and new `x`, `y` (and `nix`,
+        `niy`) grids in the far-field plane.
+    """
 
     if z < 2/Beam.lamb*Beam.waist**2:
         print("z small. Fraunhofer is probably not a good aproximation.") 
@@ -418,4 +503,3 @@ def estimate_bluestein_range(Beam, z, n_sigma=5.0, equal_grid=True):
     }
  
     return x_out_range, y_out_range, info
-

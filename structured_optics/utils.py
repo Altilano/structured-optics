@@ -10,6 +10,26 @@ import math
 #utils for modes
 
 def rotated_mode(func):  #add angle to rotate modes analyticaly
+    """
+    Decorator that adds an `angle` keyword argument to a mode-generating
+    method, rotating the mode analytically by temporarily rotating the
+    beam's coordinate grid.
+
+    Parameters
+    ----------
+    func : callable
+        A method with signature `func(Beam, *args, **kwargs)` that sets
+        `Beam`'s field to some mode (e.g. `Beam.hg`, `Beam.lg`).
+
+    Returns
+    -------
+    callable
+        A wrapped version of `func` that accepts an additional `angle`
+        keyword (default 0, in radians). If `angle % (2*pi) != 0`, `func`
+        is called inside `Beam.rotated_grid(angle)` (i.e. with the
+        coordinate grid rotated by `angle` for the duration of the
+        call); otherwise `func` is called normally with no rotation.
+    """
 
     @wraps(func)
     def wrapper(Beam, *args, angle=0, **kwargs):
@@ -23,16 +43,82 @@ def rotated_mode(func):  #add angle to rotate modes analyticaly
 
 
 def herm(X, N):              #hermite polynomial
+    """
+    Evaluate the physicists' Hermite polynomial of order N.
+
+    Parameters
+    ----------
+    X : array_like
+        Points at which to evaluate the polynomial.
+    N : int
+        Polynomial order.
+
+    Returns
+    -------
+    array_like
+        `H_N(X)`, same shape as `X`.
+    """
     HER = hermite(N)
     sn = HER(X)
     return sn
 
 def laguerre(X, L, P):          #laguerre polynomial
+    """
+    Evaluate the generalized (associated) Laguerre polynomial.
+
+    Parameters
+    ----------
+    X : array_like
+        Points at which to evaluate the polynomial.
+    L : int
+        Passed as the `alpha` parameter of `scipy.special.genlaguerre`.
+    P : int
+        Passed as the degree `n` parameter of
+        `scipy.special.genlaguerre`.
+
+    Returns
+    -------
+    array_like
+        `L_P^{(L)}(X)`, same shape as `X`.
+    """
     LAG = genlaguerre(P, L)
     sn = LAG(X)
     return sn
 
 def even_coeffs(p, q, kind):
+    """
+    Compute the eigenvalues and coefficient vectors of even Ince
+    polynomials of order `p` (i.e. `C_p^m` for kind 'C', or the even-p
+    'S' family), by solving the tridiagonal-like recurrence relation as
+    an eigenvalue problem.
+
+    Parameters
+    ----------
+    p : int
+        Ince polynomial order. Must be even.
+    q : float
+        Ellipticity parameter of the Ince equation.
+    kind : {'C', 'S'}
+        Which family of Ince polynomials to build the recurrence
+        matrix for ('C' for cosine-type, 'S' for sine-type).
+
+    Returns
+    -------
+    eigvals_sorted : np.ndarray
+        Eigenvalues, sorted in ascending order (for kind 'S', the
+        zero eigenvalue -- corresponding to the trivial/degenerate
+        solution -- is kept first, followed by the remaining
+        eigenvalues sorted ascending).
+    eigvecs_sorted : np.ndarray
+        Matrix whose columns are the coefficient vectors `A_r`
+        corresponding to each sorted eigenvalue, normalized so that
+        the sum of each column's coefficients is positive.
+
+    Raises
+    ------
+    ValueError
+        If `p` is not even.
+    """
     #Compute coefficients A_r of even Ince polynomials C_p^m.
     if p % 2 != 0:
         raise ValueError("p must be even for even coefs")
@@ -120,6 +206,36 @@ def even_coeffs(p, q, kind):
 
 
 def odd_coeffs(p, q, kind):
+    """
+    Compute the eigenvalues and coefficient vectors of odd Ince
+    polynomials of order `p` (i.e. `C_p^m`/`S_p^m` for odd p), by
+    solving the corresponding recurrence relation as an eigenvalue
+    problem.
+
+    Parameters
+    ----------
+    p : int
+        Ince polynomial order. Must be odd.
+    q : float
+        Ellipticity parameter of the Ince equation.
+    kind : {'C', 'S'}
+        Which family of Ince polynomials to build the recurrence
+        matrix for ('C' for cosine-type, 'S' for sine-type).
+
+    Returns
+    -------
+    eigvals_sorted : np.ndarray
+        Eigenvalues, sorted in ascending order.
+    eigvecs_sorted : np.ndarray
+        Matrix whose columns are the coefficient vectors corresponding
+        to each sorted eigenvalue, normalized so that the sum of each
+        column's coefficients is positive.
+
+    Raises
+    ------
+    ValueError
+        If `p` is not odd.
+    """
     
     if p % 2 != 1:
         raise ValueError("p must be odd for odd coefs")
@@ -175,6 +291,31 @@ def odd_coeffs(p, q, kind):
     
 
 def C_ince(xi, p, m, q):
+    """
+    Evaluate the even (cosine-type) Ince polynomial `C_p^m(xi, q)`.
+
+    Parameters
+    ----------
+    xi : array_like
+        Points at which to evaluate the polynomial.
+    p : int
+        Ince polynomial order (p >= 0).
+    m : int
+        Ince polynomial degree (0 <= m <= p), with `p - m` even.
+    q : float
+        Ellipticity parameter of the Ince equation.
+
+    Returns
+    -------
+    array_like
+        `C_p^m(xi, q)`, same shape as `xi`.
+
+    Raises
+    ------
+    ValueError
+        If `p`, `m` are out of range, or if `p - m` is odd (`C_ince`
+        is only defined for even `p - m`).
+    """
     # Compute even Ince polynomial C_p^m(xi, q)
     if p<0 or m < 0 or m > p:
         raise ValueError("invalid p,m")
@@ -194,6 +335,31 @@ def C_ince(xi, p, m, q):
         raise ValueError("C_ince is only defined for even (p-m)")
     
 def S_ince(xi, p, m, q):
+    """
+    Evaluate the odd (sine-type) Ince polynomial `S_p^m(xi, q)`.
+
+    Parameters
+    ----------
+    xi : array_like
+        Points at which to evaluate the polynomial.
+    p : int
+        Ince polynomial order (p >= 0).
+    m : int
+        Ince polynomial degree (0 <= m <= p), with `p - m` even.
+    q : float
+        Ellipticity parameter of the Ince equation.
+
+    Returns
+    -------
+    array_like
+        `S_p^m(xi, q)`, same shape as `xi`.
+
+    Raises
+    ------
+    ValueError
+        If `p`, `m` are out of range, or if `p - m` is odd (`S_ince`
+        is only defined for even `p - m`).
+    """
     # Compute odd Ince polynomial S_p^m(xi, q)
     if p<0 or m < 0 or m > p:
         raise ValueError("invalid p,m")
@@ -214,6 +380,31 @@ def S_ince(xi, p, m, q):
     
 
 def cartesian_to_elliptic(x, y, q, w0, z, lamb):
+    """
+    Convert Cartesian coordinates (x, y) to elliptic coordinates
+    (xi, eta), for an elliptic coordinate system whose foci scale with
+    the beam's waist as it propagates (used for Ince-Gaussian modes).
+
+    Parameters
+    ----------
+    x, y : array_like
+        Cartesian coordinates.
+    q : float
+        Ellipticity parameter.
+    w0 : float
+        Beam waist at `z = 0`.
+    z : float
+        Propagation distance, used (with `lamb`) to compute the local
+        beam width `w` and scale the focal distance `f` accordingly.
+    lamb : float
+        Wavelength.
+
+    Returns
+    -------
+    xi, eta : array_like
+        Elliptic radial coordinate `xi` (>= 0) and angular coordinate
+        `eta`, same shape as `x`/`y`.
+    """
     #Convert Cartesian (x,y) to elliptic coordinates (xi, eta) with elipticity q.
 
     f0 = w0*np.sqrt(q/2)
@@ -228,6 +419,31 @@ def cartesian_to_elliptic(x, y, q, w0, z, lamb):
     return xi, eta
 
 def elliptic_to_cartesian(xi, eta, q, w0, z, lamb):
+    """
+    Convert elliptic coordinates (xi, eta) to Cartesian coordinates
+    (x, y); the inverse of `cartesian_to_elliptic`.
+
+    Parameters
+    ----------
+    xi : array_like
+        Elliptic radial coordinate.
+    eta : array_like
+        Elliptic angular coordinate.
+    q : float
+        Ellipticity parameter.
+    w0 : float
+        Beam waist at `z = 0`.
+    z : float
+        Propagation distance, used (with `lamb`) to compute the local
+        beam width `w` and scale the focal distance `f` accordingly.
+    lamb : float
+        Wavelength.
+
+    Returns
+    -------
+    x, y : array_like
+        Cartesian coordinates, same shape as `xi`/`eta`.
+    """
     #Convert elliptic coordinates (xi, eta) to Cartesian (x,y) with elipticity q.
     f0 = w0*np.sqrt(q/2)
     w = w0 * np.sqrt(1 + (z * lamb / (np.pi * w0**2))**2)
@@ -245,15 +461,75 @@ def elliptic_to_cartesian(xi, eta, q, w0, z, lamb):
 #utils for fiber modes
 
 def v_number(n_core, n_clad, a, lamb):
+    """
+    Compute the normalized frequency (V-number) of a step-index fiber.
+
+    Parameters
+    ----------
+    n_core : float
+        Core refractive index.
+    n_clad : float
+        Cladding refractive index.
+    a : float
+        Core radius.
+    lamb : float
+        Wavelength (same length units as `a`).
+
+    Returns
+    -------
+    float
+        `V = (2*pi*a/lamb) * sqrt(n_core**2 - n_clad**2)`.
+    """
     return (2 * np.pi * a / lamb) * np.sqrt(n_core**2 - n_clad**2)
  
  
 def characteristic_eq(u, V, l):
+    """
+    Evaluate the LP-mode characteristic (eigenvalue) equation for a
+    step-index fiber, whose roots `u` give the guided LP_l,m modes.
+
+    Parameters
+    ----------
+    u : array_like
+        Trial value(s) of the normalized transverse core wavenumber.
+    V : float
+        Fiber V-number (see `v_number`).
+    l : int
+        Azimuthal mode order.
+
+    Returns
+    -------
+    array_like
+        The characteristic function
+        ``u * J_{l+1}(u)/J_l(u) - v * K_{l+1}(v)/K_l(v)``, where
+        `v = sqrt(V**2 - u**2)`. Guided LP_l,m modes correspond to the
+        zeros of this function in `u in (0, V)`.
+    """
     v = np.sqrt(V**2 - u**2)
     return u * jv(l + 1, u) / jv(l, u) - v * kv(l + 1, v) / kv(l, v)
  
  
 def _pole_positions(V, l):
+    """
+    Find the poles of `characteristic_eq` for azimuthal order `l` within
+    `(0, V)` -- these are the zeros of `J_l`, which bracket the roots of
+    the characteristic equation and are used to split the search
+    interval in `find_LP_roots`.
+
+    Parameters
+    ----------
+    V : float
+        Fiber V-number.
+    l : int
+        Azimuthal mode order.
+
+    Returns
+    -------
+    np.ndarray
+        Zeros of the Bessel function `J_l` that are less than `V`.
+        Internally searches an increasing number of zeros until enough
+        are found (or a safety cap is hit).
+    """
     n = 10
     while True:
         zeros = jn_zeros(l, n)
@@ -406,6 +682,26 @@ def get_section(Beam, ang_min, ang_max, pol_index=None):
 #utils for holograms
 
 def inv_sinc(A, n=10000):
+    """
+    Numerically invert the normalized sinc function on its first
+    monotonic branch, `sinc(x/pi)` for `x` in `[0, pi]`.
+
+    Parameters
+    ----------
+    A : array_like
+        Value(s) of `sinc(x/pi)` to invert; expected to lie within the
+        range of `sinc` over `x in [0, pi]` (i.e. `[sinc(1), 1]`, since
+        `sinc` is decreasing there).
+    n : int, optional
+        Number of samples used to tabulate `sinc` before interpolating
+        its inverse. Defaults to 10000.
+
+    Returns
+    -------
+    array_like
+        `x` such that `sinc(x/pi) ~= A`, found by linear interpolation
+        on a tabulated grid.
+    """
     #invert function sinc
     x = np.linspace(0, np.pi, n)
     y = np.sinc(x/np.pi)
@@ -413,6 +709,25 @@ def inv_sinc(A, n=10000):
     return np.interp(A, y[::-1], x[::-1])
 
 def inv_J0(A, n=10000):
+    """
+    Numerically invert the Bessel function `J0` on its first monotonic
+    branch, `x in [0, j01]` where `j01` is the first zero of `J0`.
+
+    Parameters
+    ----------
+    A : array_like
+        Value(s) of `J0(x)` to invert; expected to lie within
+        `[J0(j01), J0(0)] = [0, 1]`.
+    n : int, optional
+        Number of samples used to tabulate `J0` before interpolating
+        its inverse. Defaults to 10000.
+
+    Returns
+    -------
+    array_like
+        `x` such that `J0(x) ~= A`, found by linear interpolation on a
+        tabulated grid over `[0, j01]`.
+    """
     #invert bessel function J0
     j01 = 2.404825557695773
     x = np.linspace(0.0, j01, n)
@@ -422,6 +737,30 @@ def inv_J0(A, n=10000):
 
 
 def inv_J1(A, a=None, n=10000):
+    """
+    Numerically invert the Bessel function `J1` on its first monotonic
+    branch, `x in [0, x1_max]` where `x1_max` is the location of `J1`'s
+    first maximum.
+
+    Parameters
+    ----------
+    A : array_like
+        Normalized value(s) to invert; internally clipped to `[0, 1]`
+        and scaled by `a` before inversion, so the effective target is
+        `a * A`.
+    a : float, optional
+        Scale factor applied to `A`. Defaults to `J1(x1_max)` (i.e.
+        `J1`'s maximum value), so that `A = 1` maps to the peak.
+    n : int, optional
+        Number of samples used to tabulate `J1` before interpolating
+        its inverse. Defaults to 10000.
+
+    Returns
+    -------
+    array_like
+        `x` such that `J1(x) ~= a * A`, found by linear interpolation
+        on a tabulated grid over `[0, x1_max]`.
+    """
     #invert bessel function J1
     x1_max = 1.8411837813406593
     if a == None:
@@ -437,6 +776,31 @@ def inv_J1(A, a=None, n=10000):
 #utils for aberration correction
 
 def radial_poly(n, m, r):
+    """
+    Evaluate the Zernike radial polynomial `R_n^m(r)`.
+
+    Parameters
+    ----------
+    n : int
+        Radial order.
+    m : int
+        Absolute value of the azimuthal frequency (0 <= m <= n),
+        with `n - m` even.
+    r : array_like
+        Normalized radial coordinate(s) at which to evaluate the
+        polynomial.
+
+    Returns
+    -------
+    array_like
+        `R_n^m(r)`, same shape as `r`.
+
+    Raises
+    ------
+    ValueError
+        If `n - m` is odd (the Zernike polynomial is then identically
+        zero) or if `n`, `m` are otherwise invalid (`m > n`).
+    """
     s = 0
     if (n - m) % 2 == 0 and m <= n:
         for k in range((n - m) // 2 + 1):
@@ -449,12 +813,66 @@ def radial_poly(n, m, r):
     return s 
 
 def zernike(n, m, r, phi):
+    """
+    Evaluate the (n, m) Zernike polynomial in polar coordinates.
+
+    Parameters
+    ----------
+    n : int
+        Radial order.
+    m : int
+        Signed azimuthal frequency. `m >= 0` selects the cosine
+        ("even") term; `m < 0` selects the sine ("odd") term (using
+        `|m|` for the radial part).
+    r : array_like
+        Normalized radial coordinate(s).
+    phi : array_like
+        Azimuthal angle(s), in radians.
+
+    Returns
+    -------
+    array_like
+        `R_n^{|m|}(r) * cos(m*phi)` if `m >= 0`, else
+        `R_n^{|m|}(r) * sin(|m|*phi)`.
+    """
     if m >= 0:
         return radial_poly(n, m, r) * np.cos(m*phi)
     else:
         return radial_poly(n, -m, r) * np.sin(-m*phi)
     
 def zernikes_phase(beam, coefs, strengths,):
+    """
+    Build a complex phase-only transmittance from a weighted sum of
+    Zernike polynomials, evaluated on `beam`'s own grid (normalized by
+    its waist).
+
+    Parameters
+    ----------
+    beam : object
+        Beam instance supplying the coordinate grids `beam.x`,
+        `beam.y` and the normalization radius `beam.waist`.
+    coefs : array_like
+        Array of shape (N, 2), where each row `(n, m)` selects one
+        Zernike term (radial order `n`, signed azimuthal frequency
+        `m`).
+    strengths : array_like
+        Length-N array of coefficient strengths, one per row of
+        `coefs`.
+
+    Returns
+    -------
+    np.ndarray
+        Complex array `exp(1j * phase)`, where
+        `phase = sum(strength * zernike(n, m, r, phi))` over all
+        `(n, m, strength)` triples, `r = sqrt(x**2+y**2)/beam.waist`
+        and `phi = arctan2(y, x)`.
+
+    Raises
+    ------
+    ValueError
+        If `coefs` does not have shape (N, 2), or if `coefs` and
+        `strengths` have different lengths.
+    """
 
     coefs = np.asarray(coefs, dtype=int)
     strengths = np.asarray(strengths, dtype=float)
