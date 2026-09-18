@@ -67,12 +67,12 @@ class Beam(BeamDiagnostics):
 
         #Geometric properties
         self.nix = nix
-        if niy == None:
+        if niy is None:
             self.niy = nix
         else:
             self.niy = niy
         self.Dx = Dx
-        if Dy == None:
+        if Dy is None:
             self.Dy = Dx
         else:
             self.Dy = Dy
@@ -142,7 +142,7 @@ class Beam(BeamDiagnostics):
             all-zero field of shape (pol_dim, Dy, Dx).
         """
         new = self.copy()
-        if pol_dim == None:
+        if pol_dim is None:
             pol_dim = self.pol
         new.field = np.zeros((pol_dim, self.Dy, self.Dx), dtype='complex128')
         return new
