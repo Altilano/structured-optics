@@ -10,7 +10,7 @@ from .prop_methods import(  propagate_fresnel_conv, propagate_fresnel_fft, propa
 from .modes import (hg, hg_astigmatic, lg, nbessel, gbessel, lg_prod, frac_oam, frac_oam_qs,
                     IG_even, IG_odd, HInceG, circle, square, triangle, lp, lp_hel)
 
-from .algebra_utils import (hg_proj, lg_proj, hg_basis, lg_basis, bessel_basis, build_from_coefs_and_basis)
+from .tools import _build_from_coefs_and_basis
 from .hologram import slm_hologram, dmd_hologram
 from .diagnostics import BeamDiagnostics
 
@@ -158,8 +158,7 @@ class Beam(BeamDiagnostics):
         """
         Multiply fields.
 
-        If `other` is a Beam, multiplies the two fields element-wise (e.g. for
-        applying a transmission mask stored as a Beam). If `other` is a scalar
+        If `other` is a Beam, multiplies the two fields element-wise. If `other` is a scalar
         (int/float/complex), scales the field globally. If `other` is a Mask
         (see masks.py / polarization.py), returns NotImplemented so Python
         falls back to `other.__rmul__(self)`, which applies the mask.
@@ -709,103 +708,9 @@ class Beam(BeamDiagnostics):
 
     #Linear Algebra with modes utils
 
-    def hg_projector(self,N:int) -> tuple:
-        """
-        Project the beam's field onto the Hermite-Gaussian basis up to order N.
-
-        Parameters
-        ----------
-        N : int
-            Maximum combined mode order to project onto.
-
-        Returns
-        -------
-        tuple
-            (n, m, overlaps): arrays of HG mode indices n, m and the array of
-            complex overlap coefficients between the beam and each basis mode.
-        """
-        return hg_proj(self, N)
-
-    def lg_projector(self, N:int) -> tuple:
-        """
-        Project the beam's field onto the Laguerre-Gaussian basis up to order N.
-
-        Parameters
-        ----------
-        N : int
-            Maximum combined mode order to project onto.
-
-        Returns
-        -------
-        tuple
-            (l, p, overlaps): arrays of LG mode indices l, p and the array of
-            complex overlap coefficients between the beam and each basis mode.
-        """
-        return lg_proj(self, N)
-        
-    def hg_basis(self, N:int, waist:float=None, norm1:bool = False) -> np.ndarray:
-        """
-        Build a Hermite-Gaussian basis set up to order N on this beam's grid.
-
-        Parameters
-        ----------
-        N : int
-            Maximum combined mode order.
-        waist : float, optional
-            Waist used to generate the basis modes. Defaults to `self.waist`.
-        norm1 : bool, optional
-            If True, normalize each basis mode to unit power.
-
-        Returns
-        -------
-        ndarray
-            Array of HG basis mode fields.
-        """
-        return hg_basis(self, N, waist, norm1)
-    
-    def lg_basis(self, N:int, waist:float=None, norm1:bool=False) -> np.ndarray:
-        """
-        Build a Laguerre-Gaussian basis set up to order N on this beam's grid.
-
-        Parameters
-        ----------
-        N : int
-            Maximum combined mode order.
-        waist : float, optional
-            Waist used to generate the basis modes. Defaults to `self.waist`.
-        norm1 : bool, optional
-            If True, normalize each basis mode to unit power.
-
-        Returns
-        -------
-        ndarray
-            Array of LG basis mode fields.
-        """
-        return lg_basis(self, N, waist, norm1)
-    
-    def bessel_basis(self, Nmax:int, waist:float=None, norm1:bool=False) -> np.ndarray:
-        """
-        Build a Bessel mode basis up to order Nmax on this beam's grid.
-
-        Parameters
-        ----------
-        Nmax : int
-            Maximum Bessel order.
-        waist : float, optional
-            Waist/scale used to generate the basis modes. Defaults to `self.waist`.
-        norm1 : bool, optional
-            If True, normalize each basis mode to unit power.
-
-        Returns
-        -------
-        ndarray
-            Array of Bessel basis mode fields.
-        """
-        return bessel_basis(self, Nmax, waist, norm1)
-
     def build_from_coefs_and_basis(self, coefs:np.ndarray, basis:np.ndarray, pol_index:int = 0) -> object:
         """
-        Build the field as a linear combination of basis modes weighted by coefs.
+        Build the field as a linear combination of basis modes weighted by coefs. Basis can be constructed with tools.py functions like hg_basis().
 
         Parameters
         ----------
@@ -821,7 +726,7 @@ class Beam(BeamDiagnostics):
         Beam
             self, with field set to the weighted sum of basis modes.
         """
-        return build_from_coefs_and_basis(self, coefs, basis, pol_index = pol_index)
+        return _build_from_coefs_and_basis(self, coefs, basis, pol_index = pol_index)
     
 
 

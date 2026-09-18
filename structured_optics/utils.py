@@ -372,17 +372,7 @@ def get_LP_params(l, m, n_core, n_clad, a, lamb):
 
 
 
-#utils for Beam class parameters calculation
-
-def overlap(first_beam:object, second_beam:object)->complex: 
-    # calculate overlap between two beams, only properly works if ni and D of beams are equal.
-    return np.sum(first_beam.field*np.conjugate(second_beam.field))*4*(first_beam.nix/first_beam.Dx) \
-        *(first_beam.niy/first_beam.Dy)/np.sqrt(first_beam.Power()*second_beam.Power())
-
-def int_overlap(first_beam:object, second_beam:object)->float:
-    return np.sum(first_beam.int_profile()*second_beam.int_profile())*4*(first_beam.nix/first_beam.Dx) \
-        *(first_beam.niy/first_beam.Dy)/(first_beam.Power()*second_beam.Power())
-
+#util for angular section output
 
 def get_section(Beam, ang_min, ang_max, pol_index=None):
     """

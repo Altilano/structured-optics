@@ -43,14 +43,15 @@ class JonesMask(Mask):
     def matrix(self, beam) -> np.ndarray:
         raise NotImplementedError
 
-    def apply_inplace(self, beam):
+    def apply(self, beam):
         if beam.pol == 1:
             return beam
         J = self.matrix(beam)
+        result = beam.copy()
         Ex, Ey = beam.Ex.copy(), beam.Ey.copy()
-        beam.Ex = J[0, 0] * Ex + J[0, 1] * Ey
-        beam.Ey = J[1, 0] * Ex + J[1, 1] * Ey
-        return beam
+        result.Ex = J[0, 0] * Ex + J[0, 1] * Ey
+        result.Ey = J[1, 0] * Ex + J[1, 1] * Ey
+        return result
 
 class HWP(JonesMask):
     def __init__(self, angle: float):

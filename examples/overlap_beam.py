@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 from structured_optics import *
-from structured_optics.utils import overlap
+from structured_optics.tools import overlap
 import numpy as np
 
 # Create a beam on a 10mm x 10mm (2*5e-3) grid with 512x512 points

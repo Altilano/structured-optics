@@ -23,13 +23,9 @@ __all__ = [ "Lens", "AstigmaticLens", "TiltedLens", "ZernikeMask",
 
 class Mask(ABC):
     @abstractmethod
-    def apply_inplace(self, beam) -> object:
-        """Apply this mask to `beam`, mutating it in place, and return it."""
-        raise NotImplementedError
-
     def apply(self, beam) -> object:
-        """Apply this mask to a copy of `beam`, leaving `beam` untouched."""
-        return self.apply_inplace(beam.copy())
+        """Apply this mask to `beam`, and return a copy."""
+        raise NotImplementedError
 
     def __rmul__(self, beam):
         # enables `beam * SomeMask(...)`
@@ -50,9 +46,10 @@ class SpatialMask(Mask):
         """Return an array broadcastable to beam.field.shape[-2:]."""
         raise NotImplementedError
 
-    def apply_inplace(self, beam):
-        beam.field *= self.array(beam)
-        return beam
+    def apply(self, beam):
+        result = beam.copy()
+        result.field *= self.array(result)
+        return result
 
 
 class Lens(SpatialMask):
