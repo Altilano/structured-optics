@@ -60,7 +60,7 @@ Expected output:
 Full API documentation, including all mode types, propagation methods, and
 optical elements, is available at:
 
-Soon...
+(https://altilano.github.io/structured-optics/)
 
 ## Requirements
 
