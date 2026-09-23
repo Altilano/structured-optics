@@ -317,6 +317,10 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+
+        Reference
+        ---------
+        .. [1] https://en.wikipedia.org/wiki/Gaussian_beam
         """
         return self._set_mode(hg(self, n, m, z, angle=angle),  polarization=polarization)
 
@@ -367,6 +371,10 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+
+        Reference
+        ---------
+        .. [1] https://en.wikipedia.org/wiki/Gaussian_beam
         """
         return self._set_mode(lg(self, l, p, z, angle=angle),  polarization=polarization)
 
@@ -391,6 +399,10 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+
+        Reference
+        ---------
+            [1] https://www.rp-photonics.com/bessel_beams_and_bessel_gauss_beams.html
         """
         return self._set_mode(nbessel(self, N, z, angle=angle),  polarization=polarization)
 
@@ -414,6 +426,10 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+        
+        Reference
+        ---------
+            [1] https://www.rp-photonics.com/bessel_beams_and_bessel_gauss_beams.html
         """
         return self._set_mode(gbessel(self,N,r0, angle=angle),  polarization=polarization)
 
@@ -439,6 +455,11 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+        
+        Reference
+        ---------
+            [1] Mellado-Villaseñor, G., and B. M. Rodríguez-Lara. "Products of displaced Laguerre-Gaussian beams." 
+            Physical Review A 113.2 (2026): 023514.
         """
         return self._set_mode(lg_prod(self, N, ls, centers, angle=angle),  polarization=polarization)
 
@@ -452,13 +473,18 @@ class Beam(BeamDiagnostics):
         Parameters
         ----------
         Ma : float
-            Target (possibly non-integer) OAM/topological charge.
+            Desired fractional orbital angular momentum index.
         n_modes : int
-            Number of integer-OAM components used in the expansion.
-        beta : float, optional
-            ???
-        theta_0 : float, optional
-            ???
+            Number of integer-order LG modes included in the superposition.
+        beta : float
+            Angular parameter used in the complex expansion coefficients, in
+            radians.
+        theta_0 : float
+            Reference angular position used in the expansion coefficients,
+            in radians.
+        z : float, optional
+            Propagation distance along the optical axis, in meters.
+            Default is 0.
         angle : float, optional
             Rotation of the mode's axes (radians) relative to the beam's x/y axes.
         polarization : array_like, optional
@@ -468,6 +494,11 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+
+        Reference
+        ---------
+            [1] Götte, Jörg B., et al. "Light beams with fractional orbital angular momentum and their vortex structure." 
+            Optics express 16.2 (2008): 993-1006.
         """
         return self._set_mode(frac_oam(self, Ma, n_modes, beta, theta_0, z, angle=angle),  polarization=polarization)
 
@@ -481,13 +512,18 @@ class Beam(BeamDiagnostics):
         Parameters
         ----------
         Ma : float
-            Target (possibly non-integer) OAM/topological charge.
+            Desired fractional orbital angular momentum index.
         n_modes : int
-            Number of integer-OAM components used in the expansion.
-        beta : float, optional
-            ???
-        theta_0 : float, optional
-            ???
+            Number of integer-order LG modes included in the superposition.
+        beta : float
+            Angular parameter used in the complex expansion coefficients, in
+            radians.
+        theta_0 : float
+            Reference angular position used in the expansion coefficients,
+            in radians.
+        z : float, optional
+            Propagation distance along the optical axis, in meters.
+            Default is 0.
         angle : float, optional
             Rotation of the mode's axes (radians) relative to the beam's x/y axes.
         polarization : array_like, optional
@@ -497,6 +533,11 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+
+        Reference
+        ---------
+            [1] Götte, Jörg B., et al. "Light beams with fractional orbital angular momentum and their vortex structure." 
+            Optics express 16.2 (2008): 993-1006.
         """
         return self._set_mode(frac_oam_qs(self, Ma, n_modes, beta, theta_0, z, angle=angle),  polarization=polarization)
 
@@ -523,6 +564,12 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+
+        Reference
+        ---------
+            [1] Bandres, Miguel A., and Julio C. Gutiérrez-Vega. 
+            "Ince–Gaussian modes of the paraxial wave equation and stable resonators." 
+            Journal of the Optical Society of America A 21.5 (2004): 873-880.
         """
         return self._set_mode(IG_even(self, p, m, q, z, angle=angle),  polarization=polarization)
 
@@ -549,6 +596,12 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+
+        Reference
+        ---------
+            [1] Bandres, Miguel A., and Julio C. Gutiérrez-Vega. 
+            "Ince–Gaussian modes of the paraxial wave equation and stable resonators." 
+            Journal of the Optical Society of America A 21.5 (2004): 873-880.
         """
         return self._set_mode(IG_odd(self, p, m, q, z, angle=angle),  polarization=polarization)
 
@@ -577,6 +630,12 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+
+        Reference
+        ---------
+            [1] Bandres, Miguel A., and Julio C. Gutiérrez-Vega. 
+            "Ince–Gaussian modes of the paraxial wave equation and stable resonators." 
+            Journal of the Optical Society of America A 21.5 (2004): 873-880.
         """
         return self._set_mode(HInceG(self, p, m, q, helicity=helicity, z=z, angle=angle),  polarization=polarization)
 
@@ -673,6 +732,10 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+        
+        Reference
+        ---------
+            [1] Mitschke, Fedor, and Fedor Mitschke. Fiber optics. Vol. 2. Berlin, Germany:: Springer, 2016.
         """
         return self._set_mode(lp(self, l, m, n_core, n_clad, parity=parity, angle=angle),  polarization=polarization)
 
@@ -699,6 +762,10 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+
+        Reference
+        ---------
+            [1] Mitschke, Fedor, and Fedor Mitschke. Fiber optics. Vol. 2. Berlin, Germany:: Springer, 2016.
         """
         return self._set_mode(lp_hel(self, l, m, n_core, n_clad, angle=angle),  polarization=polarization)
     
@@ -764,6 +831,12 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field propagated by distance z.
+
+        References
+        ----------
+            [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
+            [2] Hu, Yanlei, et al. "Efficient full-path optical calculation of scalar and vector diffraction using the Bluestein method." 
+            Light: Science & Applications 9.1 (2020): 119.
 
         """
         if method == 'auto':

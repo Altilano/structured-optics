@@ -27,6 +27,12 @@ def slm_hologram(beam, x_grating:int, y_grating:int, method:str = 'bessel1', inp
     -------
     ndarray
         Encoded hologram pattern, shape (Dy, Dx), ready for SLM display.
+
+    Reference
+    ---------
+        [1] T. Clark, R. Offer, S. Franke-Arnold, A. Arnold, and N. Radwell, 
+        "Comparison of beam generation techniques using a phase only spatial light modulator," 
+        Opt. Express  24, 6249-6264 (2016).
     """
     
     dx = (beam.x[0,1] - beam.x[0,0])
@@ -86,7 +92,12 @@ def dmd_hologram(beam, cx:float, cy:float, sign:int=1, input:object=None)-> np.n
     Returns 
     ------- 
     H : ndarray 
-        Binary DMD hologram. """ 
+        Binary DMD hologram. 
+        
+    Reference
+    ---------
+        [1] Scholes, Stirling, et al. "Structured light with digital micromirror devices: a guide to best practice." 
+        Optical Engineering 59.4 (2020): 041202-041202.""" 
     
     # Target field 
     target = beam.Ex 

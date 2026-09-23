@@ -8,10 +8,7 @@ class My_SLM:
     """
     Fullscreen numpy-array display on a chosen physical monitor.
     Uses plain tkinter (stdlib) - the image is shown as ordinary
-    CPU-composited window content, the same way PyQt6's QLabel/QPixmap
-    did. Unlike an OpenGL surface (pyglet/GLFW), this never becomes a
-    GPU flip-model surface, so it doesn't trigger the driver-level
-    scanout switch that causes the display to briefly flash/resync.
+    CPU-composited window content.
     """
 
     def __init__(self, screen_index: int = 0):

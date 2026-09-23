@@ -21,6 +21,10 @@ def propagate_fresnel_conv(Beam, z):
     Beam : object
         Beam class containing all physical information of your beam, with
         updated `field` and `fourier_field`. `x`, `y` are left unchanged.
+    
+    Reference
+    ----------
+        [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
     """
     k = Beam.k()
     prop = np.exp(-1j * z * (Beam.kx ** 2 + Beam.ky ** 2) / (2 * k) + 1j*k*z)
@@ -44,6 +48,10 @@ def propagate_fresnel_fft(Beam, z):
     -------
     Beam : object
         Beam class containing all physical information of your beam, with updated field and x,y meshgrid.
+
+    Reference
+    ----------
+        [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
     """
     if z == 0:
         return Beam
@@ -105,6 +113,11 @@ def propagate_bluestein(Beam, z, x_out_range, y_out_range, Dx_out=None, Dy_out=N
     -------
     Beam : object
         Beam class containing all physical information of your beam, with updated field and x,y meshgrid.
+    
+    Reference
+    ----------
+        [1] Hu, Yanlei, et al. "Efficient full-path optical calculation of scalar and vector diffraction using the Bluestein method." 
+        Light: Science & Applications 9.1 (2020): 119.
     """
     if z == 0:
         raise ValueError("Bluestein propagation requires z != 0.")
@@ -191,6 +204,10 @@ def propagate_angular_spectrum(Beam, z, evanescent=False):
     Beam : object
         Beam class containing all physical information of your beam, with
         updated `field` and `fourier_field`. `x`, `y` are left unchanged.
+    
+    References
+    ----------
+        [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
     """
     k = Beam.k()
     kz2 = k**2 - Beam.kx**2 - Beam.ky**2
@@ -228,6 +245,10 @@ def propagate_incoherent(Beam, z):
         Beam class containing all physical information of your beam, with
         `field` set to the square root of the propagated intensity
         (as a complex array with no meaningful phase).
+    
+    References
+    ----------
+        [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
     """
     k = Beam.k()
     if z != 0:
@@ -265,6 +286,10 @@ def propagate_fraunhofer(Beam, z):
         Beam class containing all physical information of your beam, with
         updated `field`, `fourier_field`, and new `x`, `y` (and `nix`,
         `niy`) grids in the far-field plane.
+    
+    References
+    ----------
+        [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
     """
 
     if z < 2/Beam.lamb*Beam.waist**2:

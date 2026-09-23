@@ -65,6 +65,11 @@ def fft_bluestein(f, dx, dk, D_out=None, x0=0.0, k0=0.0, inverse=False):
     ValueError
         If the input is empty, `D_out` is not positive, `dx` is not
         positive, or `dk` is zero.
+
+    Reference
+    ---------
+        [1] Hu, Yanlei, et al. "Efficient full-path optical calculation of scalar and vector diffraction using the Bluestein method." 
+            Light: Science & Applications 9.1 (2020): 119.
     """
 
 

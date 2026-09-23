@@ -2,4 +2,5 @@
 dist/
 build/
 structured_optics.egg-info/
+structured_optics/__pycache__/
 __pycache__/

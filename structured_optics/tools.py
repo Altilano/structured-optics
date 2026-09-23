@@ -59,31 +59,6 @@ def int_overlap(first_beam:object, second_beam:object)->float:
         *(first_beam.niy/first_beam.Dy)/(first_beam.Power()*second_beam.Power())
 
 
-#tool for field angular section.
-def get_section(Beam, ang_min, ang_max, pol_index=None):
-    """
-    Return the field restricted to the angular section
-    [ang_min, ang_max).
-
-    Angles are given in radians.
-    """
-    # Map angles to [0, 2π)
-    ang_min = ang_min % (2 * np.pi)
-    ang_max = ang_max % (2 * np.pi)
-
-    theta = np.mod(np.arctan2(Beam.y, Beam.x), 2 * np.pi)
-
-    # Normal section
-    if ang_min < ang_max:
-        sec = ((theta >= ang_min) & (theta < ang_max))
-    # Section crosses 2π
-    else:
-        sec = ((theta >= ang_min) | (theta < ang_max))
-    if pol_index is None:
-        return Beam.field * sec[None, :, :]
-    else:
-        return Beam.field[pol_index]*sec[:,:]
-
 
 #Tools for mode decomposition.
 

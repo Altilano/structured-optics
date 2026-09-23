@@ -643,13 +643,7 @@ def get_LP_params(l, m, n_core, n_clad, a, lamb):
     return {"l": l, "m": m, "u": u, "v": v, "V": V, "V_cutoff": Vc, "n_eff": n_eff}
 
 
-
-
-
-
-
-#util for angular section output
-
+#util for field angular section.
 def get_section(Beam, ang_min, ang_max, pol_index=None):
     """
     Return the field restricted to the angular section
@@ -669,14 +663,10 @@ def get_section(Beam, ang_min, ang_max, pol_index=None):
     # Section crosses 2π
     else:
         sec = ((theta >= ang_min) | (theta < ang_max))
-    if pol_index == None:
+    if pol_index is None:
         return Beam.field * sec[None, :, :]
     else:
         return Beam.field[pol_index]*sec[:,:]
-
-    
-
-
 
 
 #utils for holograms
@@ -763,7 +753,7 @@ def inv_J1(A, a=None, n=10000):
     """
     #invert bessel function J1
     x1_max = 1.8411837813406593
-    if a == None:
+    if a is None:
         a = j1(x1_max)  
     A = np.clip(A, 0.0, 1.0)
     x = np.linspace(0.0, x1_max, n)
