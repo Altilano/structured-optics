@@ -1,13 +1,64 @@
-site_name: Structured Optics
+site_name: structured-optics
+site_description: A Python library for generating, propagating, and analyzing structured light beams
+repo_url: https://github.com/Altilano/structured-optics
+repo_name: Altilano/structured-optics
 
 theme:
   name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.suggest
 
 plugins:
   - search
   - mkdocstrings:
       handlers:
         python:
+          paths: [.]  # look for the structured_optics package at the repo root
           options:
             docstring_style: numpy
             show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            members_order: source
+            separate_signature: true
+            show_signature_annotations: true
+            merge_init_into_class: true
+            docstring_section_style: table
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.details
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - API Reference:
+      - Beam (Core): api/struct_opt.md
+      - Modes: api/modes.md
+      - Masks: api/masks.md
+      - Polarization: api/polarization.md
+      - Tools: api/tools.md
+      - Propagation Methods: api/prop_methods.md
+      - Diagnostics: api/diagnostics.md
+      - Hologram: api/hologram.md
+      - Bluestein FFT: api/bluestein.md
+      - Utilities: api/utils.md
+      - SLM Display: api/slmdisplay.md

@@ -90,6 +90,10 @@ class Lens(SpatialMask):
         f0 : tuple, optional
             (x, y) offset of the lens center relative to the beam's
             optical axis. Defaults to (0, 0).
+        
+        Reference
+        ---------
+            [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
         """
 
         self.f, self.f0 = f, f0
@@ -157,6 +161,10 @@ class ZernikeMask(SpatialMask):
             Zernike term identifiers (indices/orders) to include.
         strengths : tuple
             Coefficient strengths corresponding to each term in `coefs`.
+        
+        Reference
+        ---------
+            [1] https://en.wikipedia.org/wiki/Zernike_polynomials
         """
 
         self.coefs, self.strengths = coefs, strengths

@@ -1,6 +1,6 @@
 import numpy as np
 
-__all__ = ["overlap", "int_overlap", "get_section", "hg_proj", "lg_proj", "hg_basis", "lg_basis", "bessel_basis"]
+__all__ = ["overlap", "int_overlap", "hg_proj", "lg_proj", "hg_basis", "lg_basis", "bessel_basis"]
 
 #Tools for 
 def overlap(first_beam:object, second_beam:object)->complex:

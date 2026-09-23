@@ -338,8 +338,6 @@ def suggest_propagation_method(Beam, z, aperture_sigma_factor=3.0,
     fraunhofer_threshold : float, optional
         Fresnel number below which Fraunhofer is considered valid
         (default 0.1, i.e. within a few percent of the true far field).
-    verbose : bool, optional
-        If True, print the diagnostic numbers behind the recommendation.
  
     Returns
     -------
