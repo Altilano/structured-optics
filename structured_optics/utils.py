@@ -881,3 +881,41 @@ def zernikes_phase(beam, coefs, strengths,):
     for (n, m), strength in zip(coefs, strengths):
         phase += strength * zernike(n, m, r, phi)
     return np.exp(1j * phase)
+
+
+#builder util
+def _build_from_coefs_and_basis(Beam, coefs, basis, pol_index=0):
+    """
+    Reconstruct a field as a weighted sum of basis modes.
+
+    Parameters
+    ----------
+    Beam : object
+        Beam instance whose `.field` will be overwritten.
+    coefs : np.ndarray
+        Complex coefficient array, shape (N, N).
+    basis : np.ndarray
+        Basis modes, shape (N, N, Dy, Dx).
+    pol_index : int or None, optional
+        Polarization/field-component index to reconstruct. If None,
+        the reconstructed field is assigned to all polarization
+        components.
+
+    Returns
+    -------
+    Beam
+        Beam with the reconstructed field.
+    """
+    field = np.einsum(
+        "ij,ijyx->yx",
+        coefs,
+        basis,
+        optimize=True,
+    )
+
+    if pol_index is None:
+        Beam.field[...] = field
+    else:
+        Beam.field[pol_index] = field
+
+    return Beam

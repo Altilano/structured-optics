@@ -257,45 +257,4 @@ def bessel_basis(Beam, Nmax, waist=None, norm1=False):
         basis = basis / np.max(np.abs(basis))
     return basis
 
-def _build_from_coefs_and_basis(Beam, coefs, basis, pol_index = 0):
-    """
-    Reconstruct a field as a weighted sum of basis modes and store it
-    into `Beam.field`.
-
-    Internal helper (not in `__all__`); used to turn a modal
-    decomposition (e.g. from `hg_proj`/`lg_proj`) plus its basis
-    (e.g. from `hg_basis`/`lg_basis`/`bessel_basis`) back into an
-    actual field.
-
-    Parameters
-    ----------
-    Beam : object
-        Beam instance whose `.field` will be overwritten with the
-        reconstructed field.
-    coefs : np.ndarray
-        2D array of complex coefficients, shape (N, N), one per basis
-        mode.
-    basis : np.ndarray
-        Array of basis mode fields, shape (N, N, Dy, Dx), matching
-        `coefs` in its first two dimensions (e.g. as returned by
-        `hg_basis` or `lg_basis`).
-    pol_index : int, optional
-        Polarization/field-component index of `Beam.field` (and of the
-        internal auxiliary field) that the reconstructed sum is
-        written into. Defaults to 0.
-
-    Returns
-    -------
-    Beam : object
-        `Beam`, with `Beam.field` set to the auxiliary field after
-        accumulating `sum(coefs[i, j] * basis[i, j])` into component
-        `pol_index`.
-    """
-    N = len(coefs)
-    aux = Beam.copy_clean()
-    for i in range(N):
-        for j in range(N):
-            aux.field[pol_index] = aux.field[pol_index] + coefs[i,j] * basis[i,j]
-    Beam.field = aux.field
-    return Beam
 

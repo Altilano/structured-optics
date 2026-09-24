@@ -10,7 +10,7 @@ from .prop_methods import(  propagate_fresnel_conv, propagate_fresnel_fft, propa
 from .modes import (hg, hg_astigmatic, lg, nbessel, gbessel, lg_prod, frac_oam, frac_oam_qs,
                     IG_even, IG_odd, HInceG, circle, square, triangle, lp, lp_hel)
 
-from .tools import _build_from_coefs_and_basis
+from .utils import _build_from_coefs_and_basis
 from .diagnostics import BeamDiagnostics
 
 __all__ = ["Beam"]
