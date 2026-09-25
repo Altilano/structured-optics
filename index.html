@@ -983,7 +983,7 @@ the function form is better suited for simple mode superpositions:</p>
 interact with a beam in a single plane — lenses, irises, Zernike aberrations,
 slit apertures, and so on. These fall into two groups: <strong>boolean masks</strong>, which
 output masks of 0s and 1s and represent opaque objects (invertible via
-<code>.complementary</code>), and <strong>spatial masks</strong>, which represent any object that
+<code>complementary</code>), and <strong>spatial masks</strong>, which represent any object that
 imposes a phase, such as a lens applying a different phase at each <code>(x, y)</code>
 point. Any mask can be applied to a beam via right-side multiplication:</p>
 <div class="highlight"><pre><span></span><code><span class="n">beam</span> <span class="o">=</span> <span class="n">beam</span> <span class="o">*</span> <span class="n">Lens</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="mf">10e-2</span><span class="p">)</span>
