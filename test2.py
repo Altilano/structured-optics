@@ -17,7 +17,7 @@ b1.hg(0,0)
 
 b1 = b1*Iris(1e-3)
 
-b1.propagate(1e30)
+b1.propagate(b1.zr())
 
 
 
