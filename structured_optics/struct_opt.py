@@ -320,7 +320,7 @@ class Beam(BeamDiagnostics):
 
         Reference
         ---------
-        .. [1] https://en.wikipedia.org/wiki/Gaussian_beam
+           [1] https://en.wikipedia.org/wiki/Gaussian_beam
         """
         return self._set_mode(hg(self, n, m, z, angle=angle),  polarization=polarization)
 
@@ -347,6 +347,11 @@ class Beam(BeamDiagnostics):
         -------
         Beam
             self, with field set to the requested mode.
+
+        Reference
+        ---------
+            [1] Arnaud, Jacques A., and Herwig Kogelnik. "Gaussian light beams with general astigmatism." 
+            Applied optics 8.8 (1969): 1687-1693.
         """
         return self._set_mode(hg_astigmatic(self, n, m, wx, wy, z, angle=angle),  polarization=polarization)
 
@@ -374,7 +379,7 @@ class Beam(BeamDiagnostics):
 
         Reference
         ---------
-        .. [1] https://en.wikipedia.org/wiki/Gaussian_beam
+           [1] https://en.wikipedia.org/wiki/Gaussian_beam
         """
         return self._set_mode(lg(self, l, p, z, angle=angle),  polarization=polarization)
 

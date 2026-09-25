@@ -74,7 +74,7 @@ beam.Ex = hg(beam, 0, 0)
 interact with a beam in a single plane — lenses, irises, Zernike aberrations,
 slit apertures, and so on. These fall into two groups: **boolean masks**, which
 output masks of 0s and 1s and represent opaque objects (invertible via
-`.complementary`), and **spatial masks**, which represent any object that
+`complementary`), and **spatial masks**, which represent any object that
 imposes a phase, such as a lens applying a different phase at each `(x, y)`
 point. Any mask can be applied to a beam via right-side multiplication:
 
