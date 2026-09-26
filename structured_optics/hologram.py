@@ -77,7 +77,7 @@ def dmd_hologram(beam, cx:float, cy:float, sign:int=1, input:object=None)-> np.n
     """ 
     Generate a binary-amplitude DMD hologram. 
     
-    Parameters 
+    Parameters
     ---------- 
     beam : Beam 
         Desired output beam. Its Ex component defines the target amplitude and phase. 
@@ -89,7 +89,7 @@ def dmd_hologram(beam, cx:float, cy:float, sign:int=1, input:object=None)-> np.n
         Optional Incident beam illuminating the DMD. If None, the incident beam is assumed 
         to have uniform amplitude and zero phase, reproducing the original behavior. 
     
-    Returns 
+    Returns
     ------- 
     H : ndarray 
         Binary DMD hologram. 

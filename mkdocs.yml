@@ -50,6 +50,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Usage Examples: examples.md
   - API Reference:
       - Beam (Core): api/struct_opt.md
       - Modes: api/modes.md

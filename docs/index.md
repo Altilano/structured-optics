@@ -50,6 +50,8 @@ class and function, generated automatically from the package's docstrings.
 
 ## Architecture Overview
 
+![Architecture diagram of structured-optics: Beam inherits from BeamDiagnostics; Modes, Masks and Propagation feed into Beam; Polarization inherits from Masks; Bluestein FFT feeds Propagation; Beam feeds Tools and Hologram; Hologram feeds SLM display; Utils underlies everything.](assets/architecture.svg)
+
 The core of the library is the `Beam` class in `struct_opt.py`. It handles the
 beam's physical parameters, operator overloading, views into the field's
 polarization components, methods for setting the field to a desired structured
@@ -104,10 +106,20 @@ each DMD device can have its own display method.
 
 `tools.py` contains helper functions for computing the overlap between two
 beams and their projections onto a given basis — useful if you want to treat
-these fields as vectors in a modal basis.
+these fields as vectors in a modal basis. 
 
-`utils.py` contains utility functions used throughout the rest of the package.
-Look here if you want to understand how something works under the hood.
+`utils.py` contains utility functions used by other functionsthroughout the 
+rest of the package. Look here if you want to understand how something works 
+under the hood.
+
+!!! note
+    Importing all functions in structured_optics like
+    ```python
+    from structured optics import *
+    ```
+    import functions from struct_opt.py, tools.py, modes.py, masks.py and 
+    polarization.py
+
 
 ## Requirements
 

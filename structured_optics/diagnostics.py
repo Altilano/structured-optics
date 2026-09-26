@@ -62,7 +62,7 @@ class BeamDiagnostics:
             Polarization component into which the resulting intensity profile is measured. Default is sum of 
             all intensity components.
 
-        Return
+        Returns
         ------
         ndarray
             Array with intensity profile (x,y).
@@ -104,12 +104,12 @@ class BeamDiagnostics:
         """ 
         Compute the intensity-weighted center of mass of the field in physical x and y coordinates. 
         
-        Parameters 
+        Parameters
         ---------- 
         pol_index : int, optional 
             Polarization component to use; None uses total intensity. 
             
-        Returns 
+        Returns
         ------- 
         tuple (x_cm, y_cm) 
             center-of-mass coordinates in physical units. """ 
@@ -142,7 +142,7 @@ class BeamDiagnostics:
         Calculate the intensity-weighted spatial standard deviation
         along x and y.
 
-        Parameters 
+        Parameters
         ---------- 
         pol_index : int, optional 
             Polarization component to use; None uses total intensity. 
