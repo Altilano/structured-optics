@@ -242,6 +242,25 @@
   
   
   
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Usage Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
     
   
   
@@ -336,6 +355,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -357,10 +403,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -378,8 +424,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1222,24 +1268,124 @@ Opt. Express  24, 6249-6264 (2016).
         <p>Generate a binary-amplitude DMD hologram. </p>
 
 
-<details class="parameters-" open>
-  <summary>Parameters</summary>
-  <p>beam : Beam 
-    Desired output beam. Its Ex component defines the target amplitude and phase. 
-cx, cy : float 
-    Carrier frequencies expressed in DMD pixel units. 
-sign : int 
-    Controls the binary hologram orientation. Usually +1 or -1. 
-input : Beam 
-    Optional Incident beam illuminating the DMD. If None, the incident beam is assumed 
-    to have uniform amplitude and zero phase, reproducing the original behavior. </p>
-</details>
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>beam</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Beam (structured_optics.struct_opt.Beam)" href="../struct_opt/#structured_optics.struct_opt.Beam">Beam</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Desired output beam. Its Ex component defines the target amplitude and phase.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cx</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Carrier frequencies expressed in DMD pixel units.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cy</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Carrier frequencies expressed in DMD pixel units.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sign</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Controls the binary hologram orientation. Usually +1 or -1.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>input</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Beam (structured_optics.struct_opt.Beam)" href="../struct_opt/#structured_optics.struct_opt.Beam">Beam</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional Incident beam illuminating the DMD. If None, the incident beam is assumed 
+to have uniform amplitude and zero phase, reproducing the original behavior.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
-<details class="returns-" open>
-  <summary>Returns</summary>
-  <p>H : ndarray 
-    Binary DMD hologram. </p>
-</details>
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>H</code></td>            <td>
+                  <code><span title="ndarray">ndarray</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Binary DMD hologram. </p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
 <details class="reference" open>
   <summary>Reference</summary>
@@ -1307,7 +1453,7 @@ Optical Engineering 59.4 (2020): 041202-041202.
 <span class="w">    </span><span class="sd">""" </span>
 <span class="sd">    Generate a binary-amplitude DMD hologram. </span>
 
-<span class="sd">    Parameters </span>
+<span class="sd">    Parameters</span>
 <span class="sd">    ---------- </span>
 <span class="sd">    beam : Beam </span>
 <span class="sd">        Desired output beam. Its Ex component defines the target amplitude and phase. </span>
@@ -1319,7 +1465,7 @@ Optical Engineering 59.4 (2020): 041202-041202.
 <span class="sd">        Optional Incident beam illuminating the DMD. If None, the incident beam is assumed </span>
 <span class="sd">        to have uniform amplitude and zero phase, reproducing the original behavior. </span>
 
-<span class="sd">    Returns </span>
+<span class="sd">    Returns</span>
 <span class="sd">    ------- </span>
 <span class="sd">    H : ndarray </span>
 <span class="sd">        Binary DMD hologram. </span>

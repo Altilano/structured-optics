@@ -1,0 +1,124 @@
+<svg viewBox="0 0 680 660" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="arch-title arch-desc">
+<title id="arch-title">Architecture of the structured-optics package</title>
+<desc id="arch-desc">BeamDiagnostics in diagnostics.py is the parent class; Beam in struct_opt.py inherits from it and is the central hub. Modes, Masks and Propagation methods all feed into Beam. Polarization inherits from Masks, and Bluestein FFT is used by Propagation. Beam in turn feeds Tools and Hologram; Hologram feeds SLM display. Utils sits underneath as shared helpers used throughout. Inheritance is shown with a hollow triangle pointing from the subclass to its parent class, distinct from the solid filled arrows used for data flow.</desc>
+
+<style>
+  text { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .th { font-size: 14px; font-weight: 600; fill: #111827; }
+  .ts { font-size: 12px; fill: #4b5563; }
+  rect.box { stroke-width: 1; rx: 8; }
+  .c-purple rect.box { fill: #ede9fe; stroke: #7c3aed; }
+  .c-teal   rect.box { fill: #ccfbf1; stroke: #0d9488; }
+  .c-coral  rect.box { fill: #ffe4e6; stroke: #fb7185; }
+  .c-gray   rect.box { fill: #f1f5f9; stroke: #94a3b8; }
+  .arr, .inherit, .arrowpath, .hollowpath { stroke: #334155; }
+  .arr { stroke-width: 1.5; }
+  .inherit { stroke-width: 1; }
+
+  @media (prefers-color-scheme: dark) {
+    .th { fill: #f3f4f6; }
+    .ts { fill: #cbd5e1; }
+    .c-purple rect.box { fill: #3b2f63; stroke: #a78bfa; }
+    .c-teal   rect.box { fill: #134e4a; stroke: #2dd4bf; }
+    .c-coral  rect.box { fill: #4c1d24; stroke: #fb7185; }
+    .c-gray   rect.box { fill: #1f2937; stroke: #64748b; }
+    .arr, .inherit, .arrowpath, .hollowpath { stroke: #cbd5e1; }
+  }
+</style>
+
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path class="arrowpath" d="M2 1L8 5L2 9" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="hollow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse">
+<path class="hollowpath" d="M1 1L11 6L1 11Z" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<!-- Parent class -->
+<g class="c-purple">
+<rect class="box" x="250" y="10" width="180" height="56"/>
+<text class="th" x="340" y="28" text-anchor="middle" dominant-baseline="central">BeamDiagnostics</text>
+<text class="ts" x="340" y="46" text-anchor="middle" dominant-baseline="central">diagnostics.py</text>
+</g>
+<text class="ts" x="410" y="85" text-anchor="middle">inherits</text>
+<line class="inherit" x1="340" y1="96" x2="340" y2="68" marker-end="url(#hollow)"/>
+
+<!-- Beam: the hub -->
+<g class="c-purple">
+<rect class="box" x="40" y="96" width="600" height="64"/>
+<text class="th" x="340" y="118" text-anchor="middle" dominant-baseline="central">Beam</text>
+<text class="ts" x="340" y="138" text-anchor="middle" dominant-baseline="central">struct_opt.py</text>
+</g>
+
+<!-- Tier 2: processing modules feeding Beam -->
+<g class="c-teal">
+<rect class="box" x="40" y="200" width="180" height="56"/>
+<text class="th" x="130" y="218" text-anchor="middle" dominant-baseline="central">Modes</text>
+<text class="ts" x="130" y="236" text-anchor="middle" dominant-baseline="central">modes.py</text>
+</g>
+<g class="c-teal">
+<rect class="box" x="240" y="200" width="180" height="56"/>
+<text class="th" x="330" y="218" text-anchor="middle" dominant-baseline="central">Masks</text>
+<text class="ts" x="330" y="236" text-anchor="middle" dominant-baseline="central">masks.py</text>
+</g>
+<g class="c-teal">
+<rect class="box" x="460" y="200" width="180" height="56"/>
+<text class="th" x="550" y="218" text-anchor="middle" dominant-baseline="central">Propagation</text>
+<text class="ts" x="550" y="236" text-anchor="middle" dominant-baseline="central">prop_methods.py</text>
+</g>
+<line class="arr" x1="130" y1="200" x2="130" y2="162" marker-end="url(#arrow)"/>
+<line class="arr" x1="330" y1="200" x2="330" y2="162" marker-end="url(#arrow)"/>
+<line class="arr" x1="550" y1="200" x2="550" y2="162" marker-end="url(#arrow)"/>
+
+<!-- Tier 3: sub-components -->
+<g class="c-teal">
+<rect class="box" x="240" y="330" width="180" height="56"/>
+<text class="th" x="330" y="348" text-anchor="middle" dominant-baseline="central">Polarization</text>
+<text class="ts" x="330" y="366" text-anchor="middle" dominant-baseline="central">polarization.py</text>
+</g>
+<g class="c-teal">
+<rect class="box" x="460" y="330" width="180" height="56"/>
+<text class="th" x="550" y="348" text-anchor="middle" dominant-baseline="central">Bluestein FFT</text>
+<text class="ts" x="550" y="366" text-anchor="middle" dominant-baseline="central">bluestein.py</text>
+</g>
+<text class="ts" x="380" y="300" text-anchor="middle">inherits</text>
+<line class="inherit" x1="330" y1="330" x2="330" y2="256" marker-end="url(#hollow)"/>
+<text class="ts" x="590" y="300" text-anchor="middle">FFT</text>
+<line class="arr" x1="550" y1="330" x2="550" y2="256" marker-end="url(#arrow)"/>
+
+<!-- Beam feeds Tools and Hologram, routed through the side gaps -->
+<path class="arr" d="M230 160 L230 450 L130 450 L130 458" fill="none" marker-end="url(#arrow)"/>
+<path class="arr" d="M440 160 L440 450 L340 450 L340 458" fill="none" marker-end="url(#arrow)"/>
+
+<!-- Tier 4: consumers -->
+<g class="c-coral">
+<rect class="box" x="40" y="460" width="180" height="56"/>
+<text class="th" x="130" y="478" text-anchor="middle" dominant-baseline="central">Tools</text>
+<text class="ts" x="130" y="496" text-anchor="middle" dominant-baseline="central">tools.py</text>
+</g>
+<g class="c-coral">
+<rect class="box" x="250" y="460" width="180" height="56"/>
+<text class="th" x="340" y="478" text-anchor="middle" dominant-baseline="central">Hologram</text>
+<text class="ts" x="340" y="496" text-anchor="middle" dominant-baseline="central">hologram.py</text>
+</g>
+<g class="c-coral">
+<rect class="box" x="460" y="460" width="180" height="56"/>
+<text class="th" x="550" y="478" text-anchor="middle" dominant-baseline="central">SLM display</text>
+<text class="ts" x="550" y="496" text-anchor="middle" dominant-baseline="central">slmdisplay.py</text>
+</g>
+<line class="arr" x1="430" y1="488" x2="458" y2="488" marker-end="url(#arrow)"/>
+
+<!-- Foundation -->
+<g class="c-gray">
+<rect class="box" x="40" y="560" width="600" height="50" stroke-dasharray="4,3" fill-opacity="0.5"/>
+<text class="th" x="340" y="578" text-anchor="middle" dominant-baseline="central">Utils</text>
+<text class="ts" x="340" y="595" text-anchor="middle" dominant-baseline="central">utils.py — shared helpers used throughout the package</text>
+</g>
+
+<!-- Legend -->
+<line class="inherit" x1="40" y1="635" x2="70" y2="635" marker-end="url(#hollow)"/>
+<text class="ts" x="78" y="635" dominant-baseline="central">inherits (subclass → parent)</text>
+<line class="arr" x1="280" y1="635" x2="310" y2="635" marker-end="url(#arrow)"/>
+<text class="ts" x="318" y="635" dominant-baseline="central">uses / feeds data into</text>
+</svg>

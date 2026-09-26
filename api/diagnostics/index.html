@@ -242,6 +242,25 @@
   
   
   
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Usage Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
     
   
   
@@ -336,6 +355,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -357,10 +403,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -378,8 +424,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1514,11 +1560,28 @@ all intensity components.</p>
     </table>
 
 
-<details class="return" open>
-  <summary>Return</summary>
-  <p>ndarray
-    Array with intensity profile (x,y).</p>
-</details>
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ndarray">ndarray</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Array with intensity profile (x,y).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\diagnostics.py</code></summary>
@@ -1559,7 +1622,7 @@ all intensity components.</p>
 <span class="sd">        Polarization component into which the resulting intensity profile is measured. Default is sum of </span>
 <span class="sd">        all intensity components.</span>
 
-<span class="sd">    Return</span>
+<span class="sd">    Returns</span>
 <span class="sd">    ------</span>
 <span class="sd">    ndarray</span>
 <span class="sd">        Array with intensity profile (x,y).</span>
@@ -1735,17 +1798,59 @@ otherwise shape (pol, Dy, Dx).</p>
         <p>Compute the intensity-weighted center of mass of the field in physical x and y coordinates. </p>
 
 
-<details class="parameters-" open>
-  <summary>Parameters</summary>
-  <p>pol_index : int, optional 
-    Polarization component to use; None uses total intensity. </p>
-</details>
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>pol_index</code>
+            </td>
+            <td>
+                  <code>(<span title="int">int</span>, <span title="optional">optional</span>)</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Polarization component to use; None uses total intensity.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
-<details class="returns-" open>
-  <summary>Returns</summary>
-  <p>tuple (x_cm, y_cm) 
-    center-of-mass coordinates in physical units.</p>
-</details>
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="tuple">tuple</span>(<span title="x_cm">x_cm</span>, <span title="y_cm">y_cm</span>)</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>center-of-mass coordinates in physical units.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\diagnostics.py</code></summary>
@@ -1788,12 +1893,12 @@ otherwise shape (pol, Dy, Dx).</p>
 <span class="w">    </span><span class="sd">""" </span>
 <span class="sd">    Compute the intensity-weighted center of mass of the field in physical x and y coordinates. </span>
 
-<span class="sd">    Parameters </span>
+<span class="sd">    Parameters</span>
 <span class="sd">    ---------- </span>
 <span class="sd">    pol_index : int, optional </span>
 <span class="sd">        Polarization component to use; None uses total intensity. </span>
 
-<span class="sd">    Returns </span>
+<span class="sd">    Returns</span>
 <span class="sd">    ------- </span>
 <span class="sd">    tuple (x_cm, y_cm) </span>
 <span class="sd">        center-of-mass coordinates in physical units. """</span> 
@@ -1843,11 +1948,36 @@ otherwise shape (pol, Dy, Dx).</p>
 along x and y.</p>
 
 
-<details class="parameters-" open>
-  <summary>Parameters</summary>
-  <p>pol_index : int, optional 
-    Polarization component to use; None uses total intensity. </p>
-</details>
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>pol_index</code>
+            </td>
+            <td>
+                  <code>(<span title="int">int</span>, <span title="optional">optional</span>)</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Polarization component to use; None uses total intensity.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     <p><span class="doc-section-title">Returns:</span></p>
     <table>
@@ -1905,7 +2035,7 @@ along x and y.</p>
 <span class="sd">    Calculate the intensity-weighted spatial standard deviation</span>
 <span class="sd">    along x and y.</span>
 
-<span class="sd">    Parameters </span>
+<span class="sd">    Parameters</span>
 <span class="sd">    ---------- </span>
 <span class="sd">    pol_index : int, optional </span>
 <span class="sd">        Polarization component to use; None uses total intensity. </span>
