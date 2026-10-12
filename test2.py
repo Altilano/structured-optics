@@ -13,16 +13,17 @@ b1 = Beam(nix=5e-3,
           pol_dim=2)
 
 
-b1.hg(0,0)
+b1.Ex = hg(b1, N=0, M=0) - 1j*hg(b1, N=1, M=1)
+b1 = b1*Lens(50e-2)
+b1.propagate(40e-2, method="blue_fix")
 
-b1 = b1*Iris(1e-3)
-
-b1.propagate(b1.zr())
 
 
 
 plt.figure()
 plt.pcolormesh(b1.x, b1.y, b1.int_profile(), cmap='inferno')
-plt.colorbar()
+#plt.colorbar()
+plt.axis('equal')
+plt.axis('off')
+plt.tight_layout()
 plt.show()
-exit()
