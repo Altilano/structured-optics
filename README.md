@@ -88,7 +88,7 @@ If you use this package in your research, please cite it:
   author  = {Barbosa, Altilano C.},
   title   = {structured\_optics: Package for Structured Light simulation},
   year    = {2026},
-  version = {0.6.3},
+  version = {0.6.4},
   url     = {https://github.com/Altilano/structured-optics}
 }
 ```
