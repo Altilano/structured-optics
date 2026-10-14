@@ -127,9 +127,12 @@ class AstigmaticLens(SpatialMask):
 
 
 class TiltedLens(AstigmaticLens):
-    """A spherical lens viewed at an angle, modeled as an equivalent
-    AstigmaticLens with effective (fx, fy) derived from the tilt angle."""
-    def __init__(self, f: float, phi: float, f0: tuple = (0, 0), flip_axis: bool = False):
+    """A thin spherical lens tilted about the y axis, modeled as an equivalent
+    AstigmaticLens with effective (fx, fy) derived from the tilt angle and
+    refractive index."""
+
+    def __init__(self, f: float, phi: float, n: float = 1.5,
+                 f0: tuple = (0, 0), flip_axis: bool = False):
         """
         Parameters
         ----------
@@ -137,16 +140,26 @@ class TiltedLens(AstigmaticLens):
             Nominal (untilted) focal length of the lens.
         phi : float
             Tilt angle, in radians.
+        n : float, optional
+            Refractive index of the lens material. Defaults to 1.5.
         f0 : tuple, optional
             (x, y) offset of the lens center. Defaults to (0, 0).
         flip_axis : bool, optional
-            If True, swap the roles of the tilted/untilted axes.
-            Defaults to False.
+            If True, the tilt is about the x axis instead of y
+            (swaps fx and fy). Defaults to False.
         """
+        if n <= 1:
+            raise ValueError("n must be greater than 1")
 
-        fx, fy = f * np.cos(phi) ** 3, f * np.cos(phi)
+        denom = np.sqrt(n**2 - np.sin(phi)**2) - np.cos(phi)
+        fy = f * (n - 1) / denom
+        fx = fy * np.cos(phi) ** 2
+
         if flip_axis:
             fx, fy = fy, fx
+
+        self.n = n
+        self.phi = phi
         super().__init__(fx, fy, f0)
 
 

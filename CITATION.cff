@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "structured_optics: Package for Structured Light simulation"
+type: software
+version: 0.6.3
+date-released: 2026-09-25   # change to your actual release date
+license: BSD-3-Clause
+repository-code: "https://github.com/Altilano/structured-optics"
+authors:
+  - family-names: Barbosa
+    given-names: Altilano C.
+    orcid: "https://orcid.org/0000-0003-1971-0451"
+keywords:
+  - structured light
+  - optics
+  - simulation
+  - python

@@ -81,6 +81,18 @@ Issues and pull requests are welcome at
 This project is licensed under the BSD-3-Clause License. See `LICENSE` for details.
 
 ## Citation
+If you use this package in your research, please cite it:
+
+```bibtex
+@software{barbosa_structured_optics,
+  author  = {Barbosa, Altilano C.},
+  title   = {structured\_optics: Package for Structured Light simulation},
+  year    = {2026},
+  version = {0.6.3},
+  url     = {https://github.com/Altilano/structured-optics}
+}
+```
+See also `CITATION.cff` or use GitHub's "Cite this repository" button.
 
 ## To do
 
