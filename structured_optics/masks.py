@@ -8,6 +8,12 @@ SpatialMask produces a (Dy, Dx) array multiplied into the whole field
 Usage:
     beam = beam * Lens(f=0.2) * Iris(radius=1e-3)  
     # First a Lens is applyed then an Iris.
+
+Any mask (spatial or polarization) can be restricted to a region defined by a
+BooleanMask with `restrict_mask`; outside the region the beam is untouched:
+
+    quarter = AngularSection(0, np.pi / 2)
+    beam = beam * restrict_mask(QWP(angle=np.pi / 4), quarter)
 """
 from abc import ABC, abstractmethod
 import numpy as np
@@ -17,7 +23,8 @@ from .utils import zernikes_phase
 
 __all__ = [ "Lens", "AstigmaticLens", "TiltedLens", "ZernikeMask",
             "Iris", "SquareAperture", "TriangleAperture", "HSlit", 
-            "VSlit", "DoubleSlit", "CrossSlit"]
+            "VSlit", "DoubleSlit", "CrossSlit", "AngularSection",
+            "RegionMask", "restrict_mask"]
 
 
 class Mask(ABC):
@@ -398,11 +405,145 @@ class CrossSlit(BooleanMask):
         return vertical | horizontal
 
 
+class AngularSection(BooleanMask):
+    """An angular sector (wedge) aperture.
+
+    Transmits the points whose polar angle, measured counter-clockwise from
+    the +x axis around `center`, lies in the half-open interval
+    ``[ang_min, ang_max)``.
+    """
+
+    def __init__(self, ang_min: float, ang_max: float, center=(0, 0), complementary=False):
+        """
+        Parameters
+        ----------
+        ang_min : float
+            Start angle of the section, in radians. Wrapped to [0, 2*pi).
+        ang_max : float
+            End angle of the section (exclusive), in radians. Wrapped to
+            [0, 2*pi). If it is smaller than `ang_min` after wrapping, the
+            section crosses the +x axis (e.g. ``(3*pi/2, pi/2)`` is the
+            right half-plane). If the two wrapped angles are equal (e.g.
+            ``(0, 2*pi)``), the section covers the whole plane.
+        center : tuple, optional
+            (x, y) vertex of the wedge. Defaults to (0, 0).
+        complementary : bool, optional
+            Invert the aperture. Defaults to False.
+        """
+
+        super().__init__(complementary)
+        self.ang_min = ang_min % (2 * np.pi)
+        self.ang_max = ang_max % (2 * np.pi)
+        self.center = center
+
+    def bool_array(self, beam):
+        x, y = beam.x - self.center[0], beam.y - self.center[1]
+        theta = np.mod(np.arctan2(y, x), 2 * np.pi)
+
+        if self.ang_min < self.ang_max:
+            return (theta >= self.ang_min) & (theta < self.ang_max)
+        # Section crosses the +x axis (angle 0 == 2*pi).
+        return (theta >= self.ang_min) | (theta < self.ang_max)
 
 
+# ------------------------------------------------------------ composition --
+
+class RegionMask(Mask):
+    """Applies `mask` only inside the True region of a `BooleanMask`.
+
+    Outside the region the beam passes through unchanged (the identity
+    element of the wrapped mask: transmittance 1 for a spatial mask, the
+    identity Jones matrix for a polarization mask), which is *not* the same
+    as blocking the beam there. Works with any `Mask` -- spatial,
+    polarization, or another `RegionMask` -- because it relies only on
+    `mask.apply`. Prefer building it through `restrict_mask`.
+    """
+
+    def __init__(self, mask: Mask, region: BooleanMask):
+        """
+        Parameters
+        ----------
+        mask : Mask
+            The mask to apply inside the region.
+        region : BooleanMask
+            Defines where `mask` acts: it is applied wherever
+            ``region.array(beam)`` is True.
+
+        Raises
+        ------
+        TypeError
+            If `mask` is not a `Mask` or `region` is not a `BooleanMask`.
+        """
+        if not isinstance(mask, Mask):
+            raise TypeError(f"mask must be a Mask, got {type(mask).__name__}")
+        if not isinstance(region, BooleanMask):
+            raise TypeError(f"region must be a BooleanMask, got {type(region).__name__}")
+        self.mask, self.region = mask, region
+
+    def apply(self, beam):
+        """Apply `self.mask` to a copy of `beam`, but only inside the region.
+
+        Parameters
+        ----------
+        beam : Beam
+            The beam to apply the mask to.
+
+        Returns
+        -------
+        Beam
+            A copy of `beam` equal to ``self.mask.apply(beam)`` where the
+            region is True and equal to `beam` elsewhere. The original
+            `beam` is left unmodified.
+        """
+        modified = self.mask.apply(beam)
+        inside = self.region.array(beam)
+        result = beam.copy()
+        result.field = np.where(inside, modified.field, beam.field)
+        return result
 
 
+def restrict_mask(mask: Mask, region: BooleanMask) -> RegionMask:
+    """Restrict `mask` to the True region of a boolean mask.
 
+    The returned mask applies `mask` where `region` is True and leaves the
+    beam untouched elsewhere. It works for spatial masks (lenses, Zernike
+    aberrations, apertures) and polarization masks (waveplates, polarizers).
+
+    Parameters
+    ----------
+    mask : Mask
+        The mask to apply inside the region.
+    region : BooleanMask
+        Defines the region where `mask` acts. For convenience, the two
+        arguments may be given in either order when exactly one of them is
+        a `BooleanMask`; if both are, the second is the region.
+
+    Returns
+    -------
+    RegionMask
+        A new mask, usable as ``beam * restrict_mask(...)``.
+
+    Raises
+    ------
+    TypeError
+        If neither argument is a `BooleanMask`, or if either is not a `Mask`.
+
+    Examples
+    --------
+    Quarter-wave plate acting only in the upper half-plane:
+
+    >>> upper = AngularSection(0, np.pi)
+    >>> beam = beam * restrict_mask(QWP(angle=np.pi / 4), upper)
+
+    Lens only outside a circular aperture (use ``complementary=True``):
+
+    >>> beam = beam * restrict_mask(Lens(f=0.5), Iris(radius=1e-3, complementary=True))
+    """
+    if isinstance(mask, BooleanMask) and not isinstance(region, BooleanMask):
+        mask, region = region, mask
+    if not isinstance(region, BooleanMask):
+        raise TypeError("one of the two masks must be a BooleanMask")
+    return RegionMask(mask, region)
 
 
 

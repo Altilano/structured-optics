@@ -1,5 +1,5 @@
 import numpy as np
-from .utils import get_section
+from .masks import AngularSection
 
 
 class BeamDiagnostics:
@@ -184,24 +184,34 @@ class BeamDiagnostics:
 
         return np.sqrt(sx**2 + sy**2)
     
-    def section(self, ang_min:float, ang_max:float, pol_index:int=0) -> np.ndarray:
+    def _section_field(self, ang_min: float, ang_max: float, pol_index: int = None) -> np.ndarray:
         """
+        Field restricted to the angular wedge [ang_min, ang_max).
+
+        Internal helper shared by `int_section` and `Power_section`. To get
+        a masked copy of the beam itself, multiply it by an `AngularSection`
+        mask: ``beam * AngularSection(ang_min, ang_max)``.
+
         Parameters
         ----------
         ang_min : float
-            Minimum angle (radians) defining the angular wedge.
+            Start angle (radians) of the wedge.
         ang_max : float
-            Maximum angle (radians) defining the angular wedge.
+            End angle (radians, exclusive) of the wedge.
         pol_index : int, optional
-            Polarization component to extract the section from.
+            Polarization component to extract. If None, all components are
+            returned.
 
         Returns
         -------
         ndarray
-            Complex field values restricted to the angular wedge [ang_min, ang_max].
+            Complex field values inside the wedge (zero outside), with shape
+            (Dy, Dx) if `pol_index` is given, else (pol, Dy, Dx).
         """
-        return get_section(self, ang_min, ang_max, pol_index = pol_index)
-    
+        sec = AngularSection(ang_min, ang_max).array(self)
+        field = self.field if pol_index is None else self.field[pol_index]
+        return field * sec
+
     def int_section(self, ang_min:float, ang_max:float, pol_index:int=0)-> np.ndarray:
         """
         Parameters
@@ -218,7 +228,7 @@ class BeamDiagnostics:
         ndarray
             Intensity |field|^2 within the angular wedge [ang_min, ang_max].
         """
-        return np.abs(self.section(ang_min, ang_max, pol_index = pol_index))**2
+        return np.abs(self._section_field(ang_min, ang_max, pol_index))**2
     
     def Power_section(self, ang_min:float, ang_max:float, pol_index:int=0)-> float:
         """
@@ -236,7 +246,7 @@ class BeamDiagnostics:
         float
             Optical power contained within the angular wedge [ang_min, ang_max].
         """
-        return np.sum(np.abs(self.section(ang_min, ang_max, pol_index = pol_index))**2*(4*self.nix/self.Dx)*(self.niy/self.Dy))
+        return np.sum(np.abs(self._section_field(ang_min, ang_max, pol_index))**2*(4*self.nix/self.Dx)*(self.niy/self.Dy))
     
     def norm_beam(self)-> object:                                       
         """
@@ -257,7 +267,3 @@ class BeamDiagnostics:
         """
         self.field = self.field/np.sqrt(np.max(self.int_profile()))
         return self
-    
-
-
-
