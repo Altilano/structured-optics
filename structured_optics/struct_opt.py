@@ -41,6 +41,9 @@ class Beam(BeamDiagnostics):
         Number of grid points in x and y.
     x, y : ndarray
         Sparse meshgrid arrays of spatial coordinates.
+    dx, dy : float
+        Grid spacing along x and y, 2*nix/(Dx-1) and 2*niy/(Dy-1). Use these (not nix/Dx)
+        for integrals over the grid.
     kx, ky : ndarray
         Sparse meshgrid arrays of spatial frequency coordinates (angular, rad/unit length).
     field : ndarray, shape (pol_dim, Dy, Dx), complex128
@@ -90,6 +93,16 @@ class Beam(BeamDiagnostics):
 
 
         
+    @property
+    def dx(self):
+        """float: grid spacing along x, ``2*nix/(Dx-1)`` (the pitch of ``linspace(-nix, nix, Dx)``)."""
+        return 2*self.nix/(self.Dx - 1)
+
+    @property
+    def dy(self):
+        """float: grid spacing along y, ``2*niy/(Dy-1)`` (the pitch of ``linspace(-niy, niy, Dy)``)."""
+        return 2*self.niy/(self.Dy - 1)
+
     @property
     def Ex(self):
         """ndarray: View of the field's x-polarization component (field[0])."""

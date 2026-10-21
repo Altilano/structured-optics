@@ -6,3 +6,4 @@ structured_optics/__pycache__/
 __pycache__/
 site/
 *.egg-info/
+.pytest_cache/

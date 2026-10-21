@@ -19,5 +19,17 @@ dependencies = [
     "screeninfo"
 ]
 
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+filterwarnings = [
+    # Surface API deprecations raised from our own code before a NumPy/SciPy upgrade breaks it.
+    "error::DeprecationWarning:structured_optics",
+    "error::FutureWarning:structured_optics",
+]
+
 [tool.setuptools]
 packages = ["structured_optics"]

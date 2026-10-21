@@ -23,7 +23,7 @@ class BeamDiagnostics:
         -------
         float
         """
-        return np.sum(self.int_profile(pol_index))*(4*self.nix/(self.Dx-1))*(self.niy/(self.Dy-1))
+        return np.sum(self.int_profile(pol_index))*self.dx*self.dy
 
     
     def zr(self) -> float:
@@ -246,7 +246,7 @@ class BeamDiagnostics:
         float
             Optical power contained within the angular wedge [ang_min, ang_max].
         """
-        return np.sum(np.abs(self._section_field(ang_min, ang_max, pol_index))**2*(4*self.nix/self.Dx)*(self.niy/self.Dy))
+        return np.sum(np.abs(self._section_field(ang_min, ang_max, pol_index))**2*self.dx*self.dy)
     
     def norm_beam(self)-> object:                                       
         """
@@ -267,3 +267,7 @@ class BeamDiagnostics:
         """
         self.field = self.field/np.sqrt(np.max(self.int_profile()))
         return self
+    
+
+
+

@@ -174,7 +174,7 @@ def nbessel(Beam, N, z=0):
     r = np.sqrt((Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2)
     phi = np.arctan2(Beam.y-Beam.y0, Beam.x-Beam.x0)
     F = (np.exp(1j*kz*z) * jv(abs(N), kr*r) * np.exp(-1j*N*phi))
-    F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
+    F = F/np.sqrt(np.sum(np.abs(F**2))*Beam.dx*Beam.dy)
     return F
 
 @rotated_mode
@@ -207,7 +207,7 @@ def gbessel(Beam, N, r0):
     r = np.sqrt((Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2)
     F = jv(np.abs(N),rad*r/Beam.waist**2)*\
         np.exp(-1j*N*np.arctan2(Beam.y-Beam.y0, Beam.x-Beam.x0))*np.exp(-(r/Beam.waist)**2)
-    F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
+    F = F/np.sqrt(np.sum(np.abs(F**2))*Beam.dx*Beam.dy)
     return F
 
 @rotated_mode
@@ -258,7 +258,7 @@ def lg_prod(Beam, N, ls, centers):
         r2 = (Beam.x - x0)**2 + (Beam.y - y0)**2
         lg = arg**exp_pow * np.exp(-r2/N / ((Beam.waist)**2))
         F *= lg
-    F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
+    F = F/np.sqrt(np.sum(np.abs(F**2))*Beam.dx*Beam.dy)
     return F
 
 @rotated_mode
@@ -308,7 +308,7 @@ def frac_oam(Beam, Ma, n_modes, beta, theta_0, z=0):
         coef = np.exp(-1j*mu*beta)*1j*np.exp(1j*(Ma-l)*theta_0)/(2*np.pi*(Ma-l))*np.exp(1j*(m-l)*beta)*(1-np.exp(1j*mu*2*np.pi))
         F += coef*(lg(Beam,l, 0, z = z)) 
 
-    F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
+    F = F/np.sqrt(np.sum(np.abs(F**2))*Beam.dx*Beam.dy)
     return F
 
 @rotated_mode
@@ -357,7 +357,7 @@ def frac_oam_qs(Beam, Ma, n_modes, beta, theta_0, z=0):
         p = np.floor((np.abs(Ma) + n_modes/2 -np.abs(l))/2)
         F += coef*(lg(Beam, l, p, z = z)) 
 
-    F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
+    F = F/np.sqrt(np.sum(np.abs(F**2))*Beam.dx*Beam.dy)
     return F
 
 
@@ -400,7 +400,7 @@ def IG_even(Beam, p, m, q, z=0):
     r2 = (Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2
     gouy = (p+1)*np.arctan(z / zr)
     F = Ce_xi * Ce_eta * np.exp(-r2 / (wz**2))*np.exp(1j*(k*z + k*z*(r2)/(2*Rz) - gouy))
-    F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
+    F = F/np.sqrt(np.sum(np.abs(F**2))*Beam.dx*Beam.dy)
     return F
 
 @rotated_mode
@@ -440,7 +440,7 @@ def IG_odd(Beam, p, m, q, z=0):
     r2 = (Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2
     gouy = (p+1)*np.arctan(z / zr)
     F = So_xi * So_eta * np.exp(-r2 / (wz**2))*np.exp(1j*(k*z + k*z*(r2)/(2*Rz) - gouy))
-    F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
+    F = F/np.sqrt(np.sum(np.abs(F**2))*Beam.dx*Beam.dy)
     return F
 
 @rotated_mode
@@ -490,7 +490,7 @@ def HInceG(Beam, p, m, q, helicity, z=0):
     r2 = (Beam.x-Beam.x0)**2 + (Beam.y-Beam.y0)**2
     gouy = (p+1)*np.arctan(z / zr)
     F = (Ce_xi * Ce_eta - helicity*So_xi * So_eta) * np.exp(-r2 / (wz**2))*np.exp(1j*(k*z + k*z*(r2)/(2*Rz) - gouy))
-    F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
+    F = F/np.sqrt(np.sum(np.abs(F**2))*Beam.dx*Beam.dy)
     return F
 
 @rotated_mode
@@ -530,7 +530,7 @@ def circle(Beam, center=None, radius=None):
     mask = distances <= radius
     F = np.zeros((Beam.Dy, Beam.Dx), dtype='complex')
     F[mask] = 1
-    F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
+    F = F/np.sqrt(np.sum(np.abs(F**2))*Beam.dx*Beam.dy)
     return F
 
 @rotated_mode
@@ -574,7 +574,7 @@ def square(Beam, center=None, side_length=None):
     # Set points inside square to 1
     F = np.zeros((Beam.Dy, Beam.Dx), dtype='complex')
     F[mask] = 1
-    F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
+    F = F/np.sqrt(np.sum(np.abs(F**2))*Beam.dx*Beam.dy)
     return F
 
 @rotated_mode
@@ -646,7 +646,7 @@ def triangle(Beam, center=None, side_length=None):
     mask = ~(has_neg & has_pos)
     F = np.zeros((Beam.Dy, Beam.Dx), dtype='complex')
     F[mask] = 1
-    F = F/np.sqrt(np.sum(np.abs(F**2))*(4*Beam.nix/Beam.Dx)*(Beam.niy/Beam.Dy))
+    F = F/np.sqrt(np.sum(np.abs(F**2))*Beam.dx*Beam.dy)
     return F
 
 @rotated_mode

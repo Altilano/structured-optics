@@ -769,7 +769,7 @@ def radial_poly(n, m, r):
     if (n - m) % 2 == 0 and m <= n:
         for k in range((n - m) // 2 + 1):
             s += (-1)**k * math.factorial(n-k) / (math.factorial(k) * math.factorial((n + m) // 2 - k) 
-                                                     * math.factorial((n + m) // 2 - k))* r**(n - 2*k)
+                                                     * math.factorial((n - m) // 2 - k))* r**(n - 2*k)
     elif (n - m) % 2 == 1 and m <= n:
         raise ValueError("Warning: (n - m) is odd, Zernike Polynomial is zero.")
     else:

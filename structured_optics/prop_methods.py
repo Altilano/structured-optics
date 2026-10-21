@@ -32,6 +32,19 @@ def propagate_fresnel_conv(Beam, z):
     Beam.field = fft.ifft2(prop*Beam.fourier_field, axes=(-2,-1))
     return Beam
 
+def _refresh_window(Beam, pitch_x, pitch_y):
+    """
+    Make nix/niy and kx/ky describe a grid that a method has just resampled.
+
+    Resampling propagators (Fresnel-FFT, Fraunhofer) replace Beam.x/Beam.y with a grid of
+    a new pitch. Beam.dx/Beam.dy (hence Power, overlaps and later propagations) are derived
+    from nix/niy, so these must be updated or they keep describing the old window.
+    """
+    Beam.nix = (Beam.Dx - 1) * pitch_x / 2
+    Beam.niy = (Beam.Dy - 1) * pitch_y / 2
+    Beam.kx, Beam.ky = np.meshgrid(2*np.pi*fft.fftfreq(Beam.Dx, pitch_x),
+                                   2*np.pi*fft.fftfreq(Beam.Dy, pitch_y), sparse=True)
+
 def propagate_fresnel_fft(Beam, z):
     """
     Propagate a complex scalar field with the Fresnel approximation using
@@ -57,8 +70,8 @@ def propagate_fresnel_fft(Beam, z):
         return Beam
 
     Dy, Dx = Beam.field.shape[-2:]
-    dx = 2*Beam.nix/Beam.Dx
-    dy = 2*Beam.niy/Beam.Dy
+    dx = Beam.dx
+    dy = Beam.dy
     k = Beam.k()
  
     # Output grid, fixed by the physics (fx = x_out / (lambda*z)) 
@@ -88,6 +101,7 @@ def propagate_fresnel_fft(Beam, z):
 
     Beam.field = field_z
     Beam.x, Beam.y = np.meshgrid(x_out, y_out, sparse=True)
+    _refresh_window(Beam, abs(dx_out), abs(dy_out))
  
     return Beam
 
@@ -127,8 +141,8 @@ def propagate_bluestein(Beam, z, x_out_range, y_out_range, Dx_out=None, Dy_out=N
     x = np.asarray(Beam.x).ravel()
     y = np.asarray(Beam.y).ravel()
  
-    dx_in = 2*Beam.nix/Beam.Dx
-    dy_in = 2*Beam.niy/Beam.Dy
+    dx_in = Beam.dx
+    dy_in = Beam.dy
     x0_in = x[0]
     y0_in = y[0]
  
@@ -303,8 +317,7 @@ def propagate_fraunhofer(Beam, z):
         FX, FY = np.meshgrid(fx, fy, indexing="xy")
         Beam.x = Beam.lamb * z * FX
         Beam.y = Beam.lamb * z * FY
-        Beam.nix = np.max(Beam.x)
-        Beam.niy = np.max(Beam.y)
+        _refresh_window(Beam, Beam.lamb*abs(z)/(Beam.Dx*abs(dx)), Beam.lamb*abs(z)/(Beam.Dy*abs(dy)))
         C = np.exp(1j*k*z)/(1j*Beam.lamb*z)*np.exp(1j*k*(Beam.x**2 + Beam.y**2)/(2*z))
         Beam.fourier_field = fft.fft2(Beam.field, axes=(-2,-1))
         Beam.field = C*fft.fftshift(Beam.fourier_field)*dx*dy
@@ -355,8 +368,8 @@ def suggest_propagation_method(Beam, z, aperture_sigma_factor=3.0,
     abs_z = abs(z)
     lam = Beam.lamb
  
-    dx = 2 * Beam.nix / Beam.Dx
-    dy = 2 * Beam.niy / Beam.Dy
+    dx = Beam.dx
+    dy = Beam.dy
     Dx, Dy = Beam.Dx, Beam.Dy
  
     # (1) transfer-function critical distance (smaller axis is the binding

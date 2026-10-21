@@ -23,12 +23,11 @@ def overlap(first_beam:object, second_beam:object)->complex:
     complex
         The normalized overlap integral
         ``sum(E1 * conj(E2)) * dx * dy / sqrt(P1 * P2)``, where
-        `dx = 2*nix/Dx`, `dy = 2*niy/Dy`, and `P1`, `P2` are each
+        `dx = 2*nix/(Dx-1)`, `dy = 2*niy/(Dy-1)`, and `P1`, `P2` are each
         beam's total power.
     """
     # calculate overlap between two beams, only properly works if ni and D of beams are equal.
-    return np.sum(first_beam.field*np.conjugate(second_beam.field))*4*(first_beam.nix/(first_beam.Dx-1)) \
-        *(first_beam.niy/(first_beam.Dy-1))/np.sqrt(first_beam.Power()*second_beam.Power())
+    return np.sum(first_beam.field*np.conjugate(second_beam.field))*first_beam.dx*first_beam.dy/np.sqrt(first_beam.Power()*second_beam.Power())
 
 def int_overlap(first_beam:object, second_beam:object)->float:
     """
@@ -52,11 +51,10 @@ def int_overlap(first_beam:object, second_beam:object)->float:
     -------
     float
         The normalized intensity overlap
-        ``sum(I1 * I2) * dx * dy / (P1 * P2)``, where `dx = 2*nix/Dx`,
-        `dy = 2*niy/Dy`, and `P1`, `P2` are each beam's total power.
+        ``sum(I1 * I2) * dx * dy / (P1 * P2)``, where `dx = 2*nix/(Dx-1)`,
+        `dy = 2*niy/(Dy-1)`, and `P1`, `P2` are each beam's total power.
     """
-    return np.sum(first_beam.int_profile()*second_beam.int_profile())*4*(first_beam.nix/(first_beam.Dx-1)) \
-        *(first_beam.niy/(first_beam.Dy-1))/(first_beam.Power()*second_beam.Power())
+    return np.sum(first_beam.int_profile()*second_beam.int_profile())*first_beam.dx*first_beam.dy/(first_beam.Power()*second_beam.Power())
 
 
 
