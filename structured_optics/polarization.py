@@ -77,7 +77,7 @@ def J_phase_retarder(delta):
     -------
     np.ndarray
         The 2x2 diagonal Jones matrix
-        ``diag(exp(1j*delta/2), exp(-1j*delta/2))``.
+        ``diag(exp(1j*delta), exp(-1j*delta))``.
     """
     return np.array([[np.exp(1j*delta/2), 0],[0, np.exp(-1j*delta/2)]])
 
@@ -92,10 +92,10 @@ def J_hwp(ang):
     Returns
     -------
     np.ndarray
-        The 2x2 Jones matrix from rotating `J_phase_retarder(np.pi/2)` by
+        The 2x2 Jones matrix from rotating `J_phase_retarder(np.pi)` by
         `ang` via `J_rot`.
     """
-    return J_rot(J_phase_retarder(np.pi/2), ang)
+    return J_rot(J_phase_retarder(np.pi), ang)
 
 def J_qwp(ang):
     """Build the Jones matrix of a quarter-wave-plate-type retarder at angle `ang`.
@@ -108,10 +108,10 @@ def J_qwp(ang):
     Returns
     -------
     np.ndarray
-        The 2x2 Jones matrix from rotating `J_phase_retarder(np.pi/4)` by
+        The 2x2 Jones matrix from rotating `J_phase_retarder(np.pi)` by
         `ang` via `J_rot`.
     """
-    return J_rot(J_phase_retarder(np.pi/4), ang)
+    return J_rot(J_phase_retarder(np.pi), ang)
 
 
 _PROJECTORS = {"H": HPROJ, "V": VPROJ, "D": DPROJ, "A": APROJ, "R": RPROJ, "L": LPROJ}

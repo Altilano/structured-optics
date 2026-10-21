@@ -23,7 +23,7 @@ class BeamDiagnostics:
         -------
         float
         """
-        return np.sum(self.int_profile(pol_index))*(4*self.nix/self.Dx)*(self.niy/self.Dy)
+        return np.sum(self.int_profile(pol_index))*(4*self.nix/(self.Dx-1))*(self.niy/(self.Dy-1))
 
     
     def zr(self) -> float:
