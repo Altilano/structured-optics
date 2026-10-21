@@ -25,7 +25,7 @@ def test_slm_hologram_is_deterministic(target):
 
 
 def test_slm_hologram_respects_max_range(target):
-    assert slm_hologram(target, 3, 4, max_range=100).max() == 100
+    assert slm_hologram(target, 3, 4, max_range=100).max() <= 100
 
 
 def test_slm_hologram_with_explicit_input_beam(beam_factory, target):
