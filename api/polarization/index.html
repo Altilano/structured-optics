@@ -1361,12 +1361,12 @@
         <p>Polarization optics: Jones-calculus building blocks and Mask subclasses
 that act on a Beam's (Ex, Ey) transverse field components.</p>
 <p>Jones matrices here follow the convention</p>
-<div class="highlight"><pre><span></span><code>[Ex']   [J00 J01] [Ex]
-[Ey'] = [J10 J11] [Ey]
+<div class="highlight"><pre><span></span><code>[Ex&#39;]   [J00 J01] [Ex]
+[Ey&#39;] = [J10 J11] [Ey]
 </code></pre></div>
 <p><code>JonesMask</code> wraps a 2x2 Jones matrix as a <code>Mask</code> (see <code>structured_optics.masks</code>)
 so it can be applied to a <code>Beam</code> the same way spatial masks are, e.g.:</p>
-<div class="highlight"><pre><span></span><code>beam = beam * Polarizer(angle=0, proj="H") * QWP(angle=np.pi/4)
+<div class="highlight"><pre><span></span><code>beam = beam * Polarizer(angle=0, proj=&quot;H&quot;) * QWP(angle=np.pi/4)
 </code></pre></div>
 
 
@@ -1399,7 +1399,7 @@ so it can be applied to a <code>Beam</code> the same way spatial masks are, e.g.
   </span>
 
 <a href="#structured_optics.polarization.HPROJ" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">HPROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'complex'</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">HPROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1423,7 +1423,7 @@ so it can be applied to a <code>Beam</code> the same way spatial masks are, e.g.
   </span>
 
 <a href="#structured_optics.polarization.VPROJ" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">VPROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'complex'</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">VPROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1447,7 +1447,7 @@ so it can be applied to a <code>Beam</code> the same way spatial masks are, e.g.
   </span>
 
 <a href="#structured_optics.polarization.DPROJ" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">DPROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'complex'</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">DPROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1471,7 +1471,7 @@ so it can be applied to a <code>Beam</code> the same way spatial masks are, e.g.
   </span>
 
 <a href="#structured_optics.polarization.APROJ" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">APROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'complex'</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">APROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1495,7 +1495,7 @@ so it can be applied to a <code>Beam</code> the same way spatial masks are, e.g.
   </span>
 
 <a href="#structured_optics.polarization.RPROJ" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">RPROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="n">j</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'complex'</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">RPROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="n">j</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1519,7 +1519,7 @@ so it can be applied to a <code>Beam</code> the same way spatial masks are, e.g.
   </span>
 
 <a href="#structured_optics.polarization.LPROJ" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">LPROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'complex'</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">LPROJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1667,7 +1667,7 @@ subclasses can compute a matrix that depends on beam state.</p>
 <span class="normal">143</span>
 <span class="normal">144</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abstractmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Return the 2x2 Jones matrix to apply to `beam`'s (Ex, Ey).</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the 2x2 Jones matrix to apply to `beam`&#39;s (Ex, Ey).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1679,7 +1679,7 @@ subclasses can compute a matrix that depends on beam state.</p>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
 <span class="sd">        A 2x2 (possibly complex) Jones matrix.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1790,7 +1790,7 @@ present) and the original <code>beam</code> are left untouched.</p>
 <span class="normal">169</span>
 <span class="normal">170</span>
 <span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Apply this Jones matrix to a copy of `beam`'s Ex/Ey components.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply this Jones matrix to a copy of `beam`&#39;s Ex/Ey components.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1806,7 +1806,7 @@ present) and the original <code>beam</code> are left untouched.</p>
 <span class="sd">        `beam` with `Ex`, `Ey` replaced by</span>
 <span class="sd">        ``J @ [Ex, Ey]``, where `J = self.matrix(beam)`. `Ez` (if</span>
 <span class="sd">        present) and the original `beam` are left untouched.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">beam</span><span class="o">.</span><span class="n">pol</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">beam</span>
     <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">beam</span><span class="p">)</span>
@@ -1898,12 +1898,12 @@ present) and the original <code>beam</code> are left untouched.</p>
 <span class="normal">181</span>
 <span class="normal">182</span>
 <span class="normal">183</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    angle : float</span>
 <span class="sd">        Orientation of the fast axis, in radians.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
 </code></pre></div></td></tr></table></div>
                   </details>
@@ -2007,7 +2007,7 @@ present) and the original <code>beam</code> are left untouched.</p>
 <span class="normal">196</span>
 <span class="normal">197</span>
 <span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Return the half-wave plate's Jones matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the half-wave plate&#39;s Jones matrix.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2018,7 +2018,7 @@ present) and the original <code>beam</code> are left untouched.</p>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
 <span class="sd">        The result of ``J_hwp(self.angle)``.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">J_hwp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2103,12 +2103,12 @@ present) and the original <code>beam</code> are left untouched.</p>
 <span class="normal">209</span>
 <span class="normal">210</span>
 <span class="normal">211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    angle : float</span>
 <span class="sd">        Orientation of the fast axis, in radians.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
 </code></pre></div></td></tr></table></div>
                   </details>
@@ -2212,7 +2212,7 @@ present) and the original <code>beam</code> are left untouched.</p>
 <span class="normal">224</span>
 <span class="normal">225</span>
 <span class="normal">226</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Return the quarter-wave plate's Jones matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the quarter-wave plate&#39;s Jones matrix.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2223,7 +2223,7 @@ present) and the original <code>beam</code> are left untouched.</p>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
 <span class="sd">        The result of ``J_qwp(self.angle)``.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">J_qwp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2248,7 +2248,7 @@ present) and the original <code>beam</code> are left untouched.</p>
 
 
 <a href="#structured_optics.polarization.Polarizer" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">Polarizer</span><span class="p">(</span><span class="n">angle</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">proj</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'H'</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">Polarizer</span><span class="p">(</span><span class="n">angle</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">proj</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;H&#39;</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2332,8 +2332,8 @@ to "H".</p>
 <span class="normal">242</span>
 <span class="normal">243</span>
 <span class="normal">244</span>
-<span class="normal">245</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">proj</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"H"</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">245</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">proj</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    angle : float, optional</span>
@@ -2341,9 +2341,9 @@ to "H".</p>
 <span class="sd">        Defaults to 0.</span>
 <span class="sd">    proj : str, optional</span>
 <span class="sd">        Polarization state to project onto before rotation. One of</span>
-<span class="sd">        "H", "V", "D", "A", "R", "L" (see `_PROJECTORS`). Defaults</span>
-<span class="sd">        to "H".</span>
-<span class="sd">    """</span>
+<span class="sd">        &quot;H&quot;, &quot;V&quot;, &quot;D&quot;, &quot;A&quot;, &quot;R&quot;, &quot;L&quot; (see `_PROJECTORS`). Defaults</span>
+<span class="sd">        to &quot;H&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">angle</span><span class="p">,</span> <span class="n">proj</span>
 </code></pre></div></td></tr></table></div>
                   </details>
@@ -2449,7 +2449,7 @@ to "H".</p>
 <span class="normal">259</span>
 <span class="normal">260</span>
 <span class="normal">261</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Return the polarizer's Jones matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the polarizer&#39;s Jones matrix.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2461,7 +2461,7 @@ to "H".</p>
 <span class="sd">    np.ndarray</span>
 <span class="sd">        The result of rotating `_PROJECTORS[self.proj]` by</span>
 <span class="sd">        `self.angle` via `J_rot`.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">J_rot</span><span class="p">(</span><span class="n">_PROJECTORS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2594,7 +2594,7 @@ element (retarder, projector, etc.) at an arbitrary orientation.</p>
 <span class="normal">64</span>
 <span class="normal">65</span>
 <span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">J_rot</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">ang</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Rotate a Jones matrix about the optical axis by `ang`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rotate a Jones matrix about the optical axis by `ang`.</span>
 
 <span class="sd">    Applies the similarity transform ``R(ang) @ matrix @ R(ang)^H``, where</span>
 <span class="sd">    `R(ang)` is the standard 2x2 rotation matrix and `^H` denotes the</span>
@@ -2604,7 +2604,7 @@ element (retarder, projector, etc.) at an arbitrary orientation.</p>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    matrix : np.ndarray</span>
-<span class="sd">        2x2 Jones matrix to rotate, expressed in the element's own</span>
+<span class="sd">        2x2 Jones matrix to rotate, expressed in the element&#39;s own</span>
 <span class="sd">        (unrotated) basis.</span>
 <span class="sd">    ang : float</span>
 <span class="sd">        Rotation angle, in radians.</span>
@@ -2613,8 +2613,8 @@ element (retarder, projector, etc.) at an arbitrary orientation.</p>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
 <span class="sd">        The rotated 2x2 Jones matrix.</span>
-<span class="sd">    """</span>
-    <span class="n">rt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ang</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ang</span><span class="p">)],[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ang</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ang</span><span class="p">)]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'complex'</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ang</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ang</span><span class="p">)],[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ang</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ang</span><span class="p">)]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">rt</span><span class="nd">@matrix@np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">rt</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2710,7 +2710,7 @@ element (retarder, projector, etc.) at an arbitrary orientation.</p>
 <span class="normal">80</span>
 <span class="normal">81</span>
 <span class="normal">82</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">J_phase_retarder</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Build the Jones matrix of a linear phase retarder in its own basis.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the Jones matrix of a linear phase retarder in its own basis.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2722,7 +2722,7 @@ element (retarder, projector, etc.) at an arbitrary orientation.</p>
 <span class="sd">    np.ndarray</span>
 <span class="sd">        The 2x2 diagonal Jones matrix</span>
 <span class="sd">        ``diag(exp(1j*delta/2), exp(-1j*delta/2))``.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">delta</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">delta</span><span class="o">/</span><span class="mi">2</span><span class="p">)]])</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2792,7 +2792,7 @@ element (retarder, projector, etc.) at an arbitrary orientation.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The 2x2 Jones matrix from rotating <code>J_phase_retarder(np.pi/2)</code> by
+                <p>The 2x2 Jones matrix from rotating <code>J_phase_retarder(np.pi)</code> by
 <code>ang</code> via <code>J_rot</code>.</p>
               </div>
             </td>
@@ -2818,20 +2818,20 @@ element (retarder, projector, etc.) at an arbitrary orientation.</p>
 <span class="normal">96</span>
 <span class="normal">97</span>
 <span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">J_hwp</span><span class="p">(</span><span class="n">ang</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Build the Jones matrix of a half-wave-plate-type retarder at angle `ang`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the Jones matrix of a half-wave-plate-type retarder at angle `ang`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ang : float</span>
-<span class="sd">        Orientation of the retarder's fast axis, in radians.</span>
+<span class="sd">        Orientation of the retarder&#39;s fast axis, in radians.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
-<span class="sd">        The 2x2 Jones matrix from rotating `J_phase_retarder(np.pi/2)` by</span>
+<span class="sd">        The 2x2 Jones matrix from rotating `J_phase_retarder(np.pi)` by</span>
 <span class="sd">        `ang` via `J_rot`.</span>
-<span class="sd">    """</span>
-    <span class="k">return</span> <span class="n">J_rot</span><span class="p">(</span><span class="n">J_phase_retarder</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">ang</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">J_rot</span><span class="p">(</span><span class="n">J_phase_retarder</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span> <span class="n">ang</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2900,7 +2900,7 @@ element (retarder, projector, etc.) at an arbitrary orientation.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The 2x2 Jones matrix from rotating <code>J_phase_retarder(np.pi/4)</code> by
+                <p>The 2x2 Jones matrix from rotating <code>J_phase_retarder(np.pi/2)</code> by
 <code>ang</code> via <code>J_rot</code>.</p>
               </div>
             </td>
@@ -2926,20 +2926,20 @@ element (retarder, projector, etc.) at an arbitrary orientation.</p>
 <span class="normal">112</span>
 <span class="normal">113</span>
 <span class="normal">114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">J_qwp</span><span class="p">(</span><span class="n">ang</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Build the Jones matrix of a quarter-wave-plate-type retarder at angle `ang`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the Jones matrix of a quarter-wave-plate-type retarder at angle `ang`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ang : float</span>
-<span class="sd">        Orientation of the retarder's fast axis, in radians.</span>
+<span class="sd">        Orientation of the retarder&#39;s fast axis, in radians.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
-<span class="sd">        The 2x2 Jones matrix from rotating `J_phase_retarder(np.pi/4)` by</span>
+<span class="sd">        The 2x2 Jones matrix from rotating `J_phase_retarder(np.pi/2)` by</span>
 <span class="sd">        `ang` via `J_rot`.</span>
-<span class="sd">    """</span>
-    <span class="k">return</span> <span class="n">J_rot</span><span class="p">(</span><span class="n">J_phase_retarder</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span> <span class="n">ang</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">J_rot</span><span class="p">(</span><span class="n">J_phase_retarder</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">ang</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

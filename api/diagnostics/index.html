@@ -782,17 +782,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#structured_optics.diagnostics.BeamDiagnostics.section" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        section
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#structured_optics.diagnostics.BeamDiagnostics.int_section" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1113,17 +1102,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#structured_optics.diagnostics.BeamDiagnostics.section" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        section
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#structured_optics.diagnostics.BeamDiagnostics.int_section" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1359,8 +1337,8 @@ all field components.</p>
 <span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">Power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol_index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Get the total optical Power via numerical integration of the intensity profile </span>
-<span class="sd">    (trapezoidal-like Riemann sum with the grid's cell area)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the total optical Power via numerical integration of the intensity profile </span>
+<span class="sd">    (trapezoidal-like Riemann sum with the grid&#39;s cell area)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1371,8 +1349,8 @@ all field components.</p>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
-<span class="sd">    """</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">int_profile</span><span class="p">(</span><span class="n">pol_index</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nix</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Dx</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">niy</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Dy</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">int_profile</span><span class="p">(</span><span class="n">pol_index</span><span class="p">))</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dx</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dy</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1410,7 +1388,7 @@ all field components.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Rayleigh range, zr = pi<em>waist</em>*2/lamb.</p>
+                <p>Rayleigh range, zr = pi*waist**2/lamb.</p>
               </div>
             </td>
           </tr>
@@ -1430,14 +1408,14 @@ all field components.</p>
 <span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">zr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Rayleigh range of the beam from its `waist` and `lamb`.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
 <span class="sd">        Rayleigh range, zr = pi*waist**2/lamb.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">waist</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">lamb</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1495,13 +1473,13 @@ all field components.</p>
 <span class="normal">46</span>
 <span class="normal">47</span>
 <span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">k</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute k vector magnitude in vacum.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
-<span class="sd">        k vector magniture in vaccum"""</span>
+<span class="sd">        k vector magniture in vaccum&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">lamb</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1608,7 +1586,7 @@ all intensity components.</p>
 <span class="normal">70</span>
 <span class="normal">71</span>
 <span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">int_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol_index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get intensity profile.</span>
 
 <span class="sd">    pol_index=None -&gt; total intensity</span>
@@ -1626,7 +1604,7 @@ all intensity components.</p>
 <span class="sd">    ------</span>
 <span class="sd">    ndarray</span>
 <span class="sd">        Array with intensity profile (x,y).</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">pol_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">[</span><span class="n">pol_index</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
@@ -1751,7 +1729,7 @@ otherwise shape (pol, Dy, Dx).</p>
 <span class="normal"> 98</span>
 <span class="normal"> 99</span>
 <span class="normal">100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">twopi</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pol_index : int or None, optional</span>
@@ -1765,7 +1743,7 @@ otherwise shape (pol, Dy, Dx).</p>
 <span class="sd">    ndarray</span>
 <span class="sd">        Phase profile, shape (Dy, Dx) if pol_index is given or pol==1,</span>
 <span class="sd">        otherwise shape (pol, Dy, Dx).</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">pol_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span>
     <span class="k">else</span><span class="p">:</span>
@@ -1890,7 +1868,7 @@ otherwise shape (pol, Dy, Dx).</p>
 <span class="normal">136</span>
 <span class="normal">137</span>
 <span class="normal">138</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">center_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol_index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span> 
-<span class="w">    </span><span class="sd">""" </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    Compute the intensity-weighted center of mass of the field in physical x and y coordinates. </span>
 
 <span class="sd">    Parameters</span>
@@ -1901,7 +1879,7 @@ otherwise shape (pol, Dy, Dx).</p>
 <span class="sd">    Returns</span>
 <span class="sd">    ------- </span>
 <span class="sd">    tuple (x_cm, y_cm) </span>
-<span class="sd">        center-of-mass coordinates in physical units. """</span> 
+<span class="sd">        center-of-mass coordinates in physical units. &quot;&quot;&quot;</span> 
     <span class="n">I</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">int_profile</span><span class="p">(</span><span class="n">pol_index</span><span class="p">)</span> 
 
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> 
@@ -1914,7 +1892,7 @@ otherwise shape (pol, Dy, Dx).</p>
     <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">I</span><span class="p">)</span> 
 
     <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> 
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot calculate center of mass of zero intensity."</span><span class="p">)</span> 
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot calculate center of mass of zero intensity.&quot;</span><span class="p">)</span> 
 
     <span class="c1"># Intensity marginalized along each direction </span>
     <span class="n">Ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
@@ -2031,7 +2009,7 @@ along x and y.</p>
 <span class="normal">164</span>
 <span class="normal">165</span>
 <span class="normal">166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> 
-<span class="w">    </span><span class="sd">"""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the intensity-weighted spatial standard deviation</span>
 <span class="sd">    along x and y.</span>
 
@@ -2044,7 +2022,7 @@ along x and y.</p>
 <span class="sd">    -------</span>
 <span class="sd">    sigma_x, sigma_y : float</span>
 <span class="sd">        Intensity-weighted spatial standard deviations.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">I</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">int_profile</span><span class="p">(</span><span class="n">pol_index</span><span class="p">)</span> 
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> 
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> 
@@ -2154,7 +2132,7 @@ about its center of mass.</p>
 <span class="normal">183</span>
 <span class="normal">184</span>
 <span class="normal">185</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">radial_std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol_index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the intensity-weighted radial standard deviation of the field</span>
 <span class="sd">    about its center of mass.</span>
 
@@ -2167,152 +2145,10 @@ about its center of mass.</p>
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
 <span class="sd">        Intensity-weighted radial standard deviation.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">pol_index</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">sy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="structured_optics.diagnostics.BeamDiagnostics.section" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">section</span>
-
-
-<a href="#structured_optics.diagnostics.BeamDiagnostics.section" class="headerlink" title="Permanent link">&para;</a></h4>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">section</span><span class="p">(</span><span class="n">ang_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pol_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
-</code></pre></div>
-
-    <div class="doc doc-contents ">
-
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>ang_min</code>
-            </td>
-            <td>
-                  <code><span title="float">float</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Minimum angle (radians) defining the angular wedge.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>ang_max</code>
-            </td>
-            <td>
-                  <code><span title="float">float</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Maximum angle (radians) defining the angular wedge.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>pol_index</code>
-            </td>
-            <td>
-                  <code><span title="int">int</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Polarization component to extract the section from.</p>
-              </div>
-            </td>
-            <td>
-                  <code>0</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="ndarray">ndarray</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Complex field values restricted to the angular wedge [ang_min, ang_max].</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-            <details class="mkdocstrings-source">
-              <summary>Source code in <code>structured_optics\diagnostics.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ang_min</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">pol_index</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    ang_min : float</span>
-<span class="sd">        Minimum angle (radians) defining the angular wedge.</span>
-<span class="sd">    ang_max : float</span>
-<span class="sd">        Maximum angle (radians) defining the angular wedge.</span>
-<span class="sd">    pol_index : int, optional</span>
-<span class="sd">        Polarization component to extract the section from.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ndarray</span>
-<span class="sd">        Complex field values restricted to the angular wedge [ang_min, ang_max].</span>
-<span class="sd">    """</span>
-    <span class="k">return</span> <span class="n">get_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ang_min</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">,</span> <span class="n">pol_index</span> <span class="o">=</span> <span class="n">pol_index</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2422,24 +2258,24 @@ about its center of mass.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\diagnostics.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">215</span>
 <span class="normal">216</span>
 <span class="normal">217</span>
 <span class="normal">218</span>
 <span class="normal">219</span>
 <span class="normal">220</span>
-<span class="normal">221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">int_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ang_min</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">pol_index</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">int_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ang_min</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">pol_index</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ang_min : float</span>
@@ -2453,8 +2289,8 @@ about its center of mass.</p>
 <span class="sd">    -------</span>
 <span class="sd">    ndarray</span>
 <span class="sd">        Intensity |field|^2 within the angular wedge [ang_min, ang_max].</span>
-<span class="sd">    """</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">(</span><span class="n">ang_min</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">,</span> <span class="n">pol_index</span> <span class="o">=</span> <span class="n">pol_index</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_section_field</span><span class="p">(</span><span class="n">ang_min</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">,</span> <span class="n">pol_index</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2564,24 +2400,24 @@ about its center of mass.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\diagnostics.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">233</span>
 <span class="normal">234</span>
 <span class="normal">235</span>
 <span class="normal">236</span>
 <span class="normal">237</span>
 <span class="normal">238</span>
-<span class="normal">239</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">Power_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ang_min</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">pol_index</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">Power_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ang_min</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">pol_index</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ang_min : float</span>
@@ -2595,8 +2431,8 @@ about its center of mass.</p>
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
 <span class="sd">        Optical power contained within the angular wedge [ang_min, ang_max].</span>
-<span class="sd">    """</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">(</span><span class="n">ang_min</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">,</span> <span class="n">pol_index</span> <span class="o">=</span> <span class="n">pol_index</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nix</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Dx</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">niy</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Dy</span><span class="p">))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_section_field</span><span class="p">(</span><span class="n">ang_min</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">,</span> <span class="n">pol_index</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dx</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dy</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2643,21 +2479,21 @@ about its center of mass.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\diagnostics.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">norm_beam</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>                                       
-<span class="w">    </span><span class="sd">"""</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">norm_beam</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>                                       
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Beam</span>
 <span class="sd">        self, with field rescaled in place so that self.Power() == 1.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Power</span><span class="p">())</span>
     <span class="k">return</span> <span class="bp">self</span>
 </code></pre></div></td></tr></table></div>
@@ -2706,21 +2542,21 @@ about its center of mass.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\diagnostics.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
-<span class="normal">258</span>
-<span class="normal">259</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">Max_int1</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>                                         
-<span class="w">    </span><span class="sd">"""</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">Max_int1</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>                                         
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Beam</span>
 <span class="sd">        self, with field rescaled in place so that the peak intensity equals 1.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">int_profile</span><span class="p">()))</span>
     <span class="k">return</span> <span class="bp">self</span>
 </code></pre></div></td></tr></table></div>

@@ -807,6 +807,56 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#structured_optics.masks.AngularSection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AngularSection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structured_optics.masks.RegionMask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RegionMask
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RegionMask">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#structured_optics.masks.RegionMask.apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structured_optics.masks.restrict_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        restrict_mask
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1328,6 +1378,56 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#structured_optics.masks.AngularSection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AngularSection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structured_optics.masks.RegionMask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RegionMask
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RegionMask">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#structured_optics.masks.RegionMask.apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structured_optics.masks.restrict_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        restrict_mask
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1374,6 +1474,11 @@
 <p>Usage:
     beam = beam * Lens(f=0.2) * Iris(radius=1e-3)<br />
     # First a Lens is applyed then an Iris.</p>
+<p>Any mask (spatial or polarization) can be restricted to a region defined by a
+BooleanMask with <code>restrict_mask</code>; outside the region the beam is untouched:</p>
+<div class="highlight"><pre><span></span><code>quarter = AngularSection(0, np.pi / 2)
+beam = beam * restrict_mask(QWP(angle=np.pi / 4), quarter)
+</code></pre></div>
 
 
 
@@ -1454,12 +1559,12 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\masks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abstractmethod</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abstractmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Apply this mask to `beam`, and return a copy."""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply this mask to `beam`, and return a copy.&quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1542,14 +1647,7 @@ multiplication behavior.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\masks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span>
 <span class="normal">39</span>
@@ -1561,8 +1659,15 @@ multiplication behavior.</p>
 <span class="normal">45</span>
 <span class="normal">46</span>
 <span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Enable `beam * SomeMask(...)` syntax.</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enable `beam * SomeMask(...)` syntax.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1576,9 +1681,9 @@ multiplication behavior.</p>
 <span class="sd">        `Beam` (i.e. it has a `.field` attribute); otherwise</span>
 <span class="sd">        `NotImplemented`, so Python can fall back to other</span>
 <span class="sd">        multiplication behavior.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="s2">"field"</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">beam</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">NotImplemented</span>
 </code></pre></div></td></tr></table></div>
@@ -1658,12 +1763,12 @@ to the whole field.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\masks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abstractmethod</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abstractmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Return an array broadcastable to beam.field.shape[-2:]."""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an array broadcastable to beam.field.shape[-2:].&quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1744,14 +1849,7 @@ by <code>self.array(beam)</code>. The original <code>beam</code> is left unmodif
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\masks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">70</span>
 <span class="normal">71</span>
 <span class="normal">72</span>
 <span class="normal">73</span>
@@ -1760,8 +1858,15 @@ by <code>self.array(beam)</code>. The original <code>beam</code> is left unmodif
 <span class="normal">76</span>
 <span class="normal">77</span>
 <span class="normal">78</span>
-<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Multiply this mask's transmittance into a copy of `beam`.</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiply this mask&#39;s transmittance into a copy of `beam`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1773,7 +1878,7 @@ by <code>self.array(beam)</code>. The original <code>beam</code> is left unmodif
 <span class="sd">    Beam</span>
 <span class="sd">        A copy of `beam` whose `.field` has been multiplied elementwise</span>
 <span class="sd">        by `self.array(beam)`. The original `beam` is left unmodified.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">result</span><span class="o">.</span><span class="n">field</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span>
@@ -1863,7 +1968,7 @@ optical axis. Defaults to (0, 0).</p>
 
 <details class="reference" open>
   <summary>Reference</summary>
-  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
+  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.
 </code></pre></div>
 </details>
 
@@ -1875,35 +1980,35 @@ optical axis. Defaults to (0, 0).</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">84</span>
-<span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span>
-<span class="normal">95</span>
-<span class="normal">96</span>
-<span class="normal">97</span>
-<span class="normal">98</span>
-<span class="normal">99</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">f0</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
-<span class="w">    </span><span class="sd">"""</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">f0</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    f : float</span>
 <span class="sd">        Focal length of the lens.</span>
 <span class="sd">    f0 : tuple, optional</span>
-<span class="sd">        (x, y) offset of the lens center relative to the beam's</span>
+<span class="sd">        (x, y) offset of the lens center relative to the beam&#39;s</span>
 <span class="sd">        optical axis. Defaults to (0, 0).</span>
 
 <span class="sd">    Reference</span>
 <span class="sd">    ---------</span>
-<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.</span>
-<span class="sd">    """</span>
+<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f0</span> <span class="o">=</span> <span class="n">f</span><span class="p">,</span> <span class="n">f0</span>
 </code></pre></div></td></tr></table></div>
@@ -2023,20 +2128,20 @@ optical axis. Defaults to (0, 0).</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
 <span class="normal">119</span>
 <span class="normal">120</span>
-<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">fy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">f0</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">fy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">f0</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    fx : float</span>
@@ -2045,7 +2150,7 @@ optical axis. Defaults to (0, 0).</p>
 <span class="sd">        Focal length along the y axis.</span>
 <span class="sd">    f0 : tuple, optional</span>
 <span class="sd">        (x, y) offset of the lens center. Defaults to (0, 0).</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">fx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f0</span> <span class="o">=</span> <span class="n">fx</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">f0</span>
 </code></pre></div></td></tr></table></div>
@@ -2081,7 +2186,7 @@ optical axis. Defaults to (0, 0).</p>
 
 
 <a href="#structured_optics.masks.TiltedLens" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">TiltedLens</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">f0</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">flip_axis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">TiltedLens</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">f0</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">flip_axis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2090,8 +2195,9 @@ optical axis. Defaults to (0, 0).</p>
 
 
 
-        <p>A spherical lens viewed at an angle, modeled as an equivalent
-AstigmaticLens with effective (fx, fy) derived from the tilt angle.</p>
+        <p>A thin spherical lens tilted about the y axis, modeled as an equivalent
+AstigmaticLens with effective (fx, fy) derived from the tilt angle and
+refractive index.</p>
 
 
 
@@ -2140,6 +2246,22 @@ AstigmaticLens with effective (fx, fy) derived from the tilt angle.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
+                <code>n</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Refractive index of the lens material. Defaults to 1.5.</p>
+              </div>
+            </td>
+            <td>
+                  <code>1.5</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
                 <code>f0</code>
             </td>
             <td>
@@ -2163,8 +2285,8 @@ AstigmaticLens with effective (fx, fy) derived from the tilt angle.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If True, swap the roles of the tilted/untilted axes.
-Defaults to False.</p>
+                <p>If True, the tilt is about the x axis instead of y
+(swaps fx and fy). Defaults to False.</p>
               </div>
             </td>
             <td>
@@ -2183,16 +2305,7 @@ Defaults to False.</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">132</span>
-<span class="normal">133</span>
-<span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">141</span>
 <span class="normal">142</span>
 <span class="normal">143</span>
 <span class="normal">144</span>
@@ -2201,24 +2314,55 @@ Defaults to False.</p>
 <span class="normal">147</span>
 <span class="normal">148</span>
 <span class="normal">149</span>
-<span class="normal">150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">f0</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">flip_axis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span>
+             <span class="n">f0</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">flip_axis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    f : float</span>
 <span class="sd">        Nominal (untilted) focal length of the lens.</span>
 <span class="sd">    phi : float</span>
 <span class="sd">        Tilt angle, in radians.</span>
+<span class="sd">    n : float, optional</span>
+<span class="sd">        Refractive index of the lens material. Defaults to 1.5.</span>
 <span class="sd">    f0 : tuple, optional</span>
 <span class="sd">        (x, y) offset of the lens center. Defaults to (0, 0).</span>
 <span class="sd">    flip_axis : bool, optional</span>
-<span class="sd">        If True, swap the roles of the tilted/untilted axes.</span>
-<span class="sd">        Defaults to False.</span>
-<span class="sd">    """</span>
+<span class="sd">        If True, the tilt is about the x axis instead of y</span>
+<span class="sd">        (swaps fx and fy). Defaults to False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n must be greater than 1&quot;</span><span class="p">)</span>
 
-    <span class="n">fx</span><span class="p">,</span> <span class="n">fy</span> <span class="o">=</span> <span class="n">f</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span><span class="p">,</span> <span class="n">f</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">fy</span> <span class="o">=</span> <span class="n">f</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span>
+    <span class="n">fx</span> <span class="o">=</span> <span class="n">fy</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
     <span class="k">if</span> <span class="n">flip_axis</span><span class="p">:</span>
         <span class="n">fx</span><span class="p">,</span> <span class="n">fy</span> <span class="o">=</span> <span class="n">fy</span><span class="p">,</span> <span class="n">fx</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">phi</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">fx</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">f0</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
                   </details>
@@ -2328,22 +2472,22 @@ used to model optical aberrations.</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coefs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">strengths</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coefs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">strengths</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    coefs : tuple</span>
@@ -2354,7 +2498,7 @@ used to model optical aberrations.</p>
 <span class="sd">    Reference</span>
 <span class="sd">    ---------</span>
 <span class="sd">        [1] https://en.wikipedia.org/wiki/Zernike_polynomials</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">coefs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">strengths</span> <span class="o">=</span> <span class="n">coefs</span><span class="p">,</span> <span class="n">strengths</span>
 </code></pre></div></td></tr></table></div>
@@ -2444,23 +2588,23 @@ pass, and vice versa). Defaults to False.</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">complementary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">complementary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    complementary : bool, optional</span>
 <span class="sd">        If True, invert the aperture (block where it would otherwise</span>
 <span class="sd">        pass, and vice versa). Defaults to False.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">complementary</span> <span class="o">=</span> <span class="n">complementary</span>
 </code></pre></div></td></tr></table></div>
@@ -2501,12 +2645,12 @@ pass, and vice versa). Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\masks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abstractmethod</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abstractmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">bool_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Return a boolean array, True where the aperture transmits."""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a boolean array, True where the aperture transmits.&quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2613,27 +2757,7 @@ spatial shape.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\masks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">215</span>
 <span class="normal">216</span>
 <span class="normal">217</span>
 <span class="normal">218</span>
@@ -2641,8 +2765,28 @@ spatial shape.</p>
 <span class="normal">220</span>
 <span class="normal">221</span>
 <span class="normal">222</span>
-<span class="normal">223</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Build the (possibly inverted) boolean transmittance array.</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the (possibly inverted) boolean transmittance array.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2653,22 +2797,22 @@ spatial shape.</p>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
-<span class="sd">        Boolean array broadcast to the beam's spatial shape. Equal to</span>
+<span class="sd">        Boolean array broadcast to the beam&#39;s spatial shape. Equal to</span>
 <span class="sd">        `bool_array(beam)`, or its logical negation if</span>
 <span class="sd">        `self.complementary` is True.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If `bool_array(beam)` cannot be broadcast to the beam's</span>
+<span class="sd">        If `bool_array(beam)` cannot be broadcast to the beam&#39;s</span>
 <span class="sd">        spatial shape.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bool_array</span><span class="p">(</span><span class="n">beam</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
     <span class="n">spatial_shape</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">spatial_shape</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mask must be broadcastable to spatial shape </span><span class="si">{</span><span class="n">spatial_shape</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mask must be broadcastable to spatial shape </span><span class="si">{</span><span class="n">spatial_shape</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="o">~</span><span class="n">m</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">complementary</span> <span class="k">else</span> <span class="n">m</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2777,20 +2921,20 @@ spatial shape.</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    radius : float, optional</span>
@@ -2799,7 +2943,7 @@ spatial shape.</p>
 <span class="sd">        (x, y) center of the circle. Defaults to (0, 0).</span>
 <span class="sd">    complementary : bool, optional</span>
 <span class="sd">        Invert the aperture. Defaults to False.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">complementary</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span>
 </code></pre></div></td></tr></table></div>
@@ -2919,21 +3063,21 @@ spatial shape.</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
-<span class="normal">258</span>
-<span class="normal">259</span>
-<span class="normal">260</span>
-<span class="normal">261</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">side_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">side_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    side_length : float, optional</span>
@@ -2942,7 +3086,7 @@ spatial shape.</p>
 <span class="sd">        (x, y) center of the square. Defaults to (0, 0).</span>
 <span class="sd">    complementary : bool, optional</span>
 <span class="sd">        Invert the aperture. Defaults to False.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">complementary</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_length</span> <span class="o">=</span> <span class="n">center</span><span class="p">,</span> <span class="n">side_length</span>
@@ -3063,21 +3207,21 @@ spatial shape.</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">269</span>
-<span class="normal">270</span>
-<span class="normal">271</span>
-<span class="normal">272</span>
-<span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span>
-<span class="normal">280</span>
-<span class="normal">281</span>
-<span class="normal">282</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">side_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">side_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    center : tuple, optional</span>
@@ -3086,7 +3230,7 @@ spatial shape.</p>
 <span class="sd">        Side length of the triangle.</span>
 <span class="sd">    complementary : bool, optional</span>
 <span class="sd">        Invert the aperture. Defaults to False.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">complementary</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_length</span> <span class="o">=</span> <span class="n">center</span><span class="p">,</span> <span class="n">side_length</span>
@@ -3208,21 +3352,21 @@ centered at <code>center</code> along the x axis.</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">292</span>
-<span class="normal">293</span>
-<span class="normal">294</span>
-<span class="normal">295</span>
-<span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span>
-<span class="normal">299</span>
-<span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    size : float</span>
@@ -3231,7 +3375,7 @@ centered at <code>center</code> along the x axis.</p>
 <span class="sd">        Center position along x. Defaults to 0.</span>
 <span class="sd">    complementary : bool, optional</span>
 <span class="sd">        Invert the aperture. Defaults to False.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">complementary</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">size</span><span class="p">,</span> <span class="n">center</span>
@@ -3353,21 +3497,21 @@ centered at <code>center</code> along the y axis.</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span>
-<span class="normal">320</span>
-<span class="normal">321</span>
-<span class="normal">322</span>
-<span class="normal">323</span>
-<span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span>
-<span class="normal">327</span>
-<span class="normal">328</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    size : float</span>
@@ -3376,7 +3520,7 @@ centered at <code>center</code> along the y axis.</p>
 <span class="sd">        Center position along y. Defaults to 0.</span>
 <span class="sd">    complementary : bool, optional</span>
 <span class="sd">        Invert the aperture. Defaults to False.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">complementary</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">size</span><span class="p">,</span> <span class="n">center</span>
@@ -3514,23 +3658,23 @@ centered at <code>center</code> along the y axis.</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">338</span>
-<span class="normal">339</span>
-<span class="normal">340</span>
-<span class="normal">341</span>
-<span class="normal">342</span>
-<span class="normal">343</span>
-<span class="normal">344</span>
-<span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span>
-<span class="normal">351</span>
-<span class="normal">352</span>
-<span class="normal">353</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">dis</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">dis</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    size : float</span>
@@ -3541,7 +3685,7 @@ centered at <code>center</code> along the y axis.</p>
 <span class="sd">        Midpoint of the two-slit pair along x. Defaults to 0.</span>
 <span class="sd">    complementary : bool, optional</span>
 <span class="sd">        Invert the aperture. Defaults to False.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">complementary</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">size</span><span class="p">,</span> <span class="n">dis</span><span class="p">,</span> <span class="n">center</span>
@@ -3665,23 +3809,23 @@ default horizontal band half-width if <code>hsize</code> is omitted.</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>structured_optics\masks.py</code></summary>
-                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">365</span>
-<span class="normal">366</span>
-<span class="normal">367</span>
-<span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span>
-<span class="normal">371</span>
-<span class="normal">372</span>
-<span class="normal">373</span>
-<span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span>
-<span class="normal">377</span>
-<span class="normal">378</span>
-<span class="normal">379</span>
-<span class="normal">380</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">hsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">hsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    size : float</span>
@@ -3692,7 +3836,7 @@ default horizontal band half-width if <code>hsize</code> is omitted.</p>
 <span class="sd">        `size` if not given.</span>
 <span class="sd">    complementary : bool, optional</span>
 <span class="sd">        Invert the aperture. Defaults to False.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">complementary</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hsize</span> <span class="o">=</span> <span class="n">size</span><span class="p">,</span> <span class="n">hsize</span> <span class="k">if</span> <span class="n">hsize</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">size</span>
@@ -3720,6 +3864,693 @@ default horizontal band half-width if <code>hsize</code> is omitted.</p>
 
 </div>
 
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="structured_optics.masks.AngularSection" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">AngularSection</span>
+
+
+<a href="#structured_optics.masks.AngularSection" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">AngularSection</span><span class="p">(</span><span class="n">ang_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="BooleanMask (structured_optics.masks.BooleanMask)" href="#structured_optics.masks.BooleanMask">BooleanMask</a></code></p>
+
+
+
+        <p>An angular sector (wedge) aperture.</p>
+<p>Transmits the points whose polar angle, measured counter-clockwise from
+the +x axis around <code>center</code>, lies in the half-open interval
+<code>[ang_min, ang_max)</code>.</p>
+
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>ang_min</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Start angle of the section, in radians. Wrapped to [0, 2*pi).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>ang_max</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>End angle of the section (exclusive), in radians. Wrapped to
+[0, 2*pi). If it is smaller than <code>ang_min</code> after wrapping, the
+section crosses the +x axis (e.g. <code>(3*pi/2, pi/2)</code> is the
+right half-plane). If the two wrapped angles are equal (e.g.
+<code>(0, 2*pi)</code>), the section covers the whole plane.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>center</code>
+            </td>
+            <td>
+                  <code><span title="tuple">tuple</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>(x, y) vertex of the wedge. Defaults to (0, 0).</p>
+              </div>
+            </td>
+            <td>
+                  <code>(0, 0)</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>complementary</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Invert the aperture. Defaults to False.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+                  <details class="mkdocstrings-source">
+                    <summary>Source code in <code>structured_optics\masks.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ang_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ang_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ang_min : float</span>
+<span class="sd">        Start angle of the section, in radians. Wrapped to [0, 2*pi).</span>
+<span class="sd">    ang_max : float</span>
+<span class="sd">        End angle of the section (exclusive), in radians. Wrapped to</span>
+<span class="sd">        [0, 2*pi). If it is smaller than `ang_min` after wrapping, the</span>
+<span class="sd">        section crosses the +x axis (e.g. ``(3*pi/2, pi/2)`` is the</span>
+<span class="sd">        right half-plane). If the two wrapped angles are equal (e.g.</span>
+<span class="sd">        ``(0, 2*pi)``), the section covers the whole plane.</span>
+<span class="sd">    center : tuple, optional</span>
+<span class="sd">        (x, y) vertex of the wedge. Defaults to (0, 0).</span>
+<span class="sd">    complementary : bool, optional</span>
+<span class="sd">        Invert the aperture. Defaults to False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">complementary</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ang_min</span> <span class="o">=</span> <span class="n">ang_min</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ang_max</span> <span class="o">=</span> <span class="n">ang_max</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="structured_optics.masks.RegionMask" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">RegionMask</span>
+
+
+<a href="#structured_optics.masks.RegionMask" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">RegionMask</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">Mask</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="n">BooleanMask</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Mask (structured_optics.masks.Mask)" href="#structured_optics.masks.Mask">Mask</a></code></p>
+
+
+
+        <p>Applies <code>mask</code> only inside the True region of a <code>BooleanMask</code>.</p>
+<p>Outside the region the beam passes through unchanged (the identity
+element of the wrapped mask: transmittance 1 for a spatial mask, the
+identity Jones matrix for a polarization mask), which is <em>not</em> the same
+as blocking the beam there. Works with any <code>Mask</code> -- spatial,
+polarization, or another <code>RegionMask</code> -- because it relies only on
+<code>mask.apply</code>. Prefer building it through <code>restrict_mask</code>.</p>
+
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>mask</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Mask (structured_optics.masks.Mask)" href="#structured_optics.masks.Mask">Mask</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The mask to apply inside the region.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>region</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="BooleanMask (structured_optics.masks.BooleanMask)" href="#structured_optics.masks.BooleanMask">BooleanMask</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Defines where <code>mask</code> acts: it is applied wherever
+<code>region.array(beam)</code> is True.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="TypeError">TypeError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>mask</code> is not a <code>Mask</code> or <code>region</code> is not a <code>BooleanMask</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+                  <details class="mkdocstrings-source">
+                    <summary>Source code in <code>structured_optics\masks.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
+<span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
+<span class="normal">475</span>
+<span class="normal">476</span>
+<span class="normal">477</span>
+<span class="normal">478</span>
+<span class="normal">479</span>
+<span class="normal">480</span>
+<span class="normal">481</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Mask</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="n">BooleanMask</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mask : Mask</span>
+<span class="sd">        The mask to apply inside the region.</span>
+<span class="sd">    region : BooleanMask</span>
+<span class="sd">        Defines where `mask` acts: it is applied wherever</span>
+<span class="sd">        ``region.array(beam)`` is True.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        If `mask` is not a `Mask` or `region` is not a `BooleanMask`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">Mask</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mask must be a Mask, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">BooleanMask</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;region must be a BooleanMask, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">region</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span> <span class="o">=</span> <span class="n">mask</span><span class="p">,</span> <span class="n">region</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="structured_optics.masks.RegionMask.apply" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">apply</span>
+
+
+<a href="#structured_optics.masks.RegionMask.apply" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">apply</span><span class="p">(</span><span class="n">beam</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Apply <code>self.mask</code> to a copy of <code>beam</code>, but only inside the region.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>beam</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Beam (structured_optics.struct_opt.Beam)" href="../struct_opt/#structured_optics.struct_opt.Beam">Beam</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The beam to apply the mask to.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Beam (structured_optics.struct_opt.Beam)" href="../struct_opt/#structured_optics.struct_opt.Beam">Beam</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A copy of <code>beam</code> equal to <code>self.mask.apply(beam)</code> where the
+region is True and equal to <code>beam</code> elsewhere. The original
+<code>beam</code> is left unmodified.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>structured_optics\masks.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span>
+<span class="normal">486</span>
+<span class="normal">487</span>
+<span class="normal">488</span>
+<span class="normal">489</span>
+<span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span>
+<span class="normal">494</span>
+<span class="normal">495</span>
+<span class="normal">496</span>
+<span class="normal">497</span>
+<span class="normal">498</span>
+<span class="normal">499</span>
+<span class="normal">500</span>
+<span class="normal">501</span>
+<span class="normal">502</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply `self.mask` to a copy of `beam`, but only inside the region.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    beam : Beam</span>
+<span class="sd">        The beam to apply the mask to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Beam</span>
+<span class="sd">        A copy of `beam` equal to ``self.mask.apply(beam)`` where the</span>
+<span class="sd">        region is True and equal to `beam` elsewhere. The original</span>
+<span class="sd">        `beam` is left unmodified.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">modified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">beam</span><span class="p">)</span>
+    <span class="n">inside</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">beam</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">inside</span><span class="p">,</span> <span class="n">modified</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">beam</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="structured_optics.masks.restrict_mask" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">restrict_mask</span>
+
+
+<a href="#structured_optics.masks.restrict_mask" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">restrict_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">Mask</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="n">BooleanMask</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RegionMask</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Restrict <code>mask</code> to the True region of a boolean mask.</p>
+<p>The returned mask applies <code>mask</code> where <code>region</code> is True and leaves the
+beam untouched elsewhere. It works for spatial masks (lenses, Zernike
+aberrations, apertures) and polarization masks (waveplates, polarizers).</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>mask</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Mask (structured_optics.masks.Mask)" href="#structured_optics.masks.Mask">Mask</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The mask to apply inside the region.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>region</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="BooleanMask (structured_optics.masks.BooleanMask)" href="#structured_optics.masks.BooleanMask">BooleanMask</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Defines the region where <code>mask</code> acts. For convenience, the two
+arguments may be given in either order when exactly one of them is
+a <code>BooleanMask</code>; if both are, the second is the region.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="RegionMask (structured_optics.masks.RegionMask)" href="#structured_optics.masks.RegionMask">RegionMask</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A new mask, usable as <code>beam * restrict_mask(...)</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="TypeError">TypeError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If neither argument is a <code>BooleanMask</code>, or if either is not a <code>Mask</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <p>Quarter-wave plate acting only in the upper half-plane:</p>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">upper</span> <span class="o">=</span> <span class="n">AngularSection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">beam</span> <span class="o">=</span> <span class="n">beam</span> <span class="o">*</span> <span class="n">restrict_mask</span><span class="p">(</span><span class="n">QWP</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">),</span> <span class="n">upper</span><span class="p">)</span>
+</code></pre></div>
+    <p>Lens only outside a circular aperture (use <code>complementary=True</code>):</p>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">beam</span> <span class="o">=</span> <span class="n">beam</span> <span class="o">*</span> <span class="n">restrict_mask</span><span class="p">(</span><span class="n">Lens</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">Iris</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">complementary</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</code></pre></div>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>structured_optics\masks.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">505</span>
+<span class="normal">506</span>
+<span class="normal">507</span>
+<span class="normal">508</span>
+<span class="normal">509</span>
+<span class="normal">510</span>
+<span class="normal">511</span>
+<span class="normal">512</span>
+<span class="normal">513</span>
+<span class="normal">514</span>
+<span class="normal">515</span>
+<span class="normal">516</span>
+<span class="normal">517</span>
+<span class="normal">518</span>
+<span class="normal">519</span>
+<span class="normal">520</span>
+<span class="normal">521</span>
+<span class="normal">522</span>
+<span class="normal">523</span>
+<span class="normal">524</span>
+<span class="normal">525</span>
+<span class="normal">526</span>
+<span class="normal">527</span>
+<span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span>
+<span class="normal">531</span>
+<span class="normal">532</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span>
+<span class="normal">539</span>
+<span class="normal">540</span>
+<span class="normal">541</span>
+<span class="normal">542</span>
+<span class="normal">543</span>
+<span class="normal">544</span>
+<span class="normal">545</span>
+<span class="normal">546</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">restrict_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">Mask</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="n">BooleanMask</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RegionMask</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Restrict `mask` to the True region of a boolean mask.</span>
+
+<span class="sd">    The returned mask applies `mask` where `region` is True and leaves the</span>
+<span class="sd">    beam untouched elsewhere. It works for spatial masks (lenses, Zernike</span>
+<span class="sd">    aberrations, apertures) and polarization masks (waveplates, polarizers).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mask : Mask</span>
+<span class="sd">        The mask to apply inside the region.</span>
+<span class="sd">    region : BooleanMask</span>
+<span class="sd">        Defines the region where `mask` acts. For convenience, the two</span>
+<span class="sd">        arguments may be given in either order when exactly one of them is</span>
+<span class="sd">        a `BooleanMask`; if both are, the second is the region.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    RegionMask</span>
+<span class="sd">        A new mask, usable as ``beam * restrict_mask(...)``.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        If neither argument is a `BooleanMask`, or if either is not a `Mask`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Quarter-wave plate acting only in the upper half-plane:</span>
+
+<span class="sd">    &gt;&gt;&gt; upper = AngularSection(0, np.pi)</span>
+<span class="sd">    &gt;&gt;&gt; beam = beam * restrict_mask(QWP(angle=np.pi / 4), upper)</span>
+
+<span class="sd">    Lens only outside a circular aperture (use ``complementary=True``):</span>
+
+<span class="sd">    &gt;&gt;&gt; beam = beam * restrict_mask(Lens(f=0.5), Iris(radius=1e-3, complementary=True))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">BooleanMask</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">BooleanMask</span><span class="p">):</span>
+        <span class="n">mask</span><span class="p">,</span> <span class="n">region</span> <span class="o">=</span> <span class="n">region</span><span class="p">,</span> <span class="n">mask</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">BooleanMask</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;one of the two masks must be a BooleanMask&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">RegionMask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">region</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
 
 
 

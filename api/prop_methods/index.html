@@ -1179,7 +1179,7 @@ updated <code>field</code> and <code>fourier_field</code>. <code>x</code>, <code
 
 <details class="reference" open>
   <summary>Reference</summary>
-  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
+  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.
 </code></pre></div>
 </details>
 
@@ -1213,7 +1213,7 @@ updated <code>field</code> and <code>fourier_field</code>. <code>x</code>, <code
 <span class="normal">31</span>
 <span class="normal">32</span>
 <span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">propagate_fresnel_conv</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Propagate the field by a distance z using the Fresnel integral,</span>
 <span class="sd">    evaluated as a convolution (transfer-function) via a single</span>
 <span class="sd">    forward/inverse FFT pair. The x, y grid is unchanged.</span>
@@ -1233,8 +1233,8 @@ updated <code>field</code> and <code>fourier_field</code>. <code>x</code>, <code
 
 <span class="sd">    Reference</span>
 <span class="sd">    ----------</span>
-<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.</span>
-<span class="sd">    """</span>
+<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">k</span><span class="p">()</span>
     <span class="n">prop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">z</span> <span class="o">*</span> <span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">kx</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">Beam</span><span class="o">.</span><span class="n">ky</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">k</span><span class="o">*</span><span class="n">z</span><span class="p">)</span>
     <span class="n">Beam</span><span class="o">.</span><span class="n">fourier_field</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
@@ -1335,71 +1335,72 @@ a single Fourier transform.</p>
 
 <details class="reference" open>
   <summary>Reference</summary>
-  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
+  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.
 </code></pre></div>
 </details>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\prop_methods.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span>
-<span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">propagate_fresnel_fft</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">propagate_fresnel_fft</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Propagate a complex scalar field with the Fresnel approximation using</span>
 <span class="sd">    a single Fourier transform.</span>
 
@@ -1417,14 +1418,14 @@ a single Fourier transform.</p>
 
 <span class="sd">    Reference</span>
 <span class="sd">    ----------</span>
-<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.</span>
-<span class="sd">    """</span>
+<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Beam</span>
 
     <span class="n">Dy</span><span class="p">,</span> <span class="n">Dx</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
-    <span class="n">dx</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">Beam</span><span class="o">.</span><span class="n">nix</span><span class="o">/</span><span class="n">Beam</span><span class="o">.</span><span class="n">Dx</span>
-    <span class="n">dy</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">Beam</span><span class="o">.</span><span class="n">niy</span><span class="o">/</span><span class="n">Beam</span><span class="o">.</span><span class="n">Dy</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">dx</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">dy</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">k</span><span class="p">()</span>
 
     <span class="c1"># Output grid, fixed by the physics (fx = x_out / (lambda*z)) </span>
@@ -1454,6 +1455,7 @@ a single Fourier transform.</p>
 
     <span class="n">Beam</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field_z</span>
     <span class="n">Beam</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_out</span><span class="p">,</span> <span class="n">y_out</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_refresh_window</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dx_out</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dy_out</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">Beam</span>
 </code></pre></div></td></tr></table></div>
@@ -1619,28 +1621,14 @@ resolution/region you need.</p>
 
 <details class="reference" open>
   <summary>Reference</summary>
-  <div class="highlight"><pre><span></span><code>[1] Hu, Yanlei, et al. "Efficient full-path optical calculation of scalar and vector diffraction using the Bluestein method." 
+  <div class="highlight"><pre><span></span><code>[1] Hu, Yanlei, et al. &quot;Efficient full-path optical calculation of scalar and vector diffraction using the Bluestein method.&quot; 
 Light: Science &amp; Applications 9.1 (2020): 119.
 </code></pre></div>
 </details>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\prop_methods.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">108</span>
 <span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
@@ -1712,8 +1700,22 @@ Light: Science &amp; Applications 9.1 (2020): 119.
 <span class="normal">177</span>
 <span class="normal">178</span>
 <span class="normal">179</span>
-<span class="normal">180</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">propagate_bluestein</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">x_out_range</span><span class="p">,</span> <span class="n">y_out_range</span><span class="p">,</span> <span class="n">Dx_out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dy_out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">propagate_bluestein</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">x_out_range</span><span class="p">,</span> <span class="n">y_out_range</span><span class="p">,</span> <span class="n">Dx_out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dy_out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Single-FFT Fresnel propagation with an arbitrary, independently</span>
 <span class="sd">    chosen output grid, using the Bluestein (chirp-z) transform.</span>
 
@@ -1737,19 +1739,19 @@ Light: Science &amp; Applications 9.1 (2020): 119.
 
 <span class="sd">    Reference</span>
 <span class="sd">    ----------</span>
-<span class="sd">        [1] Hu, Yanlei, et al. "Efficient full-path optical calculation of scalar and vector diffraction using the Bluestein method." </span>
+<span class="sd">        [1] Hu, Yanlei, et al. &quot;Efficient full-path optical calculation of scalar and vector diffraction using the Bluestein method.&quot; </span>
 <span class="sd">        Light: Science &amp; Applications 9.1 (2020): 119.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Bluestein propagation requires z != 0."</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bluestein propagation requires z != 0.&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">Dx_out</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">Dy_out</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Dx_out and Dy_out must each be &gt;= 2."</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dx_out and Dy_out must each be &gt;= 2.&quot;</span><span class="p">)</span>
 
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
-    <span class="n">dx_in</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">Beam</span><span class="o">.</span><span class="n">nix</span><span class="o">/</span><span class="n">Beam</span><span class="o">.</span><span class="n">Dx</span>
-    <span class="n">dy_in</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">Beam</span><span class="o">.</span><span class="n">niy</span><span class="o">/</span><span class="n">Beam</span><span class="o">.</span><span class="n">Dy</span>
+    <span class="n">dx_in</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">dx</span>
+    <span class="n">dy_in</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">dy</span>
     <span class="n">x0_in</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">y0_in</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -1915,27 +1917,13 @@ updated <code>field</code> and <code>fourier_field</code>. <code>x</code>, <code
 
 <details class="references" open>
   <summary>References</summary>
-  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
+  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.
 </code></pre></div>
 </details>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\prop_methods.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">198</span>
 <span class="normal">199</span>
 <span class="normal">200</span>
 <span class="normal">201</span>
@@ -1958,8 +1946,22 @@ updated <code>field</code> and <code>fourier_field</code>. <code>x</code>, <code
 <span class="normal">218</span>
 <span class="normal">219</span>
 <span class="normal">220</span>
-<span class="normal">221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">propagate_angular_spectrum</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">evanescent</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">propagate_angular_spectrum</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">evanescent</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Propagate the field by a distance z using the Angular Spectrum</span>
 <span class="sd">    method (exact scalar diffraction, no paraxial approximation). The</span>
 <span class="sd">    x, y grid is unchanged.</span>
@@ -1984,8 +1986,8 @@ updated <code>field</code> and <code>fourier_field</code>. <code>x</code>, <code
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.</span>
-<span class="sd">    """</span>
+<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">k</span><span class="p">()</span>
     <span class="n">kz2</span> <span class="o">=</span> <span class="n">k</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">Beam</span><span class="o">.</span><span class="n">kx</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">Beam</span><span class="o">.</span><span class="n">ky</span><span class="o">**</span><span class="mi">2</span>
     <span class="n">kz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">kz2</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">complex</span><span class="p">))</span>
@@ -2100,27 +2102,13 @@ physically correct result -- treat with caution.</p>
 
 <details class="references" open>
   <summary>References</summary>
-  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
+  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.
 </code></pre></div>
 </details>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\prop_methods.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">238</span>
 <span class="normal">239</span>
 <span class="normal">240</span>
 <span class="normal">241</span>
@@ -2143,9 +2131,23 @@ physically correct result -- treat with caution.</p>
 <span class="normal">258</span>
 <span class="normal">259</span>
 <span class="normal">260</span>
-<span class="normal">261</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">propagate_incoherent</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Propagate the beam's INTENSITY (not the complex field) by a distance</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">propagate_incoherent</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Propagate the beam&#39;s INTENSITY (not the complex field) by a distance</span>
 <span class="sd">    z, using incoherent propagation. This loses phase information: the</span>
 <span class="sd">    result is only meaningful as an intensity profile.</span>
 
@@ -2170,8 +2172,8 @@ physically correct result -- treat with caution.</p>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.</span>
-<span class="sd">    """</span>
+<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">k</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">z</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">h2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">field</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">lamb</span><span class="o">*</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
@@ -2284,27 +2286,13 @@ updated <code>field</code>, <code>fourier_field</code>, and new <code>x</code>, 
 
 <details class="references" open>
   <summary>References</summary>
-  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.
+  <div class="highlight"><pre><span></span><code>[1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.
 </code></pre></div>
 </details>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\prop_methods.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span>
-<span class="normal">270</span>
-<span class="normal">271</span>
-<span class="normal">272</span>
-<span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">278</span>
 <span class="normal">279</span>
 <span class="normal">280</span>
 <span class="normal">281</span>
@@ -2337,11 +2325,24 @@ updated <code>field</code>, <code>fourier_field</code>, and new <code>x</code>, 
 <span class="normal">308</span>
 <span class="normal">309</span>
 <span class="normal">310</span>
-<span class="normal">311</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">propagate_fraunhofer</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">propagate_fraunhofer</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Propagate the field by a distance z using the Fraunhofer (far-field)</span>
 <span class="sd">    integral. Unlike the other propagation methods, this changes the</span>
-<span class="sd">    beam's x, y grid, since the Fraunhofer diffraction pattern lives in</span>
+<span class="sd">    beam&#39;s x, y grid, since the Fraunhofer diffraction pattern lives in</span>
 <span class="sd">    spatial-frequency-scaled coordinates (x = lambda*z*fx).</span>
 
 <span class="sd">    A warning is printed if z is smaller than the conventional far-field</span>
@@ -2365,22 +2366,21 @@ updated <code>field</code>, <code>fourier_field</code>, and new <code>x</code>, 
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. "Introduction to Fourier optics." (1969): 97-101.</span>
-<span class="sd">    """</span>
+<span class="sd">        [1] Goodman, Joseph W., and Mary E. Cox. &quot;Introduction to Fourier optics.&quot; (1969): 97-101.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">/</span><span class="n">Beam</span><span class="o">.</span><span class="n">lamb</span><span class="o">*</span><span class="n">Beam</span><span class="o">.</span><span class="n">waist</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"z small. Fraunhofer is probably not a good aproximation."</span><span class="p">)</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z small. Fraunhofer is probably not a good aproximation.&quot;</span><span class="p">)</span> 
     <span class="k">if</span> <span class="n">z</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">k</span><span class="p">()</span>
         <span class="n">dx</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Beam</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">dy</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">Beam</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">fx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">Dx</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">dx</span><span class="p">))</span>
         <span class="n">fy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">Dy</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">dy</span><span class="p">))</span>
-        <span class="n">FX</span><span class="p">,</span> <span class="n">FY</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">fx</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s2">"xy"</span><span class="p">)</span>
+        <span class="n">FX</span><span class="p">,</span> <span class="n">FY</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">fx</span><span class="p">,</span> <span class="n">fy</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">)</span>
         <span class="n">Beam</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">lamb</span> <span class="o">*</span> <span class="n">z</span> <span class="o">*</span> <span class="n">FX</span>
         <span class="n">Beam</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">lamb</span> <span class="o">*</span> <span class="n">z</span> <span class="o">*</span> <span class="n">FY</span>
-        <span class="n">Beam</span><span class="o">.</span><span class="n">nix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">Beam</span><span class="o">.</span><span class="n">niy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">_refresh_window</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">lamb</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">Dx</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">dx</span><span class="p">)),</span> <span class="n">Beam</span><span class="o">.</span><span class="n">lamb</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">Dy</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">dy</span><span class="p">)))</span>
         <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">k</span><span class="o">*</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">Beam</span><span class="o">.</span><span class="n">lamb</span><span class="o">*</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">k</span><span class="o">*</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">Beam</span><span class="o">.</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">z</span><span class="p">))</span>
         <span class="n">Beam</span><span class="o">.</span><span class="n">fourier_field</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">Beam</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">C</span><span class="o">*</span><span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">Beam</span><span class="o">.</span><span class="n">fourier_field</span><span class="p">)</span><span class="o">*</span><span class="n">dx</span><span class="o">*</span><span class="n">dy</span>
@@ -2530,20 +2530,7 @@ want to make the decision yourself.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\prop_methods.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">319</span>
-<span class="normal">320</span>
-<span class="normal">321</span>
-<span class="normal">322</span>
-<span class="normal">323</span>
-<span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span>
-<span class="normal">327</span>
-<span class="normal">328</span>
-<span class="normal">329</span>
-<span class="normal">330</span>
-<span class="normal">331</span>
-<span class="normal">332</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">332</span>
 <span class="normal">333</span>
 <span class="normal">334</span>
 <span class="normal">335</span>
@@ -2632,9 +2619,22 @@ want to make the decision yourself.</p>
 <span class="normal">418</span>
 <span class="normal">419</span>
 <span class="normal">420</span>
-<span class="normal">421</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">suggest_propagation_method</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">aperture_sigma_factor</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">suggest_propagation_method</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">aperture_sigma_factor</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
                                 <span class="n">fraunhofer_threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Recommend a propagation method for Beam.propagate(z, method=...).</span>
 
 <span class="sd">    Parameters</span>
@@ -2649,7 +2649,7 @@ want to make the decision yourself.</p>
 <span class="sd">        aperture_sigma_factor * sigma (default 3.0, i.e. ~99.7% of the</span>
 <span class="sd">        energy for a Gaussian profile). Only affects the far-field/paraxial</span>
 <span class="sd">        checks -- the transfer-function sampling check (z_crit) always</span>
-<span class="sd">        uses the full grid, since that's a property of the numerical grid,</span>
+<span class="sd">        uses the full grid, since that&#39;s a property of the numerical grid,</span>
 <span class="sd">        not of the beam itself.</span>
 <span class="sd">    fraunhofer_threshold : float, optional</span>
 <span class="sd">        Fresnel number below which Fraunhofer is considered valid</span>
@@ -2658,21 +2658,21 @@ want to make the decision yourself.</p>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    method : str</span>
-<span class="sd">        One of: 'none', 'AS', 'fres_c', 'fraun'.</span>
+<span class="sd">        One of: &#39;none&#39;, &#39;AS&#39;, &#39;fres_c&#39;, &#39;fraun&#39;.</span>
 <span class="sd">    info : dict</span>
 <span class="sd">        The underlying numbers (z_crit, fresnel_number, z_paraxial_min,</span>
 <span class="sd">        aperture size used, and where that size came from) in case you</span>
 <span class="sd">        want to make the decision yourself.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"z = 0: no propagation needed."</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s1">'none'</span><span class="p">,</span> <span class="p">{}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z = 0: no propagation needed.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="p">{}</span>
 
     <span class="n">abs_z</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
     <span class="n">lam</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">lamb</span>
 
-    <span class="n">dx</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Beam</span><span class="o">.</span><span class="n">nix</span> <span class="o">/</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dx</span>
-    <span class="n">dy</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Beam</span><span class="o">.</span><span class="n">niy</span> <span class="o">/</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dy</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">dx</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">dy</span>
     <span class="n">Dx</span><span class="p">,</span> <span class="n">Dy</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dx</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dy</span>
 
     <span class="c1"># (1) transfer-function critical distance (smaller axis is the binding</span>
@@ -2682,18 +2682,18 @@ want to make the decision yourself.</p>
     <span class="n">z_crit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">z_crit_x</span><span class="p">,</span> <span class="n">z_crit_y</span><span class="p">)</span>
 
     <span class="c1"># (2) effective aperture size for the far-field/paraxial checks:</span>
-    <span class="c1">#     prefer the beam's own extent (via Beam.std()) over the full</span>
+    <span class="c1">#     prefer the beam&#39;s own extent (via Beam.std()) over the full</span>
     <span class="c1">#     simulation window, since a beam much smaller than the window</span>
     <span class="c1">#     reaches the far field far sooner than the window would suggest.</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">ay</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">size_source</span> <span class="o">=</span> <span class="s2">"simulation window half-width (nix, niy)"</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="s1">'std'</span><span class="p">):</span>
+    <span class="n">size_source</span> <span class="o">=</span> <span class="s2">&quot;simulation window half-width (nix, niy)&quot;</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">sigma_x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">sigma_y</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">ax</span> <span class="o">=</span> <span class="n">aperture_sigma_factor</span> <span class="o">*</span> <span class="n">sigma_x</span>
                 <span class="n">ay</span> <span class="o">=</span> <span class="n">aperture_sigma_factor</span> <span class="o">*</span> <span class="n">sigma_y</span>
-                <span class="n">size_source</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">aperture_sigma_factor</span><span class="si">}</span><span class="s2">*sigma from Beam.std()"</span>
+                <span class="n">size_source</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">aperture_sigma_factor</span><span class="si">}</span><span class="s2">*sigma from Beam.std()&quot;</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>  <span class="c1"># fall back to window size below</span>
     <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ay</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2703,36 +2703,36 @@ want to make the decision yourself.</p>
     <span class="n">a2</span> <span class="o">=</span> <span class="n">ax</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ay</span><span class="o">**</span><span class="mi">2</span>
     <span class="n">fresnel_number</span> <span class="o">=</span> <span class="n">a2</span> <span class="o">/</span> <span class="p">(</span><span class="n">lam</span> <span class="o">*</span> <span class="n">abs_z</span><span class="p">)</span>
 
-    <span class="c1"># (4) paraxial validity floor (Goodman's criterion), same aperture size</span>
+    <span class="c1"># (4) paraxial validity floor (Goodman&#39;s criterion), same aperture size</span>
     <span class="n">z_paraxial_min</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">lam</span><span class="p">)</span> <span class="o">*</span> <span class="n">a2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
 
     <span class="n">info</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">'z_crit'</span><span class="p">:</span> <span class="n">z_crit</span><span class="p">,</span>
-        <span class="s1">'fresnel_number'</span><span class="p">:</span> <span class="n">fresnel_number</span><span class="p">,</span>
-        <span class="s1">'z_paraxial_min'</span><span class="p">:</span> <span class="n">z_paraxial_min</span><span class="p">,</span>
-        <span class="s1">'aperture_size'</span><span class="p">:</span> <span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ay</span><span class="p">),</span>
-        <span class="s1">'aperture_size_source'</span><span class="p">:</span> <span class="n">size_source</span><span class="p">,</span>
+        <span class="s1">&#39;z_crit&#39;</span><span class="p">:</span> <span class="n">z_crit</span><span class="p">,</span>
+        <span class="s1">&#39;fresnel_number&#39;</span><span class="p">:</span> <span class="n">fresnel_number</span><span class="p">,</span>
+        <span class="s1">&#39;z_paraxial_min&#39;</span><span class="p">:</span> <span class="n">z_paraxial_min</span><span class="p">,</span>
+        <span class="s1">&#39;aperture_size&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ay</span><span class="p">),</span>
+        <span class="s1">&#39;aperture_size_source&#39;</span><span class="p">:</span> <span class="n">size_source</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">fresnel_number</span> <span class="o">&lt;</span> <span class="n">fraunhofer_threshold</span><span class="p">:</span>
-        <span class="n">method</span> <span class="o">=</span> <span class="s1">'fraun'</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;fraun&#39;</span>
     <span class="k">elif</span> <span class="n">abs_z</span> <span class="o">&lt;=</span> <span class="n">z_crit</span><span class="p">:</span>
-        <span class="n">method</span> <span class="o">=</span> <span class="s1">'AS'</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;AS&#39;</span>
     <span class="k">elif</span> <span class="n">abs_z</span> <span class="o">&lt;</span> <span class="n">z_paraxial_min</span><span class="p">:</span>
         <span class="c1"># Too close for paraxial single-step Fresnel to be trustworthy,</span>
         <span class="c1"># yet past z_crit for the transfer-function sampling argument --</span>
         <span class="c1"># fall back to the exact angular spectrum method.</span>
-        <span class="n">method</span> <span class="o">=</span> <span class="s1">'AS'</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;AS&#39;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">method</span> <span class="o">=</span> <span class="s1">'fres_c'</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;fres_c&#39;</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Estimating best propagation method."</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"z = </span><span class="si">{</span><span class="n">z</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> m"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  aperture size used (</span><span class="si">{</span><span class="n">size_source</span><span class="si">}</span><span class="s2">): ax=</span><span class="si">{</span><span class="n">ax</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> m, ay=</span><span class="si">{</span><span class="n">ay</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> m"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  critical (transfer-function) distance z_crit = </span><span class="si">{</span><span class="n">z_crit</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> m"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Fresnel number                       Nf      = </span><span class="si">{</span><span class="n">fresnel_number</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  paraxial validity floor               z_min   = </span><span class="si">{</span><span class="n">z_paraxial_min</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> m"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  -&gt; recommended method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Estimating best propagation method.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;z = </span><span class="si">{</span><span class="n">z</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  aperture size used (</span><span class="si">{</span><span class="n">size_source</span><span class="si">}</span><span class="s2">): ax=</span><span class="si">{</span><span class="n">ax</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> m, ay=</span><span class="si">{</span><span class="n">ay</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  critical (transfer-function) distance z_crit = </span><span class="si">{</span><span class="n">z_crit</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Fresnel number                       Nf      = </span><span class="si">{</span><span class="n">fresnel_number</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  paraxial validity floor               z_min   = </span><span class="si">{</span><span class="n">z_paraxial_min</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  -&gt; recommended method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">method</span><span class="p">,</span> <span class="n">info</span>
 </code></pre></div></td></tr></table></div>
@@ -2876,20 +2876,7 @@ predicted centroid, etc.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\prop_methods.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">426</span>
-<span class="normal">427</span>
-<span class="normal">428</span>
-<span class="normal">429</span>
-<span class="normal">430</span>
-<span class="normal">431</span>
-<span class="normal">432</span>
-<span class="normal">433</span>
-<span class="normal">434</span>
-<span class="normal">435</span>
-<span class="normal">436</span>
-<span class="normal">437</span>
-<span class="normal">438</span>
-<span class="normal">439</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">439</span>
 <span class="normal">440</span>
 <span class="normal">441</span>
 <span class="normal">442</span>
@@ -2978,8 +2965,21 @@ predicted centroid, etc.</p>
 <span class="normal">525</span>
 <span class="normal">526</span>
 <span class="normal">527</span>
-<span class="normal">528</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">estimate_bluestein_range</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">n_sigma</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">equal_grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span>
+<span class="normal">531</span>
+<span class="normal">532</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span>
+<span class="normal">539</span>
+<span class="normal">540</span>
+<span class="normal">541</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">estimate_bluestein_range</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">n_sigma</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">equal_grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimate the output window to pass to propagate_bluestein so the</span>
 <span class="sd">    propagated beam is fully contained without edge clipping.</span>
 
@@ -3004,7 +3004,7 @@ predicted centroid, etc.</p>
 <span class="sd">    info : dict</span>
 <span class="sd">        Diagnostic quantities: current/predicted sigma, angular spread,</span>
 <span class="sd">        predicted centroid, etc.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">field</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">field</span>
     <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">y</span>   <span class="c1"># sparse grids, shapes (1,Dx) and (Dy,1)</span>
     <span class="n">dx</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -3022,7 +3022,7 @@ predicted centroid, etc.</p>
     <span class="n">sigma_x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">varx0</span><span class="p">)</span>
     <span class="n">sigma_y0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">vary0</span><span class="p">)</span>
 
-    <span class="c1"># --- Angular-spectrum moments (beam's own Fourier content) ---</span>
+    <span class="c1"># --- Angular-spectrum moments (beam&#39;s own Fourier content) ---</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>              <span class="c1"># shape (Dy, Dx)</span>
     <span class="n">S_tot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
@@ -3072,12 +3072,12 @@ predicted centroid, etc.</p>
     <span class="n">y_out_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">ybar_z</span> <span class="o">-</span> <span class="n">half_y</span><span class="p">,</span> <span class="n">ybar_z</span> <span class="o">+</span> <span class="n">half_y</span><span class="p">)</span>
 
     <span class="n">info</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">'sigma_x0'</span><span class="p">:</span> <span class="n">sigma_x0</span><span class="p">,</span> <span class="s1">'sigma_y0'</span><span class="p">:</span> <span class="n">sigma_y0</span><span class="p">,</span>
-        <span class="s1">'sigma_thetax0'</span><span class="p">:</span> <span class="n">sigma_thetax0</span><span class="p">,</span> <span class="s1">'sigma_thetay0'</span><span class="p">:</span> <span class="n">sigma_thetay0</span><span class="p">,</span>
-        <span class="s1">'cross_x0'</span><span class="p">:</span> <span class="n">cross_x0</span><span class="p">,</span> <span class="s1">'cross_y0'</span><span class="p">:</span> <span class="n">cross_y0</span><span class="p">,</span>
-        <span class="s1">'xbar0'</span><span class="p">:</span> <span class="n">xbar0</span><span class="p">,</span> <span class="s1">'ybar0'</span><span class="p">:</span> <span class="n">ybar0</span><span class="p">,</span>
-        <span class="s1">'xbar_z'</span><span class="p">:</span> <span class="n">xbar_z</span><span class="p">,</span> <span class="s1">'ybar_z'</span><span class="p">:</span> <span class="n">ybar_z</span><span class="p">,</span>
-        <span class="s1">'sigma_x_z'</span><span class="p">:</span> <span class="n">sigma_x_z</span><span class="p">,</span> <span class="s1">'sigma_y_z'</span><span class="p">:</span> <span class="n">sigma_y_z</span><span class="p">,</span>
+        <span class="s1">&#39;sigma_x0&#39;</span><span class="p">:</span> <span class="n">sigma_x0</span><span class="p">,</span> <span class="s1">&#39;sigma_y0&#39;</span><span class="p">:</span> <span class="n">sigma_y0</span><span class="p">,</span>
+        <span class="s1">&#39;sigma_thetax0&#39;</span><span class="p">:</span> <span class="n">sigma_thetax0</span><span class="p">,</span> <span class="s1">&#39;sigma_thetay0&#39;</span><span class="p">:</span> <span class="n">sigma_thetay0</span><span class="p">,</span>
+        <span class="s1">&#39;cross_x0&#39;</span><span class="p">:</span> <span class="n">cross_x0</span><span class="p">,</span> <span class="s1">&#39;cross_y0&#39;</span><span class="p">:</span> <span class="n">cross_y0</span><span class="p">,</span>
+        <span class="s1">&#39;xbar0&#39;</span><span class="p">:</span> <span class="n">xbar0</span><span class="p">,</span> <span class="s1">&#39;ybar0&#39;</span><span class="p">:</span> <span class="n">ybar0</span><span class="p">,</span>
+        <span class="s1">&#39;xbar_z&#39;</span><span class="p">:</span> <span class="n">xbar_z</span><span class="p">,</span> <span class="s1">&#39;ybar_z&#39;</span><span class="p">:</span> <span class="n">ybar_z</span><span class="p">,</span>
+        <span class="s1">&#39;sigma_x_z&#39;</span><span class="p">:</span> <span class="n">sigma_x_z</span><span class="p">,</span> <span class="s1">&#39;sigma_y_z&#39;</span><span class="p">:</span> <span class="n">sigma_y_z</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="n">x_out_range</span><span class="p">,</span> <span class="n">y_out_range</span><span class="p">,</span> <span class="n">info</span>

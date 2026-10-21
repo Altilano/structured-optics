@@ -961,9 +961,9 @@ folder in the repository.</p>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">beam</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">beam</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">beam</span><span class="o">.</span><span class="n">int_profile</span><span class="p">())</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Intensity"</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Intensity&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">beam</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">beam</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">beam</span><span class="o">.</span><span class="n">phase</span><span class="p">())</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Phase"</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Phase&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="free-space-propagation">Free-space propagation<a class="headerlink" href="#free-space-propagation" title="Permanent link">&para;</a></h2>
@@ -971,7 +971,7 @@ folder in the repository.</p>
 <span class="n">beam</span><span class="o">.</span><span class="n">hg</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
 <span class="c1"># Propagate 10 cm using Fresnel convolution</span>
-<span class="n">beam</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"fres_c"</span><span class="p">)</span>
+<span class="n">beam</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fres_c&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">beam</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">beam</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">beam</span><span class="o">.</span><span class="n">int_profile</span><span class="p">())</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
@@ -987,7 +987,7 @@ system reads like the optical setup itself:</p>
 
 <span class="c1"># Pass through a lens, then propagate to its focal plane</span>
 <span class="n">beam</span> <span class="o">=</span> <span class="n">beam</span> <span class="o">*</span> <span class="n">Lens</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="mf">10e-2</span><span class="p">)</span>
-<span class="n">beam</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mf">10e-2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"fres_c"</span><span class="p">)</span>
+<span class="n">beam</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="mf">10e-2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fres_c&quot;</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="polarization-optics">Polarization optics<a class="headerlink" href="#polarization-optics" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">structured_optics.polarization</span><span class="w"> </span><span class="kn">import</span> <span class="n">HWP</span>

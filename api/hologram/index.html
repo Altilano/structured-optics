@@ -964,7 +964,7 @@
 
 
 <a href="#structured_optics.hologram.slm_hologram" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">slm_hologram</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">x_grating</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y_grating</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'bessel1'</span><span class="p">,</span> <span class="n">input_beam</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span> <span class="n">max_range</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">255</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">slm_hologram</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">x_grating</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y_grating</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;bessel1&#39;</span><span class="p">,</span> <span class="n">input_beam</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span> <span class="n">max_range</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">255</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -1108,7 +1108,7 @@
 <details class="reference" open>
   <summary>Reference</summary>
   <div class="highlight"><pre><span></span><code>[1] T. Clark, R. Offer, S. Franke-Arnold, A. Arnold, and N. Radwell, 
-"Comparison of beam generation techniques using a phase only spatial light modulator," 
+&quot;Comparison of beam generation techniques using a phase only spatial light modulator,&quot; 
 Opt. Express  24, 6249-6264 (2016).
 </code></pre></div>
 </details>
@@ -1180,9 +1180,9 @@ Opt. Express  24, 6249-6264 (2016).
 <span class="normal">70</span>
 <span class="normal">71</span>
 <span class="normal">72</span>
-<span class="normal">73</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">slm_hologram</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">x_grating</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">y_grating</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="s1">'bessel1'</span><span class="p">,</span> <span class="n">input_beam</span><span class="p">:</span><span class="nb">object</span><span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+<span class="normal">73</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">slm_hologram</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">x_grating</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">y_grating</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;bessel1&#39;</span><span class="p">,</span> <span class="n">input_beam</span><span class="p">:</span><span class="nb">object</span><span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
                  <span class="n">eps</span><span class="p">:</span><span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span> <span class="n">max_range</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="mi">255</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x_grating : int</span>
@@ -1206,9 +1206,9 @@ Opt. Express  24, 6249-6264 (2016).
 <span class="sd">    Reference</span>
 <span class="sd">    ---------</span>
 <span class="sd">        [1] T. Clark, R. Offer, S. Franke-Arnold, A. Arnold, and N. Radwell, </span>
-<span class="sd">        "Comparison of beam generation techniques using a phase only spatial light modulator," </span>
+<span class="sd">        &quot;Comparison of beam generation techniques using a phase only spatial light modulator,&quot; </span>
 <span class="sd">        Opt. Express  24, 6249-6264 (2016).</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">beam</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">beam</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">dy</span> <span class="o">=</span> <span class="p">(</span><span class="n">beam</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">beam</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
@@ -1227,23 +1227,23 @@ Opt. Express  24, 6249-6264 (2016).
     <span class="n">A_rel</span> <span class="o">=</span> <span class="n">Ades</span> <span class="o">/</span> <span class="n">Ain</span>
     <span class="n">phi_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="n">beam</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="n">lamb_x</span> <span class="o">+</span> <span class="n">beam</span><span class="o">.</span><span class="n">y</span><span class="o">/</span><span class="n">lamb_y</span><span class="p">),</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
     <span class="n">phi_relg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">desired</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">input_field</span><span class="p">)</span> <span class="o">+</span> <span class="n">phi_g</span>
-    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">'simple'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;simple&#39;</span><span class="p">:</span>
         <span class="n">H</span> <span class="o">=</span> <span class="n">A_rel</span><span class="o">*</span><span class="n">phi_relg</span>
-    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">'g_holo'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;g_holo&#39;</span><span class="p">:</span>
         <span class="n">edg</span> <span class="o">=</span> <span class="n">desired</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">phi_g</span><span class="p">)</span>
         <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">input_field</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">desired</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">))</span>
         <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="n">edg</span> <span class="o">+</span> <span class="n">input_field</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">'davis'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;davis&#39;</span><span class="p">:</span>
         <span class="n">H</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">inv_sinc</span><span class="p">(</span><span class="n">A_rel</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">phi_relg</span>
-    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">'bolduc'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;bolduc&#39;</span><span class="p">:</span>
         <span class="n">M</span> <span class="o">=</span> <span class="mi">1</span><span class="o">+</span><span class="n">inv_sinc</span><span class="p">(</span><span class="n">A_rel</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
         <span class="n">H</span> <span class="o">=</span> <span class="n">M</span><span class="o">*</span><span class="p">(</span><span class="n">phi_relg</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">M</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">'bessel0'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;bessel0&#39;</span><span class="p">:</span>
         <span class="n">H</span> <span class="o">=</span> <span class="n">phi_relg</span> <span class="o">+</span> <span class="n">inv_J0</span><span class="p">(</span><span class="n">A_rel</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_relg</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">'bessel1'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;bessel1&#39;</span><span class="p">:</span>
         <span class="n">H</span> <span class="o">=</span> <span class="n">inv_J1</span><span class="p">(</span><span class="n">A_rel</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_relg</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Error! method must be simple, g_holo, davis, bolduc, bessel0 or bessel1.'</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Error! method must be simple, g_holo, davis, bolduc, bessel0 or bessel1.&#39;</span><span class="p">)</span>
     <span class="n">H</span> <span class="o">=</span> <span class="n">max_range</span> <span class="o">*</span> <span class="p">(</span><span class="n">H</span> <span class="o">-</span> <span class="n">H</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">H</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -1389,7 +1389,7 @@ to have uniform amplitude and zero phase, reproducing the original behavior.</p>
 
 <details class="reference" open>
   <summary>Reference</summary>
-  <div class="highlight"><pre><span></span><code>[1] Scholes, Stirling, et al. "Structured light with digital micromirror devices: a guide to best practice." 
+  <div class="highlight"><pre><span></span><code>[1] Scholes, Stirling, et al. &quot;Structured light with digital micromirror devices: a guide to best practice.&quot; 
 Optical Engineering 59.4 (2020): 041202-041202.
 </code></pre></div>
 </details>
@@ -1450,7 +1450,7 @@ Optical Engineering 59.4 (2020): 041202-041202.
 <span class="normal">127</span>
 <span class="normal">128</span>
 <span class="normal">129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dmd_hologram</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">cx</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">cy</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">sign</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span><span class="nb">object</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">""" </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    Generate a binary-amplitude DMD hologram. </span>
 
 <span class="sd">    Parameters</span>
@@ -1472,8 +1472,8 @@ Optical Engineering 59.4 (2020): 041202-041202.
 
 <span class="sd">    Reference</span>
 <span class="sd">    ---------</span>
-<span class="sd">        [1] Scholes, Stirling, et al. "Structured light with digital micromirror devices: a guide to best practice." </span>
-<span class="sd">        Optical Engineering 59.4 (2020): 041202-041202."""</span> 
+<span class="sd">        [1] Scholes, Stirling, et al. &quot;Structured light with digital micromirror devices: a guide to best practice.&quot; </span>
+<span class="sd">        Optical Engineering 59.4 (2020): 041202-041202.&quot;&quot;&quot;</span> 
 
     <span class="c1"># Target field </span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">Ex</span> 

@@ -1149,7 +1149,7 @@ same <code>Dx</code>/<code>Dy</code> (sample count).</p>
               <div class="doc-md-description">
                 <p>The normalized overlap integral
 <code>sum(E1 * conj(E2)) * dx * dy / sqrt(P1 * P2)</code>, where
-<code>dx = 2*nix/Dx</code>, <code>dy = 2*niy/Dy</code>, and <code>P1</code>, <code>P2</code> are each
+<code>dx = 2*nix/(Dx-1)</code>, <code>dy = 2*niy/(Dy-1)</code>, and <code>P1</code>, <code>P2</code> are each
 beam's total power.</p>
               </div>
             </td>
@@ -1184,9 +1184,8 @@ beam's total power.</p>
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">overlap</span><span class="p">(</span><span class="n">first_beam</span><span class="p">:</span><span class="nb">object</span><span class="p">,</span> <span class="n">second_beam</span><span class="p">:</span><span class="nb">object</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">complex</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">overlap</span><span class="p">(</span><span class="n">first_beam</span><span class="p">:</span><span class="nb">object</span><span class="p">,</span> <span class="n">second_beam</span><span class="p">:</span><span class="nb">object</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">complex</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the (complex) field overlap integral between two beams.</span>
 
 <span class="sd">    Only gives a physically meaningful result if both beams share the</span>
@@ -1205,12 +1204,11 @@ beam's total power.</p>
 <span class="sd">    complex</span>
 <span class="sd">        The normalized overlap integral</span>
 <span class="sd">        ``sum(E1 * conj(E2)) * dx * dy / sqrt(P1 * P2)``, where</span>
-<span class="sd">        `dx = 2*nix/Dx`, `dy = 2*niy/Dy`, and `P1`, `P2` are each</span>
-<span class="sd">        beam's total power.</span>
-<span class="sd">    """</span>
+<span class="sd">        `dx = 2*nix/(Dx-1)`, `dy = 2*niy/(Dy-1)`, and `P1`, `P2` are each</span>
+<span class="sd">        beam&#39;s total power.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># calculate overlap between two beams, only properly works if ni and D of beams are equal.</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">field</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">second_beam</span><span class="o">.</span><span class="n">field</span><span class="p">))</span><span class="o">*</span><span class="mi">4</span><span class="o">*</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">nix</span><span class="o">/</span><span class="n">first_beam</span><span class="o">.</span><span class="n">Dx</span><span class="p">)</span> \
-        <span class="o">*</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">niy</span><span class="o">/</span><span class="n">first_beam</span><span class="o">.</span><span class="n">Dy</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">Power</span><span class="p">()</span><span class="o">*</span><span class="n">second_beam</span><span class="o">.</span><span class="n">Power</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">field</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">second_beam</span><span class="o">.</span><span class="n">field</span><span class="p">))</span><span class="o">*</span><span class="n">first_beam</span><span class="o">.</span><span class="n">dx</span><span class="o">*</span><span class="n">first_beam</span><span class="o">.</span><span class="n">dy</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">Power</span><span class="p">()</span><span class="o">*</span><span class="n">second_beam</span><span class="o">.</span><span class="n">Power</span><span class="p">())</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1302,8 +1300,8 @@ meaningful result if both beams share the same grid, i.e. the same
             <td>
               <div class="doc-md-description">
                 <p>The normalized intensity overlap
-<code>sum(I1 * I2) * dx * dy / (P1 * P2)</code>, where <code>dx = 2*nix/Dx</code>,
-<code>dy = 2*niy/Dy</code>, and <code>P1</code>, <code>P2</code> are each beam's total power.</p>
+<code>sum(I1 * I2) * dx * dy / (P1 * P2)</code>, where <code>dx = 2*nix/(Dx-1)</code>,
+<code>dy = 2*niy/(Dy-1)</code>, and <code>P1</code>, <code>P2</code> are each beam's total power.</p>
               </div>
             </td>
           </tr>
@@ -1313,7 +1311,8 @@ meaningful result if both beams share the same grid, i.e. the same
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\tools.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">33</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">32</span>
+<span class="normal">33</span>
 <span class="normal">34</span>
 <span class="normal">35</span>
 <span class="normal">36</span>
@@ -1337,10 +1336,8 @@ meaningful result if both beams share the same grid, i.e. the same
 <span class="normal">54</span>
 <span class="normal">55</span>
 <span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">int_overlap</span><span class="p">(</span><span class="n">first_beam</span><span class="p">:</span><span class="nb">object</span><span class="p">,</span> <span class="n">second_beam</span><span class="p">:</span><span class="nb">object</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">int_overlap</span><span class="p">(</span><span class="n">first_beam</span><span class="p">:</span><span class="nb">object</span><span class="p">,</span> <span class="n">second_beam</span><span class="p">:</span><span class="nb">object</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the (real-valued, incoherent) intensity overlap between two</span>
 <span class="sd">    beams.</span>
 
@@ -1361,11 +1358,10 @@ meaningful result if both beams share the same grid, i.e. the same
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
 <span class="sd">        The normalized intensity overlap</span>
-<span class="sd">        ``sum(I1 * I2) * dx * dy / (P1 * P2)``, where `dx = 2*nix/Dx`,</span>
-<span class="sd">        `dy = 2*niy/Dy`, and `P1`, `P2` are each beam's total power.</span>
-<span class="sd">    """</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">int_profile</span><span class="p">()</span><span class="o">*</span><span class="n">second_beam</span><span class="o">.</span><span class="n">int_profile</span><span class="p">())</span><span class="o">*</span><span class="mi">4</span><span class="o">*</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">nix</span><span class="o">/</span><span class="n">first_beam</span><span class="o">.</span><span class="n">Dx</span><span class="p">)</span> \
-        <span class="o">*</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">niy</span><span class="o">/</span><span class="n">first_beam</span><span class="o">.</span><span class="n">Dy</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">Power</span><span class="p">()</span><span class="o">*</span><span class="n">second_beam</span><span class="o">.</span><span class="n">Power</span><span class="p">())</span>
+<span class="sd">        ``sum(I1 * I2) * dx * dy / (P1 * P2)``, where `dx = 2*nix/(Dx-1)`,</span>
+<span class="sd">        `dy = 2*niy/(Dy-1)`, and `P1`, `P2` are each beam&#39;s total power.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">int_profile</span><span class="p">()</span><span class="o">*</span><span class="n">second_beam</span><span class="o">.</span><span class="n">int_profile</span><span class="p">())</span><span class="o">*</span><span class="n">first_beam</span><span class="o">.</span><span class="n">dx</span><span class="o">*</span><span class="n">first_beam</span><span class="o">.</span><span class="n">dy</span><span class="o">/</span><span class="p">(</span><span class="n">first_beam</span><span class="o">.</span><span class="n">Power</span><span class="p">()</span><span class="o">*</span><span class="n">second_beam</span><span class="o">.</span><span class="n">Power</span><span class="p">())</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1474,7 +1470,9 @@ with the HG mode of indices (n, m).</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\tools.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">65</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
 <span class="normal">66</span>
 <span class="normal">67</span>
 <span class="normal">68</span>
@@ -1501,10 +1499,8 @@ with the HG mode of indices (n, m).</p>
 <span class="normal">89</span>
 <span class="normal">90</span>
 <span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hg_proj</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">92</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hg_proj</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Project `Beam` onto the Hermite-Gaussian (HG) basis, up to order N</span>
 <span class="sd">    in each index.</span>
 
@@ -1524,8 +1520,8 @@ with the HG mode of indices (n, m).</p>
 <span class="sd">        Complex array of shape (N+1, N+1) where `overlaps[n, m]` is</span>
 <span class="sd">        `overlap(Beam, HG_{n,m})`, i.e. the complex overlap of `Beam`</span>
 <span class="sd">        with the HG mode of indices (n, m).</span>
-<span class="sd">    """</span>
-    <span class="n">overlaps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'complex'</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">overlaps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">)</span>
     <span class="n">auxiliary_beam</span>  <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">copy_clean</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
@@ -1642,7 +1638,9 @@ complex overlap of <code>Beam</code> with the LG mode of indices (l, p).</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\tools.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 97</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
 <span class="normal"> 98</span>
 <span class="normal"> 99</span>
 <span class="normal">100</span>
@@ -1670,10 +1668,8 @@ complex overlap of <code>Beam</code> with the LG mode of indices (l, p).</p>
 <span class="normal">122</span>
 <span class="normal">123</span>
 <span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">lg_proj</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">125</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">lg_proj</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Project `Beam` onto the Laguerre-Gaussian (LG) basis, with azimuthal</span>
 <span class="sd">    index l ranging over -N..N and radial index p ranging over</span>
 <span class="sd">    0..floor(N/2).</span>
@@ -1694,8 +1690,8 @@ complex overlap of <code>Beam</code> with the LG mode of indices (l, p).</p>
 <span class="sd">        Complex array of shape (2N+1, N//2 + 1) where</span>
 <span class="sd">        `overlaps[l+N, p]` is `overlap(Beam, LG_{l,p})`, i.e. the</span>
 <span class="sd">        complex overlap of `Beam` with the LG mode of indices (l, p).</span>
-<span class="sd">    """</span>
-    <span class="n">overlaps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'complex'</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">overlaps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">)</span>
     <span class="n">auxiliary_beam</span>  <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">copy_clean</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
@@ -1837,7 +1833,9 @@ mode.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\tools.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">129</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
 <span class="normal">130</span>
 <span class="normal">131</span>
 <span class="normal">132</span>
@@ -1873,10 +1871,8 @@ mode.</p>
 <span class="normal">162</span>
 <span class="normal">163</span>
 <span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hg_basis</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">waist</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">norm1</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">165</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hg_basis</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">waist</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">norm1</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build an array of Hermite-Gaussian basis mode fields, for all</span>
 <span class="sd">    (n, m) with n, m in 0..N.</span>
 
@@ -1888,9 +1884,9 @@ mode.</p>
 <span class="sd">    N : int</span>
 <span class="sd">        Maximum HG index (inclusive) along both `n` and `m`.</span>
 <span class="sd">    waist : float, optional</span>
-<span class="sd">        If given, overrides the auxiliary beam's waist before</span>
+<span class="sd">        If given, overrides the auxiliary beam&#39;s waist before</span>
 <span class="sd">        generating each mode. If `None` (default), the template</span>
-<span class="sd">        beam's own waist is used.</span>
+<span class="sd">        beam&#39;s own waist is used.</span>
 <span class="sd">    norm1 : bool, optional</span>
 <span class="sd">        If True, the whole basis array is divided by its maximum value</span>
 <span class="sd">        (a single global normalization, not a per-mode one). Defaults</span>
@@ -1902,11 +1898,11 @@ mode.</p>
 <span class="sd">        Complex array of shape (N+1, N+1, Beam.Dy, Beam.Dx), where</span>
 <span class="sd">        `basis[n, m]` is the transverse `Ex` field of the HG(n, m)</span>
 <span class="sd">        mode.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">aux</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">copy_clean</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">waist</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">aux</span><span class="o">.</span><span class="n">waist</span> <span class="o">=</span> <span class="n">waist</span>
-    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dy</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dx</span><span class="p">),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="s1">'complex'</span><span class="p">)</span>
+    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dy</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dx</span><span class="p">),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="s1">&#39;complex&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">aux</span><span class="o">.</span><span class="n">hg</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
@@ -2055,7 +2051,9 @@ to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\tools.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">169</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
 <span class="normal">170</span>
 <span class="normal">171</span>
 <span class="normal">172</span>
@@ -2101,17 +2099,15 @@ to False.</p>
 <span class="normal">212</span>
 <span class="normal">213</span>
 <span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">lg_basis</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">waist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm1</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">215</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">lg_basis</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">waist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm1</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build an array of Laguerre-Gaussian basis mode fields, indexed on</span>
 <span class="sd">    an (n, m) grid (n, m in 0..N) rather than directly by (l, p).</span>
 
 <span class="sd">    For each (n, m), the LG mode used is `LG(l, p)` with</span>
 <span class="sd">    `l = m - n` and `p = min(n, m)` -- i.e. moving along a row/column</span>
 <span class="sd">    of the (n, m) grid sweeps through LG modes of varying azimuthal</span>
-<span class="sd">    index at a fixed "diagonal" relationship to the radial index. This</span>
+<span class="sd">    index at a fixed &quot;diagonal&quot; relationship to the radial index. This</span>
 <span class="sd">    indexing is a convenience for building a square basis array; see</span>
 <span class="sd">    the `l`, `p` computed inside the loop if you need the actual LG</span>
 <span class="sd">    indices for a given (n, m).</span>
@@ -2124,9 +2120,9 @@ to False.</p>
 <span class="sd">    N : int</span>
 <span class="sd">        Maximum index (inclusive) along both `n` and `m`.</span>
 <span class="sd">    waist : float, optional</span>
-<span class="sd">        If given, overrides the auxiliary beam's waist before</span>
+<span class="sd">        If given, overrides the auxiliary beam&#39;s waist before</span>
 <span class="sd">        generating each mode. If `None` (default), the template</span>
-<span class="sd">        beam's own waist is used.</span>
+<span class="sd">        beam&#39;s own waist is used.</span>
 <span class="sd">    norm1 : bool, optional</span>
 <span class="sd">        If True, the whole basis array is divided by its maximum value</span>
 <span class="sd">        (a single global normalization, not a per-mode one). Defaults</span>
@@ -2138,11 +2134,11 @@ to False.</p>
 <span class="sd">        Complex array of shape (N+1, N+1, Beam.Dy, Beam.Dx), where</span>
 <span class="sd">        `basis[n, m]` is the transverse `Ex` field of the</span>
 <span class="sd">        `LG(l=m-n, p=min(n,m))` mode.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">aux</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">copy_clean</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">waist</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">aux</span><span class="o">.</span><span class="n">waist</span> <span class="o">=</span> <span class="n">waist</span>
-    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dy</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dx</span><span class="p">),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="s1">'complex'</span><span class="p">)</span>
+    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dy</span><span class="p">,</span> <span class="n">Beam</span><span class="o">.</span><span class="n">Dx</span><span class="p">),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="s1">&#39;complex&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">l</span> <span class="o">=</span> <span class="n">m</span><span class="o">-</span><span class="n">n</span>
@@ -2287,7 +2283,9 @@ per-mode one). Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>structured_optics\tools.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">219</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
 <span class="normal">220</span>
 <span class="normal">221</span>
 <span class="normal">222</span>
@@ -2324,10 +2322,8 @@ per-mode one). Defaults to False.</p>
 <span class="normal">253</span>
 <span class="normal">254</span>
 <span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
-<span class="normal">258</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bessel_basis</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">Nmax</span><span class="p">,</span> <span class="n">waist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm1</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
+<span class="normal">256</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bessel_basis</span><span class="p">(</span><span class="n">Beam</span><span class="p">,</span> <span class="n">Nmax</span><span class="p">,</span> <span class="n">waist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm1</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build an array of Bessel-beam basis fields, for orders</span>
 <span class="sd">    n = -Nmax..Nmax.</span>
 
@@ -2340,9 +2336,9 @@ per-mode one). Defaults to False.</p>
 <span class="sd">        Maximum Bessel order magnitude; orders from `-Nmax` to `Nmax`</span>
 <span class="sd">        (inclusive) are generated, i.e. `2*Nmax + 1` modes total.</span>
 <span class="sd">    waist : float, optional</span>
-<span class="sd">        If given, overrides the auxiliary beam's waist before</span>
+<span class="sd">        If given, overrides the auxiliary beam&#39;s waist before</span>
 <span class="sd">        generating each mode. If `None` (default), the template</span>
-<span class="sd">        beam's own waist is used.</span>
+<span class="sd">        beam&#39;s own waist is used.</span>
 <span class="sd">    norm1 : bool, optional</span>
 <span class="sd">        If True, the whole basis array is divided by the maximum of</span>
 <span class="sd">        its absolute value (a single global normalization, not a</span>
@@ -2354,12 +2350,12 @@ per-mode one). Defaults to False.</p>
 <span class="sd">        Complex array of shape (2*Nmax+1, Beam.Dy, Beam.Dx), where</span>
 <span class="sd">        `basis[n]` is the full field of the Bessel beam of order</span>
 <span class="sd">        `n - Nmax`.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">aux</span> <span class="o">=</span> <span class="n">Beam</span><span class="o">.</span><span class="n">copy_clean</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">waist</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">aux</span><span class="o">.</span><span class="n">waist</span> <span class="o">=</span> <span class="n">waist</span>
     <span class="c1"># basis[n] = Bessel beam of order n</span>
-    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">Nmax</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">aux</span><span class="o">.</span><span class="n">Dy</span><span class="p">,</span> <span class="n">aux</span><span class="o">.</span><span class="n">Dx</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'complex'</span><span class="p">)</span>
+    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">Nmax</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">aux</span><span class="o">.</span><span class="n">Dy</span><span class="p">,</span> <span class="n">aux</span><span class="o">.</span><span class="n">Dx</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;complex&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Nmax</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">aux</span><span class="o">.</span><span class="n">bessel</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">Nmax</span><span class="p">)</span>   <span class="c1"># or aux.bessel(n, theta=...)</span>
         <span class="n">basis</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">field</span>
