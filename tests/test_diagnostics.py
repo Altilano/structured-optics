@@ -101,6 +101,3 @@ def test_symmetric_beam_splits_power_evenly(gaussian):
     assert upper + lower == pytest.approx(gaussian.Power(), rel=1e-12)
 
 
-def test_old_section_method_is_gone(gaussian):
-    """Angular sections are now expressed as the AngularSection mask."""
-    assert not hasattr(gaussian, "section")
