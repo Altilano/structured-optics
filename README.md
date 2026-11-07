@@ -102,5 +102,6 @@ See also `CITATION.cff` or use GitHub's "Cite this repository" button.
  - Cuda and ROCm speed up.
  - Support for propagation inside linear medium.
 
+### Made mostly by hand with small bug corrections, tests and documentation made with AI. 
 
 
